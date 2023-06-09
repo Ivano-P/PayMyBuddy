@@ -12,7 +12,7 @@
 	<artifactId>paymybuddy</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>paymybuddy</name>
-	<description>une appli qui permet de transférer de l&apos;argent entre amis</description>
+	<description>une application qui permit de transferred de l&apos;argent entre ami</description>
 	<properties>
 		<java.version>17</java.version>
 	</properties>
@@ -24,9 +24,18 @@
 		</dependency>
 
 		<dependency>
+			<groupId>com.mysql</groupId>
+			<artifactId>mysql-connector-j</artifactId>
+			<version>8.0.33</version>
+		</dependency>
+
+		<!-- commenté pour éviter l'authentification pendant le début du projet car spring security implément une
+		authentification par défaut.
+		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-security</artifactId>
 		</dependency>
+		-->
 
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
