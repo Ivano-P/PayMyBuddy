@@ -35,15 +35,15 @@ public class Transaction {
     private int comptePmbId;
 
     @ManyToOne
-    @JoinColumn(name = "expediteur_id", referencedColumnName = "id")
+    @JoinColumn(name = "expediteur_id", insertable = false, updatable = false)
     private PorteMonnaie expediteur;
 
     @ManyToOne
-    @JoinColumn(name = "destinataire_id", referencedColumnName = "id")
+    @JoinColumn(name = "destinataire_id", insertable = false, updatable = false)
     private PorteMonnaie destinataire;
 
     @ManyToOne
-    @JoinColumn(name = "compte_pmb_id", referencedColumnName = "id")
+    @JoinColumn(name = "compte_pmb_id", insertable = false, updatable = false)
     private ComptePayMyBuddy comptePayMyBuddy;
 
     public enum TypeTransaction {

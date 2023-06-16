@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Registration</title>
+  <style>
+    .container {
+      width: 300px;
+      padding: 16px;
+      background-color: white;
+      border: 1px solid black;
+      margin: 0 auto;
+      margin-top: 50px;
+      border-radius: 4px;
+    }
+
+    h1 {
+      text-align: center;
+    }
+
+    input[type=text], input[type=password], input[type=date] {
+      width: 100%;
+      padding: 12px 20px;
+      margin: 8px 0;
+      display: inline-block;
+      border: 1px solid #ccc;
+      box-sizing: border-box;
+    }
+
+    button {
+      background-color: #4CAF50;
+      color: white;
+      padding: 14px 20px;
+      margin: 8px 0;
+      border: none;
+      cursor: pointer;
+      width: 100%;
+    }
+  </style>
+</head>
+<body>
+<h1><a th:href="@{/}">Pay My Buddy</a></h1>
+<div class="container">
+  <form th:action="@{/register}" th:object="${utilisateur}" method="post">
+    <label for="nom"><b>Nom</b></label>
+    <input type="text" placeholder="Enter Nom" th:field="*{nom}" required>
+
+    <label for="prenom"><b>Prenom</b></label>
+    <input type="text" placeholder="Enter Prenom" th:field="*{prenom}" required>
+
+    <label for="email"><b>Email</b></label>
+    <input type="text" placeholder="Enter Email" th:field="*{email}" required>
+
+    <label for="motDePasse"><b>Mot de Passe</b></label>
+    <input type="password" placeholder="Enter Password" th:field="*{motDePasse}" required>
+
+    <button type="submit">Register</button>
+  </form>
+</body>
+</html>

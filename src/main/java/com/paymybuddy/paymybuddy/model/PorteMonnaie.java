@@ -20,7 +20,7 @@ public class PorteMonnaie {
     @Column(name = "email_utilisateur", nullable = false)
     private String emailUtilisateur;
 
-    @OneToOne
-    @JoinColumn(name = "id", referencedColumnName = "id")
+    @OneToOne(fetch = FetchType.LAZY)
+    @MapsId
     private Utilisateur utilisateur;
 }

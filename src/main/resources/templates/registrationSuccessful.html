@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Registration Successful</title>
+    <style>
+        .container {
+            width: 300px;
+            padding: 16px;
+            background-color: white;
+            border: 1px solid black;
+            margin: 0 auto;
+            margin-top: 50px;
+            border-radius: 4px;
+            text-align: center;
+        }
+
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 14px 20px;
+            margin: 8px 0;
+            border: none;
+            cursor: pointer;
+            width: 100%;
+        }
+
+        h1 {
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <h1><a th:href="@{/}">Pay My Buddy</a></h1>
+    <div class="container">
+        <p>Registration Successful</p>
+        <a th:href="@{/myAccount}"><button type="button">Go to My Account</button></a>
+    </div>
+</body>
+</html>

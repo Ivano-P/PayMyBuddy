@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Home</title>
+  <style>
+    .container {
+      width: 300px;
+      padding: 16px;
+      background-color: white;
+      border: 1px solid black;
+      margin: 0 auto;
+      margin-top: 50px;
+      border-radius: 4px;
+    }
+
+    h1 {
+      text-align: center;
+    }
+
+    .link {
+      text-align: center;
+      margin-top: 20px;
+    }
+
+    button {
+      background-color: #4CAF50;
+      color: white;
+      padding: 14px 20px;
+      margin: 8px 0;
+      border: none;
+      cursor: pointer;
+      width: 100%;
+    }
+  </style>
+</head>
+<body>
+<h1><a th:href="@{/}">Pay My Buddy</a></h1>
+<div class="container">
+  <div class="link">
+    <a th:href="@{/register}"><button type="button">Creer un compte</button></a>
+    <a th:href="@{/logIn}"><button type="button">Se connecter</button></a>
+  </div>
+</div>
+</body>
+</html>

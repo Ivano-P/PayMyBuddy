@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>My Account</title>
+    <style>
+        .container {
+            width: 300px;
+            padding: 16px;
+            background-color: white;
+            border: 1px solid black;
+            margin: 0 auto;
+            margin-top: 50px;
+            border-radius: 4px;
+            text-align: left;
+        }
+
+        h1 {
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+<h1><a th:href="@{/}">Pay My Buddy</a></h1>
+<div class="container">
+    <p><b>Nom:</b> John</p>
+    <p><b>Prenom:</b> Doe</p>
+    <p><b>Email:</b> john.doe@example.com</p>
+    <p><b>Solde:</b> 1000 €</p>
+</div>
+</body>
+</html>
+

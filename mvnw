@@ -23,7 +23,7 @@
 #
 # Required ENV vars:
 # ------------------
-#   JAVA_HOME - location of a JDK home dir
+#   JAVA_HOME - location of a JDK home.html dir
 #
 # Optional ENV vars
 # -----------------
@@ -57,7 +57,7 @@ case "$(uname)" in
   CYGWIN*) cygwin=true ;;
   MINGW*) mingw=true;;
   Darwin*) darwin=true
-    # Use /usr/libexec/java_home if available, otherwise fall back to /Library/Java/Home
+    # Use /usr/libexec/java_home if available, otherwise fall back to /Library/Java/home.html
     # See https://developer.apple.com/library/mac/qa/qa1170/_index.html
     if [ -z "$JAVA_HOME" ]; then
       if [ -x "/usr/libexec/java_home" ]; then
@@ -71,7 +71,7 @@ esac
 
 if [ -z "$JAVA_HOME" ] ; then
   if [ -r /etc/gentoo-release ] ; then
-    JAVA_HOME=$(java-config --jre-home)
+    JAVA_HOME=$(java-config --jre-home.html)
   fi
 fi
 

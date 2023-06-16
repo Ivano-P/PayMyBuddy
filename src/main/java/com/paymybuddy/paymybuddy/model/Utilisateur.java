@@ -19,17 +19,17 @@ public class Utilisateur {
     @Column(name = "prenom", nullable = false)
     private String prenom;
 
+
     @Column(name = "email", nullable = false, unique = true)
     private String email;
 
     @Column(name = "mot_de_passe", nullable = false)
     private String motDePasse;
 
-    @OneToOne
-    @JoinColumn(name = "port_monnaie_id", referencedColumnName = "id")
+    @OneToOne(mappedBy = "utilisateur", orphanRemoval = true, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private PorteMonnaie porteMonnaie;
 
-    @OneToOne
+    @OneToOne(orphanRemoval = true)
     @JoinColumn(name = "compte_bancaire_id", referencedColumnName = "id")
     private CompteBancaire compteBancaire;
 }

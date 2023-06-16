@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Registration Failed</title>
+  <style>
+    .container {
+      width: 300px;
+      padding: 16px;
+      background-color: white;
+      border: 1px solid black;
+      margin: 0 auto;
+      margin-top: 50px;
+      border-radius: 4px;
+      text-align: center;
+    }
+
+    h1 {
+      text-align: center;
+    }
+
+    button {
+      background-color: #4CAF50;
+      color: white;
+      padding: 14px 20px;
+      margin: 8px 0;
+      border: none;
+      cursor: pointer;
+      width: 100%;
+    }
+  </style>
+</head>
+<body>
+<h1><a href="/" th:href="@{/home}">Pay My Buddy</a></h1>
+<div class="container">
+  <h2>Registration Failed</h2>
+  <p th:text="${errorMessage}"></p>
+  <button onclick="location.href='/register'" type="button">Try Again</button>
+</div>
+</body>
+</html>
