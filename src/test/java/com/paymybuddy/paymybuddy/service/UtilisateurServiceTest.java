@@ -27,7 +27,7 @@ class UtilisateurServiceTest {
     @BeforeEach
     void setUp() {
         utilisateurRepository = Mockito.mock(UtilisateurRepository.class);
-        utilisateurService = new UtilisateurService(utilisateurRepository);
+        utilisateurService = new UtilisateurService(utilisateurRepository, roleRepository, passwordEncoder);
 
         utilisateur = new Utilisateur();
         utilisateur.setNom("DUPONT");
@@ -51,7 +51,7 @@ class UtilisateurServiceTest {
     @Test
      void testCreateUtilisateur() {
         when(utilisateurRepository.save(utilisateur)).thenReturn(utilisateur);
-        assertEquals(utilisateur, utilisateurService.createUtilisateurWithPorteMonnaie(utilisateur));
+        assertEquals(utilisateur, utilisateurService.createUtilisateurAndPorteMonnaie(utilisateur));
     }
 
     @Test

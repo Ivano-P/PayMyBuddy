@@ -35,13 +35,10 @@
 			<version>8.0.33</version>
 		</dependency>
 
-		<!-- commenté pour éviter l'authentification pendant le début du projet car spring security implément une
-		authentification par défaut.
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-security</artifactId>
 		</dependency>
-		-->
 
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
