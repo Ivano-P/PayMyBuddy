@@ -12,45 +12,45 @@ public class Transaction {
     @Column(name = "id")
     private int id;
 
-    @Column(name = "expediteur_id", nullable = false)
-    private int expediteurId;
+    @Column(name = "sender_id", nullable = false)
+    private int senderId;
 
-    @Column(name = "destinataire_id", nullable = false)
-    private int destinataireId;
+    @Column(name = "recepient_id", nullable = false)
+    private int recepientId;
 
     @Column(name = "msg")
     private String msg;
 
-    @Column(name = "montant", nullable = false)
-    private BigDecimal montant;
+    @Column(name = "amount", nullable = false)
+    private BigDecimal amount;
 
-    @Column(name = "frais_transaction")
-    private BigDecimal fraisTransaction;
+    @Column(name = "transaction_fee")
+    private BigDecimal transactionFee;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "type_transaction", nullable = false)
-    private TypeTransaction typeTransaction;
+    @Column(name = "transaction_type", nullable = false)
+    private TransactionType transactionType;
 
-    @Column(name = "compte_pmb_id", nullable = false)
-    private int comptePmbId;
-
-    @ManyToOne
-    @JoinColumn(name = "expediteur_id", insertable = false, updatable = false)
-    private PorteMonnaie expediteur;
+    @Column(name = "account_pmb_id", nullable = false)
+    private int accountPmbId;
 
     @ManyToOne
-    @JoinColumn(name = "destinataire_id", insertable = false, updatable = false)
-    private PorteMonnaie destinataire;
+    @JoinColumn(name = "sender_id", insertable = false, updatable = false)
+    private Wallet sender;
 
     @ManyToOne
-    @JoinColumn(name = "compte_pmb_id", insertable = false, updatable = false)
-    private ComptePayMyBuddy comptePayMyBuddy;
+    @JoinColumn(name = "recepient_id", insertable = false, updatable = false)
+    private Wallet recepient;
 
-    public enum TypeTransaction {
-        envoi,
-        reception,
-        virement_alimentation,
-        virement_retrait
+    @ManyToOne
+    @JoinColumn(name = "account_pmb_id", insertable = false, updatable = false)
+    private AccountPayMyBuddy accountPayMyBuddy;
+
+    public enum TransactionType {
+        send,
+        receive,
+        fund,
+        withdrawal
     }
 }
 

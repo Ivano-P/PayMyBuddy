@@ -1,7 +1,7 @@
 package com.paymybuddy.paymybuddy.controller;
 
-import com.paymybuddy.paymybuddy.model.Utilisateur;
-import com.paymybuddy.paymybuddy.service.UtilisateurService;
+import com.paymybuddy.paymybuddy.model.AppUser;
+import com.paymybuddy.paymybuddy.service.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -10,29 +10,37 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 
+import java.security.Principal;
+import java.util.Optional;
+
 @Controller
 @AllArgsConstructor(onConstructor = @__(@Autowired))
-public class UtilisateurController {
+public class UserController {
 
-    private final UtilisateurService utilisateurService;
+    private final UserService userService;
 
     //go to registration page
     @GetMapping("/register")
     public String showRegistrationForm(Model model) {
 
-        model.addAttribute("utilisateur", new Utilisateur());
+        model.addAttribute("appUser", new AppUser());
         return "register";
     }
 
     @GetMapping("/myAccount")
-    public String goToMyAccount() {
+    public String goToMyAccount(Model model, Principal principal) {
+        Optional<AppUser> currentUSer = userService.getAppUserByEmail(principal.getName());
+
+        if(currentUSer.isPresent()){
+            model.addAttribute("currentUser", currentUSer.get());
+        }
         return "myAccount";
     }
 
     @PostMapping("/register")
-    public String registerUtilisateur(@ModelAttribute Utilisateur utilisateur){
+    public String registerAppUser(@ModelAttribute AppUser appUser){
 
-        if (utilisateurService.createUtilisateurAndPorteMonnaie(utilisateur) != null) {
+        if (userService.createAppUserAndWallet(appUser) != null) {
             return "registrationSuccessful";
         } else {
             return "registrationFailure";

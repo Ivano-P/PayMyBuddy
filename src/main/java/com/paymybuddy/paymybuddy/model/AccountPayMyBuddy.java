@@ -8,15 +8,15 @@ import java.math.BigDecimal;
 import lombok.Data;
 
 @Entity
-@Table(name = "compte_paymybuddy")
+@Table(name = "account_paymybuddy")
 @Data
-public class ComptePayMyBuddy {
+public class AccountPayMyBuddy {
 
     @Id
     @Column(name = "id")
     private int id;
 
-    @Column(name = "solde", nullable = false)
-    private BigDecimal solde;
+    @Column(name = "balance", nullable = false)
+    private BigDecimal balance;
 }
 

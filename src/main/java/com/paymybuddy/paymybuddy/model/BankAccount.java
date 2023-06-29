@@ -7,16 +7,16 @@ import jakarta.persistence.Table;
 import lombok.Data;
 
 @Entity
-@Table(name = "compte_bancaire")
+@Table(name = "bank_account")
 @Data
-public class CompteBancaire {
+public class BankAccount {
 
     @Id
     @Column(name = "id")
     private int id;
 
-    @Column(name = "intitule", nullable = false)
-    private String intitule;
+    @Column(name = "title", nullable = false)
+    private String title;
 
     @Column(name = "iban", nullable = false)
     private String iban;

@@ -1,7 +1,7 @@
 package com.paymybuddy.paymybuddy.service;
 
-import com.paymybuddy.paymybuddy.model.Utilisateur;
-import com.paymybuddy.paymybuddy.repository.UtilisateurRepository;
+import com.paymybuddy.paymybuddy.model.AppUser;
+import com.paymybuddy.paymybuddy.repository.UserRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.User;
@@ -15,18 +15,18 @@ import org.springframework.transaction.annotation.Transactional;
 @AllArgsConstructor(onConstructor = @__(@Autowired))
 public class CustomUserDetailsService implements UserDetailsService {
 
-    private final UtilisateurRepository utilisateurRepository;
+    private final UserRepository userRepository;
 
     @Override
     @Transactional(readOnly = true)
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        Utilisateur utilisateur = utilisateurRepository.findByEmail(email)
-                .orElseThrow(() -> new UsernameNotFoundException("Utilisateur not found with email: " + email));
+        AppUser appUser = userRepository.findByEmail(email)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + email));
 
         UserDetails userDetails = User
-                .withUsername(utilisateur.getEmail())
-                .password(utilisateur.getMotDePasse())
-                .roles(utilisateur.getRole())
+                .withUsername(appUser.getEmail())
+                .password(appUser.getPassword())
+                .roles(appUser.getRole())
                 .build();
 
         return userDetails;

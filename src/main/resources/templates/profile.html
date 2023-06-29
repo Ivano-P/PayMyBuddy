@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="https://www.thymeleaf.org"
+      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width", initial-scale=1>
+  <link rel="stylesheet" href="../static/styles.css">
+  <title>Profile</title>
+</head>
+<body>
+<section id="navbar">
+  <div id="home-button-div">
+    <ul>
+    <li id="home-li"><a id="home-button" href="/">Pay My Buddy</a></li>
+    </ul>
+  </div>
+
+  <div class = navbar-pages>
+    <ul>
+        <li>
+            <form th:action="@{/logout}" method="post" >
+              <button type="submit">Log off</button>
+            </form>
+        </li>
+        <li><a th:href="@{/contact}">Contact</a></li>
+        <li><a th:href="@{/profile}">Profile</a></li>
+        <li><a th:href="@{/transaction}">Transfer</a></li>
+        <li><a th:href="@{/myAccount}">Home</a></li>
+    </ul>
+  </div>
+</section>
+<section id="path-bar">
+  <nav>
+    Home / Profile
+  </nav>
+</section>
+<section id="profile-info">
+  <div class="field">First name: <span th:text ="${currentUser.firstName}"></span></div>
+  <div class="field">Last name: <span th:text ="${currentUser.lastName}"></span></div>
+  <div class="field">Email: <span th:text ="${currentUser.email}"></span></div>
+  <div class="field">Balance: <span th:text ="${currentUser.balance.amount}"></span></div>
+</section>
+<form action="#" th:action="@{/balance}" method="post" class="deposit">
+  <label for="balance">Add amount :</label>
+  <input type="text" name="amount" id="balance" placeholder="0">
+  <button type="submit" id="submit-btn">Add</button>
+</form>
+</body>
+</html>
+

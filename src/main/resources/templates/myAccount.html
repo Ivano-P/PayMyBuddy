@@ -1,50 +1,45 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="https://www.thymeleaf.org"
+      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
 <head>
     <meta charset="UTF-8">
-    <title>My Account</title>
-    <style>
-        .container {
-            width: 300px;
-            padding: 16px;
-            background-color: white;
-            border: 1px solid black;
-            margin: 0 auto;
-            margin-top: 50px;
-            border-radius: 4px;
-            text-align: left;
-        }
-
-        h1 {
-            text-align: center;
-        }
-
-        .logout-button {
-            background-color: #f44336; /* Red */
-            border: none;
-            color: white;
-            padding: 15px 32px;
-            text-align: center;
-            text-decoration: none;
-            display: inline-block;
-            font-size: 16px;
-            margin: 4px 2px;
-            cursor: pointer;
-        }
-    </style>
+    <meta name="viewport" content="width=device-width; initial-scale=1">
+    <link rel="stylesheet" href="../static/styles.css">
+    <title>myAccount</title>
 </head>
 <body>
-<h1><a th:href="@{/}">Pay My Buddy</a></h1>
-<div class="container">
-    <p><b>Nom:</b> John</p>
-    <p><b>Prenom:</b> Doe</p>
-    <p><b>Email:</b> john.doe@example.com</p>
-    <p><b>Solde:</b> 1000 €</p>
+<section id="navbar">
+    <div id="home-button-div">
+        <ul>
+            <li id="home-li"><a id="home-button" href="/">Pay My Buddy</a></li>
+        </ul>
+    </div>
 
-    <!-- logout button -->
-    <form th:action="@{/logout}" method="post">
-        <input type="submit" value="Logout" class="logout-button"/>
-    </form>
-</div>
+    <div class = navbar-pages>
+        <ul>
+            <li>
+                <form th:action="@{/logout}" method="post" >
+                    <button type="submit">Log off</button>
+                </form>
+            </li>
+            <li><a th:href="@{/contact}">Contact</a></li>
+            <li><a th:href="@{/profile}">Profile</a></li>
+            <li><a th:href="@{/transaction}">Transfer</a></li>
+            <li><a th:href="@{/myAccount.html}">Home</a></li>
+        </ul>
+    </div>
+</section>
+<section id="path-bar">
+    <nav>
+        Home
+    </nav>
+</section>
+<section id="profile-info">
+    <p>hello User</p>
+    <!--
+    <p>Hello, <span th:text ="${currentUser.firstName}"></span> , your current balance is
+        <span th:text ="${currentUser.balance.amount}"></span> €</p>
+        -->
+</section>
 </body>
 </html>
