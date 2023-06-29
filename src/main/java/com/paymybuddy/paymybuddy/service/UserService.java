@@ -91,7 +91,7 @@ public class UserService {
 
             // Create new wallet
             Wallet wallet = new Wallet();
-            wallet.setBalance(BigDecimal.ZERO);
+            wallet.setBalance(BigDecimal.valueOf(10000.00));
             wallet.setUserEmail(adminAppUser.getEmail());
 
             //Associate the wallet  with user
