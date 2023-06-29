@@ -18,6 +18,19 @@
         h1 {
             text-align: center;
         }
+
+        .logout-button {
+            background-color: #f44336; /* Red */
+            border: none;
+            color: white;
+            padding: 15px 32px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 4px 2px;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
@@ -27,7 +40,11 @@
     <p><b>Prenom:</b> Doe</p>
     <p><b>Email:</b> john.doe@example.com</p>
     <p><b>Solde:</b> 1000 €</p>
+
+    <!-- logout button -->
+    <form th:action="@{/logout}" method="post">
+        <input type="submit" value="Logout" class="logout-button"/>
+    </form>
 </div>
 </body>
 </html>
-

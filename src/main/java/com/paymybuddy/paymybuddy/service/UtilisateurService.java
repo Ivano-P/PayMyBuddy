@@ -3,8 +3,8 @@ package com.paymybuddy.paymybuddy.service;
 import com.paymybuddy.paymybuddy.model.PorteMonnaie;
 import com.paymybuddy.paymybuddy.model.Utilisateur;
 import com.paymybuddy.paymybuddy.repository.UtilisateurRepository;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -14,16 +14,11 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
+@AllArgsConstructor(onConstructor = @__(@Autowired))
 public class UtilisateurService {
 
     private final UtilisateurRepository utilisateurRepository;
     private final PasswordEncoder passwordEncoder;
-
-    @Autowired
-    public UtilisateurService(UtilisateurRepository utilisateurRepository, PasswordEncoder passwordEncoder) {
-        this.utilisateurRepository = utilisateurRepository;
-        this.passwordEncoder = passwordEncoder;
-    }
 
     @Transactional
     public Utilisateur createUtilisateurAndPorteMonnaie(Utilisateur utilisateur) {
@@ -77,11 +72,11 @@ public class UtilisateurService {
     public Utilisateur creatAdminUtilisateur(){
 
         Utilisateur adminUtilisateur = new Utilisateur();
-        adminUtilisateur.setNom("admin");
-        adminUtilisateur.setPrenom("one");
-        adminUtilisateur.setEmail("user1");
+        adminUtilisateur.setNom("petty");
+        adminUtilisateur.setPrenom("ivano");
+        adminUtilisateur.setEmail("mistertester@testmail.com");
         adminUtilisateur.setRole("ADMIN");
-        adminUtilisateur.setMotDePasse(passwordEncoder.encode("password"));
+        adminUtilisateur.setMotDePasse(passwordEncoder.encode("Testpassword123*"));
 
         // Create new PorteMonnaie
         PorteMonnaie porteMonnaie = new PorteMonnaie();
