@@ -4,8 +4,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width; initial-scale=1">
-    <link rel="stylesheet" href="../static/styles.css">
-    <title>myAccount</title>
+    <link rel="stylesheet" href="/styles.css">
+    <title>home</title>
 </head>
 <body>
 <section id="navbar">
@@ -25,7 +25,7 @@
             <li><a th:href="@{/contact}">Contact</a></li>
             <li><a th:href="@{/profile}">Profile</a></li>
             <li><a th:href="@{/transaction}">Transfer</a></li>
-            <li><a th:href="@{/myAccount.html}">Home</a></li>
+            <li><a th:href="@{/home}">Home</a></li>
         </ul>
     </div>
 </section>
@@ -35,11 +35,9 @@
     </nav>
 </section>
 <section id="profile-info">
-    <p>hello User</p>
-    <!--
     <p>Hello, <span th:text ="${currentUser.firstName}"></span> , your current balance is
-        <span th:text ="${currentUser.balance.amount}"></span> €</p>
-        -->
+        <span th:text ="${currentUser.wallet.balance}"></span> €</p>
+
 </section>
 </body>
 </html>

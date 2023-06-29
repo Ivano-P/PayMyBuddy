@@ -23,7 +23,7 @@ public class WebSecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
         //set my customized login page for spring security and makes it accessible without being logged-in
-        httpSecurity.formLogin().loginPage("/logIn").defaultSuccessUrl("/myAccount", true )
+        httpSecurity.formLogin().loginPage("/logIn").defaultSuccessUrl("/home", true )
                 .permitAll();
         //set pages that are accessible without being logged in
         httpSecurity.authorizeHttpRequests()

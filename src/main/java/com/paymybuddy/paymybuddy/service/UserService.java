@@ -76,30 +76,39 @@ public class UserService {
     @Transactional
     public AppUser creatAdminAppUser(){
 
-        AppUser adminAppUser = new AppUser();
-        adminAppUser.setLastName("petty");
-        adminAppUser.setFirstName("ivano");
-        adminAppUser.setEmail("mistertester@testmail.com");
-        adminAppUser.setRole("ADMIN");
-        adminAppUser.setPassword(passwordEncoder.encode("Testpassword123*"));
+        //check if first user (ADMIN) is created, if not in db creat it
+        Optional<AppUser> userCheck = userRepository.findById(1);
+        if(userCheck.isPresent()){
+            return null;
 
-        // Create new wallet
-        Wallet wallet = new Wallet();
-        wallet.setBalance(BigDecimal.ZERO);
-        wallet.setUserEmail(adminAppUser.getEmail());
+        }else {
+            AppUser adminAppUser = new AppUser();
+            adminAppUser.setLastName("petty");
+            adminAppUser.setFirstName("ivano");
+            adminAppUser.setEmail("mistertester@testmail.com");
+            adminAppUser.setRole("ADMIN");
+            adminAppUser.setPassword(passwordEncoder.encode("Testpassword123*"));
 
-        //Associate the wallet  with user
-        adminAppUser.setWallet(wallet);
+            // Create new wallet
+            Wallet wallet = new Wallet();
+            wallet.setBalance(BigDecimal.ZERO);
+            wallet.setUserEmail(adminAppUser.getEmail());
 
-        //Associate the wallet  with user
-        adminAppUser.setWallet(wallet);
+            //Associate the wallet  with user
+            adminAppUser.setWallet(wallet);
+
+            //Associate the wallet  with user
+            adminAppUser.setWallet(wallet);
 
 
-        //Set the PorteMonnaie's utilisateur
-        wallet.setAppUser(adminAppUser);
+            //Set the PorteMonnaie's utilisateur
+            wallet.setAppUser(adminAppUser);
 
-        //cascade setting saves the porteMonnaie as well
-        return userRepository.save(adminAppUser);
+            //cascade setting saves the porteMonnaie as well
+            return userRepository.save(adminAppUser);
+        }
+
+
     }
 
 }

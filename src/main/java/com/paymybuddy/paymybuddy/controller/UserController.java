@@ -22,19 +22,32 @@ public class UserController {
     //go to registration page
     @GetMapping("/register")
     public String showRegistrationForm(Model model) {
-
         model.addAttribute("appUser", new AppUser());
         return "register";
     }
 
-    @GetMapping("/myAccount")
-    public String goToMyAccount(Model model, Principal principal) {
+    @GetMapping("/home")
+    public String goToHomePage(Model model, Principal principal) {
         Optional<AppUser> currentUSer = userService.getAppUserByEmail(principal.getName());
 
-        if(currentUSer.isPresent()){
-            model.addAttribute("currentUser", currentUSer.get());
-        }
-        return "myAccount";
+        currentUSer.ifPresent(appUser -> model.addAttribute("currentUser", appUser));
+        return "home";
+    }
+
+    @GetMapping("/transfer")
+    public String goToTransferPage(Model model, Principal principal) {
+        Optional<AppUser> currentUSer = userService.getAppUserByEmail(principal.getName());
+
+        currentUSer.ifPresent(appUser -> model.addAttribute("currentUser", appUser));
+        return "transfer";
+    }
+
+    @GetMapping("/profile")
+    public String goToProfilePage(Model model, Principal principal) {
+        Optional<AppUser> currentUSer = userService.getAppUserByEmail(principal.getName());
+
+        currentUSer.ifPresent(appUser -> model.addAttribute("currentUser", appUser));
+        return "profile";
     }
 
     @PostMapping("/register")

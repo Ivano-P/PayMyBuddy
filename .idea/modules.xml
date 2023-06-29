@@ -3,7 +3,6 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/PayMyBuddy.iml" filepath="$PROJECT_DIR$/.idea/PayMyBuddy.iml" />
-      <module fileurl="file://$PROJECT_DIR$/pmb-ui.iml" filepath="$PROJECT_DIR$/pmb-ui.iml" />
     </modules>
   </component>
 </project>

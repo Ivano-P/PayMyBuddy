@@ -3,8 +3,8 @@
       xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width", initial-scale=1>
-  <link rel="stylesheet" href="../static/styles.css">
+  <meta name="viewport" content="width=device-width; initial-scale=1">
+  <link rel="stylesheet" href="/styles.css">
   <title>Profile</title>
 </head>
 <body>
@@ -38,7 +38,7 @@
   <div class="field">First name: <span th:text ="${currentUser.firstName}"></span></div>
   <div class="field">Last name: <span th:text ="${currentUser.lastName}"></span></div>
   <div class="field">Email: <span th:text ="${currentUser.email}"></span></div>
-  <div class="field">Balance: <span th:text ="${currentUser.balance.amount}"></span></div>
+  <div class="field">Balance: <span th:text ="${currentUser.wallet.balance}"></span></div>
 </section>
 <form action="#" th:action="@{/balance}" method="post" class="deposit">
   <label for="balance">Add amount :</label>
