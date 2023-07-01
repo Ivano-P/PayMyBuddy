@@ -11,7 +11,7 @@ n
 >src/main/java/com/paymybuddy/paymybuddy/model/BankAccount.java,7\4\74bd66b83914725a4366fa3e8bb8c3d2777b617d
 i
 9src/main/java/com/paymybuddy/paymybuddy/model/Wallet.java,6\8\68dd9c7918769c5d989663ab986fd7014a5e5538
-}
-Msrc/main/java/com/paymybuddy/paymybuddy/service/CustomUserDetailsService.java,f\b\fb39de6aaf6cb70d794e63f19dc98f9f3e4040a2
-w
-Gsrc/main/java/com/paymybuddy/paymybuddy/security/WebSecurityConfig.java,7\d\7dc32107891a807e16f486f01c2adea404fac950
+7
+pom.xml,4\4\442292b8a7efeabbe4cc176709b833b1792140ec
+y
+Isrc/main/java/com/paymybuddy/paymybuddy/repository/AppUserRepository.java,0\d\0d78c4576fdef2d0996671810f7c09c533e4180c

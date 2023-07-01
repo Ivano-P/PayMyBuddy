@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.security.Principal;
+import java.util.List;
 import java.util.Optional;
 
 @Controller
@@ -51,13 +52,19 @@ public class UserController {
         return "profile";
     }
 
-    //TODO:add list of contact to this page.
+
     @GetMapping("/contact")
     public String goToContactPage(Model model, Principal principal){
 
         Optional<AppUser> currentUser = appUserService.getAppUserByEmail(principal.getName());
 
-        currentUser.ifPresent(appUser -> model.addAttribute("currentUser", appUser));
+        currentUser.ifPresent(appUser -> {
+            model.addAttribute("currentUser", appUser);
+            // Fetch the contacts for the current user and add them to the model
+            List<AppUser> contacts = appUserService.getContactsForUser(appUser);
+            model.addAttribute("contacts", contacts);
+
+        } );
         return "contact";
     }
 
@@ -73,9 +80,14 @@ public class UserController {
 
     @PostMapping("/addContact")
     public String addContact(Principal principal, @RequestParam("contactEmail") String contactEmail) {
-        String userEmail = principal.getName(); // get the email of the currently logged in user
-        appUserService.addContact(userEmail, contactEmail);
-        return "redirect:/contact"; // to same page
+        appUserService.addContact(principal.getName(), contactEmail);
+        return "redirect:/contact"; // redirect to same page
+    }
+
+    @PostMapping("/removeContact")
+    public String removeContact(Principal principal, @RequestParam("contactId") Integer contactId) {
+        appUserService.removeContact(principal.getName(), contactId);
+        return "redirect:contact"; // redirect to same page
     }
 
 }

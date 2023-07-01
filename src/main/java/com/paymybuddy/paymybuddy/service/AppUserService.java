@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor(onConstructor = @__(@Autowired))
@@ -22,6 +23,43 @@ public class AppUserService {
     private final AppUserRepository appUserRepository;
     private  final AppUserContactRepository appUserContactRepository;
     private final PasswordEncoder passwordEncoder;
+
+    //creat admin user for test, this  is called on startup
+    @Transactional
+    public AppUser creatAdminAppUser(){
+
+        //check if first user (ADMIN) is created, if not in db creat it
+        Optional<AppUser> userCheck = appUserRepository.findById(1);
+        if(userCheck.isPresent()){
+            return null;
+
+        }else {
+            AppUser adminAppUser = new AppUser();
+            adminAppUser.setLastName("petty");
+            adminAppUser.setFirstName("ivano");
+            adminAppUser.setEmail("mistertester@testmail.com");
+            adminAppUser.setRole("ADMIN");
+            adminAppUser.setPassword(passwordEncoder.encode("Testpassword123*"));
+
+            // Create new wallet
+            Wallet wallet = new Wallet();
+            wallet.setBalance(BigDecimal.valueOf(10000.00));
+            wallet.setUserEmail(adminAppUser.getEmail());
+
+            //Associate the wallet  with user
+            adminAppUser.setWallet(wallet);
+
+            //Associate the wallet  with user
+            adminAppUser.setWallet(wallet);
+
+
+            //Set the PorteMonnaie's utilisateur
+            wallet.setAppUser(adminAppUser);
+
+            //cascade setting saves the porteMonnaie as well
+            return appUserRepository.save(adminAppUser);
+        }
+    }
 
     @Transactional
     public AppUser createAppUserAndWallet(AppUser appUser) {
@@ -46,7 +84,6 @@ public class AppUserService {
         //cascade setting saves the wallet as well
         return appUserRepository.save(appUser);
     }
-
 
     @Transactional(readOnly = true)
     public List<AppUser> getAllAppUsers() {
@@ -96,42 +133,33 @@ public class AppUserService {
 
     }
 
-    //creat admin user for test, this  is called on startup
-    @Transactional
-    public AppUser creatAdminAppUser(){
+    @Transactional(readOnly = true)
+    public List<AppUser> getContactsForUser(AppUser user) {
+        // Fetch the AppUserContact instances for the given user
+        List<AppUserContact> userContacts = appUserContactRepository.findByAppUser(user);
 
-        //check if first user (ADMIN) is created, if not in db creat it
-        Optional<AppUser> userCheck = appUserRepository.findById(1);
-        if(userCheck.isPresent()){
-            return null;
+        // Map the list of AppUserContact instances to a list of AppUser instances
+        List<AppUser> contacts = userContacts.stream()
+                .map(AppUserContact::getContact)
+                .collect(Collectors.toList());
 
-        }else {
-            AppUser adminAppUser = new AppUser();
-            adminAppUser.setLastName("petty");
-            adminAppUser.setFirstName("ivano");
-            adminAppUser.setEmail("mistertester@testmail.com");
-            adminAppUser.setRole("ADMIN");
-            adminAppUser.setPassword(passwordEncoder.encode("Testpassword123*"));
+        return contacts;
+    }
 
-            // Create new wallet
-            Wallet wallet = new Wallet();
-            wallet.setBalance(BigDecimal.valueOf(10000.00));
-            wallet.setUserEmail(adminAppUser.getEmail());
+    public void removeContact(String appUserEmail, Integer contactId){
+        Optional<AppUser> appUser = appUserRepository.findByEmail(appUserEmail);
+        Optional<AppUser> contactToRemove = appUserRepository.findById(contactId);
 
-            //Associate the wallet  with user
-            adminAppUser.setWallet(wallet);
+        //check if there is a row in AppUserContact with this AppUserid and contactId, if so remove it
+        if(appUser.isPresent() && contactToRemove.isPresent()) {
+            AppUserContact.AppUserContactId id = new AppUserContact.AppUserContactId();
+            id.setAppUserId(appUser.get().getId());
+            id.setContactId(contactToRemove.get().getId());
 
-            //Associate the wallet  with user
-            adminAppUser.setWallet(wallet);
-
-
-            //Set the PorteMonnaie's utilisateur
-            wallet.setAppUser(adminAppUser);
-
-            //cascade setting saves the porteMonnaie as well
-            return appUserRepository.save(adminAppUser);
+            if (appUserContactRepository.existsById(id)) {
+                appUserContactRepository.deleteById(id);
+            }
         }
-
 
     }
 

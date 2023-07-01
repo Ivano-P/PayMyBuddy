@@ -34,12 +34,44 @@
         Home / Contact
     </nav>
 </section>
+<section id="contact_manager">
+    <div id="add_contact">
+        <form th:action="@{/addContact}" method="post">
+            <label for="contactEmail">Contact Email:</label>
+            <input type="text" id="contactEmail" name="contactEmail">
+            <button type="submit">Add Contact</button>
+        </form>
+    </div>
 
-<form th:action="@{/addContact}" method="post">
-    <label for="contactEmail">Contact Email:</label>
-    <input type="text" id="contactEmail" name="contactEmail">
-    <button type="submit">Add Contact</button>
-</form>
+    <div id="contact_list">
+        <h1>My Contacts</h1>
+        <table>
+            <thead>
+            <tr>
+                <th>First Name</th>
+                <th>Last Name</th>
+                <th>Email</th>
+                <th>Action</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="contact : ${contacts}">
+                <td th:text="${contact.firstName}"></td>
+                <td th:text="${contact.lastName}"></td>
+                <td th:text="${contact.email}"></td>
+                <td>
+                    <form th:action="@{/removeContact}" method="post">
+                        <input type="hidden" th:value="${contact.id}" name="contactId" />
+                        <button type="submit">Remove</button>
+                    </form>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+</section>
+
 
 
 </body>
