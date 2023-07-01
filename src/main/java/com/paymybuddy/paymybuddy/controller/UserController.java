@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.math.BigDecimal;
 import java.security.Principal;
 import java.util.List;
 import java.util.Optional;
@@ -40,7 +41,13 @@ public class UserController {
     public String goToTransferPage(Model model, Principal principal) {
         Optional<AppUser> currentUSer = appUserService.getAppUserByEmail(principal.getName());
 
-        currentUSer.ifPresent(appUser -> model.addAttribute("currentUser", appUser));
+        currentUSer.ifPresent(appUser -> {
+            model.addAttribute("currentUser", appUser);
+
+            // Fetch the contacts for the current user and add them to the model
+            List<AppUser> contacts = appUserService.getContactsForUser(appUser);
+            model.addAttribute("contacts", contacts);
+        });
         return "transfer";
     }
 
@@ -90,4 +97,11 @@ public class UserController {
         return "redirect:contact"; // redirect to same page
     }
 
+    @PostMapping("/transfer")
+    public String transferFunds(Principal principal,
+                                @RequestParam("contactId") Integer contactId,
+                                @RequestParam("amount") BigDecimal amount) {
+        appUserService.transferFunds(principal.getName(), contactId, amount);
+        return "redirect:/transfer"; // redirect back to the transfer page
+    }
 }

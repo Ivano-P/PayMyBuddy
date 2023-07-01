@@ -1,10 +1,12 @@
 package com.paymybuddy.paymybuddy.service;
 
+import com.paymybuddy.paymybuddy.exceptions.InsufficientFundsException;
 import com.paymybuddy.paymybuddy.model.AppUser;
 import com.paymybuddy.paymybuddy.model.AppUserContact;
 import com.paymybuddy.paymybuddy.model.Wallet;
 import com.paymybuddy.paymybuddy.repository.AppUserContactRepository;
 import com.paymybuddy.paymybuddy.repository.AppUserRepository;
+import com.paymybuddy.paymybuddy.repository.WalletRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -22,6 +24,7 @@ public class AppUserService {
 
     private final AppUserRepository appUserRepository;
     private  final AppUserContactRepository appUserContactRepository;
+    private  final WalletRepository walletRepository;
     private final PasswordEncoder passwordEncoder;
 
     //creat admin user for test, this  is called on startup
@@ -129,7 +132,7 @@ public class AppUserService {
 
              appUserContactRepository.save(appUserContact);
 
-        } //TODO: add Exeption for if contact is not found
+        }
 
     }
 
@@ -161,6 +164,40 @@ public class AppUserService {
             }
         }
 
+    }
+
+    @Transactional
+    public void transferFunds (String appUserEmail, Integer contactId, BigDecimal amount){
+        Optional<AppUser> appUserOptional = appUserRepository.findByEmail(appUserEmail);
+        Optional<AppUser> contactOptional = appUserRepository.findById(contactId);
+
+        if(appUserOptional.isPresent() && contactOptional.isPresent()) {
+            AppUser appUser = appUserOptional.get();
+            AppUser contactToTransferTo = contactOptional.get();
+
+
+            Optional<Wallet> appUserWalletOptional = walletRepository.findById(appUser.getId());
+            Optional<Wallet> contactWalletOptional = walletRepository.findById(contactToTransferTo.getId());
+
+            if(appUserWalletOptional.isPresent() && contactWalletOptional.isPresent()){
+                Wallet appUserWallet = appUserWalletOptional.get();
+                Wallet contactToTransferToWallet = contactWalletOptional.get();
+
+                int comparisonResult = appUserWallet.getBalance().compareTo(amount);
+
+                if(comparisonResult >= 0){
+                    appUserWallet.setBalance(appUserWallet.getBalance().subtract(amount));
+                    contactToTransferToWallet.setBalance(contactToTransferToWallet.getBalance().add(amount));
+
+                    walletRepository.save(appUserWallet);
+                    walletRepository.save(contactToTransferToWallet);
+                }else {
+                    throw new InsufficientFundsException("Insufficient funds for the transfer.");
+                }
+
+            }
+
+        }
     }
 
 }

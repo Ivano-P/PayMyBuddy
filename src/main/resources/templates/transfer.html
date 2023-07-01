@@ -34,8 +34,21 @@
         Home / Transfer
     </nav>
 </section>
-<section id="balance-for-transfer">
+
+<section id="transfer-setup">
     <div class="field">Balance: <span th:text ="${currentUser.wallet.balance}"></span></div>
+    <div id="contact_list">
+        <h1>Select Contact For transfer</h1>
+        <form th:action="@{/transfer}" method="post">
+            <label for="contactSelect">Choose a contact:</label>
+            <select id="contactSelect" name="contactId">
+                <option th:each="contact : ${contacts}" th:value="${contact.id}" th:text="${contact.firstName + ' ' + contact.lastName + ' (' + contact.email + ')'}"></option>
+            </select>
+            <label for="balance">Add amount :</label>
+            <input type="text" name="amount" id="balance" placeholder="0">
+            <button type="submit">Transfer</button>
+        </form>
+    </div>
 </section>
 
 </body>

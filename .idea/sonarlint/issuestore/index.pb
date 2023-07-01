@@ -7,11 +7,7 @@ n
 >src/main/java/com/paymybuddy/paymybuddy/model/Transaction.java,1\0\104adac564eb848a56b7c1e75681244cd09fca38
 n
 >src/main/java/com/paymybuddy/paymybuddy/model/BankAccount.java,7\4\74bd66b83914725a4366fa3e8bb8c3d2777b617d
-i
-9src/main/java/com/paymybuddy/paymybuddy/model/Wallet.java,6\8\68dd9c7918769c5d989663ab986fd7014a5e5538
 t
 Dsrc/main/java/com/paymybuddy/paymybuddy/model/AccountPayMyBuddy.java,d\c\dc7345b86fa9f1c30cf2103489b6f6f0c02c87bf
 7
 pom.xml,4\4\442292b8a7efeabbe4cc176709b833b1792140ec
-y
-Isrc/main/java/com/paymybuddy/paymybuddy/repository/AppUserRepository.java,0\d\0d78c4576fdef2d0996671810f7c09c533e4180c
