@@ -6,16 +6,16 @@ import lombok.Data;
 import java.io.Serializable;
 
 @Entity
-@Table(name = "app-user_contact")
+@Table(name = "app_user_contact")
 @Data
 public class AppUserContact {
 
     @EmbeddedId
-    private appUserContactId id;
+    private AppUserContactId id;
 
     @ManyToOne
-    @MapsId("app-user_id")
-    @JoinColumn(name = "app-user_id")
+    @MapsId("appUserId")
+    @JoinColumn(name = "app_user_id")
     private AppUser appUser;
 
     @ManyToOne
@@ -25,7 +25,7 @@ public class AppUserContact {
 
     @Data
     @Embeddable
-    public static class appUserContactId implements Serializable {
+    public static class AppUserContactId implements Serializable {
         private int appUserId;
         private int contactId;
     }

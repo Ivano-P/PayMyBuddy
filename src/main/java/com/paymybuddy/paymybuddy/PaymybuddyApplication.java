@@ -1,6 +1,6 @@
 package com.paymybuddy.paymybuddy;
 
-import com.paymybuddy.paymybuddy.service.UserService;
+import com.paymybuddy.paymybuddy.service.AppUserService;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ConfigurableApplicationContext;
@@ -15,8 +15,8 @@ public class PaymybuddyApplication {
 
 	public static void main(String[] args) {
 		ConfigurableApplicationContext context = SpringApplication.run(PaymybuddyApplication.class, args);
-		UserService userService = context.getBean(UserService.class);
-		userService.creatAdminAppUser();
+		AppUserService appUserService = context.getBean(AppUserService.class);
+		appUserService.creatAdminAppUser();
 	}
 
 	@Bean()

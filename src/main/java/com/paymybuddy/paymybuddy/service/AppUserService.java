@@ -1,8 +1,10 @@
 package com.paymybuddy.paymybuddy.service;
 
 import com.paymybuddy.paymybuddy.model.AppUser;
+import com.paymybuddy.paymybuddy.model.AppUserContact;
 import com.paymybuddy.paymybuddy.model.Wallet;
-import com.paymybuddy.paymybuddy.repository.UserRepository;
+import com.paymybuddy.paymybuddy.repository.AppUserContactRepository;
+import com.paymybuddy.paymybuddy.repository.AppUserRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -15,9 +17,10 @@ import java.util.Optional;
 
 @Service
 @AllArgsConstructor(onConstructor = @__(@Autowired))
-public class UserService {
+public class AppUserService {
 
-    private final UserRepository userRepository;
+    private final AppUserRepository appUserRepository;
+    private  final AppUserContactRepository appUserContactRepository;
     private final PasswordEncoder passwordEncoder;
 
     @Transactional
@@ -41,43 +44,64 @@ public class UserService {
         wallet.setAppUser(appUser);
 
         //cascade setting saves the wallet as well
-        return userRepository.save(appUser);
+        return appUserRepository.save(appUser);
     }
 
 
     @Transactional(readOnly = true)
     public List<AppUser> getAllAppUsers() {
-        return userRepository.findAll();
+        return appUserRepository.findAll();
     }
 
     @Transactional(readOnly = true)
     public Optional<AppUser> getAppUserById(int id) {
-        return userRepository.findById(id);
+        return appUserRepository.findById(id);
     }
 
     @Transactional(readOnly = true)
     public Optional<AppUser> getAppUserByEmail(String email) {
-        return userRepository.findByEmail(email);
+        return appUserRepository.findByEmail(email);
     }
 
     @Transactional
     public AppUser updateAppUser(AppUser appUser) {
-        return userRepository.save(appUser);
+        return appUserRepository.save(appUser);
     }
 
     @Transactional
     public void deleteAppUser(int id) {
-        userRepository.deleteById(id);
+        appUserRepository.deleteById(id);
     }
 
+    public void addContact(String userEmail, String contactEmail) {
+        Optional<AppUser> userOptional = appUserRepository.findByEmail(userEmail);
+        Optional<AppUser> newContactOptional = appUserRepository.findByEmail(contactEmail);
 
+        if (userOptional.isPresent() && newContactOptional.isPresent()) {
+            AppUser user = userOptional.get();
+            AppUser newContact = newContactOptional.get();
+
+            AppUserContact.AppUserContactId id = new AppUserContact.AppUserContactId();
+            id.setAppUserId(user.getId());
+            id.setContactId(newContact.getId());
+
+            AppUserContact appUserContact = new AppUserContact();
+            appUserContact.setId(id);
+            appUserContact.setAppUser(user);
+            appUserContact.setContact(newContact);
+
+             appUserContactRepository.save(appUserContact);
+
+        } //TODO: add Exeption for if contact is not found
+
+    }
 
     //creat admin user for test, this  is called on startup
     @Transactional
     public AppUser creatAdminAppUser(){
 
         //check if first user (ADMIN) is created, if not in db creat it
-        Optional<AppUser> userCheck = userRepository.findById(1);
+        Optional<AppUser> userCheck = appUserRepository.findById(1);
         if(userCheck.isPresent()){
             return null;
 
@@ -105,7 +129,7 @@ public class UserService {
             wallet.setAppUser(adminAppUser);
 
             //cascade setting saves the porteMonnaie as well
-            return userRepository.save(adminAppUser);
+            return appUserRepository.save(adminAppUser);
         }
 
 

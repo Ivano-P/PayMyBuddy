@@ -1,7 +1,7 @@
 package com.paymybuddy.paymybuddy.controller;
 
 import com.paymybuddy.paymybuddy.model.AppUser;
-import com.paymybuddy.paymybuddy.service.UserService;
+import com.paymybuddy.paymybuddy.service.AppUserService;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -9,6 +9,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.security.Principal;
 import java.util.Optional;
@@ -17,7 +18,7 @@ import java.util.Optional;
 @AllArgsConstructor(onConstructor = @__(@Autowired))
 public class UserController {
 
-    private final UserService userService;
+    private final AppUserService appUserService;
 
     //go to registration page
     @GetMapping("/register")
@@ -28,7 +29,7 @@ public class UserController {
 
     @GetMapping("/home")
     public String goToHomePage(Model model, Principal principal) {
-        Optional<AppUser> currentUSer = userService.getAppUserByEmail(principal.getName());
+        Optional<AppUser> currentUSer = appUserService.getAppUserByEmail(principal.getName());
 
         currentUSer.ifPresent(appUser -> model.addAttribute("currentUser", appUser));
         return "home";
@@ -36,7 +37,7 @@ public class UserController {
 
     @GetMapping("/transfer")
     public String goToTransferPage(Model model, Principal principal) {
-        Optional<AppUser> currentUSer = userService.getAppUserByEmail(principal.getName());
+        Optional<AppUser> currentUSer = appUserService.getAppUserByEmail(principal.getName());
 
         currentUSer.ifPresent(appUser -> model.addAttribute("currentUser", appUser));
         return "transfer";
@@ -44,20 +45,37 @@ public class UserController {
 
     @GetMapping("/profile")
     public String goToProfilePage(Model model, Principal principal) {
-        Optional<AppUser> currentUSer = userService.getAppUserByEmail(principal.getName());
+        Optional<AppUser> currentUSer = appUserService.getAppUserByEmail(principal.getName());
 
         currentUSer.ifPresent(appUser -> model.addAttribute("currentUser", appUser));
         return "profile";
     }
 
+    //TODO:add list of contact to this page.
+    @GetMapping("/contact")
+    public String goToContactPage(Model model, Principal principal){
+
+        Optional<AppUser> currentUser = appUserService.getAppUserByEmail(principal.getName());
+
+        currentUser.ifPresent(appUser -> model.addAttribute("currentUser", appUser));
+        return "contact";
+    }
+
     @PostMapping("/register")
     public String registerAppUser(@ModelAttribute AppUser appUser){
 
-        if (userService.createAppUserAndWallet(appUser) != null) {
+        if (appUserService.createAppUserAndWallet(appUser) != null) {
             return "registrationSuccessful";
         } else {
             return "registrationFailure";
         }
+    }
+
+    @PostMapping("/addContact")
+    public String addContact(Principal principal, @RequestParam("contactEmail") String contactEmail) {
+        String userEmail = principal.getName(); // get the email of the currently logged in user
+        appUserService.addContact(userEmail, contactEmail);
+        return "redirect:/contact"; // to same page
     }
 
 }
