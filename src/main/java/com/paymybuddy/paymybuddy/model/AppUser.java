@@ -19,6 +19,7 @@ public class AppUser {
     @Column(name = "first_name")
     private String firstName;
 
+
     @Column(name = "username", nullable = false, unique = true)
     private String username;
 
