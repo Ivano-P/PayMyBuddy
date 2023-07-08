@@ -17,8 +17,8 @@ public class Wallet {
     @Column(name = "balance")
     private BigDecimal balance;
 
-    @Column(name = "email_user", nullable = false)
-    private String userEmail;
+    @Column(name = "username", nullable = false, unique = true)
+    private String username;
 
     @OneToOne(fetch = FetchType.LAZY)
     @MapsId

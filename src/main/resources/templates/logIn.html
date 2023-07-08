@@ -49,8 +49,8 @@
 <div class="container">
     <form th:action="@{/logIn}" method="post">
         <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
-        <label for="username"><b>Email</b></label>
-        <input type="text" id="username" placeholder="Enter Email" name="username" required>
+        <label for="username"><b>Username</b></label>
+        <input type="text" id="username" placeholder="User Name" name="username" required>
 
         <label for="password"><b>Password</b></label>
         <input type="password" id="password" placeholder="Enter Password" name="password" required>
@@ -58,6 +58,8 @@
         <div class="button-container">
             <button type="submit">Se connecter</button>
         </div>
+        <p>or</p>
+        <a id="github_login_link" href="/oauth2/authorization/github">Login with git hub</a>
     </form>
 </div>
 </body>

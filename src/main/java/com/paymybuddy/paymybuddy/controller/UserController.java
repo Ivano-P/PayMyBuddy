@@ -31,7 +31,7 @@ public class UserController {
 
     @GetMapping("/home")
     public String goToHomePage(Model model, Principal principal) {
-        Optional<AppUser> currentUSer = appUserService.getAppUserByEmail(principal.getName());
+        Optional<AppUser> currentUSer = appUserService.getAppUserByUsername(principal.getName());
 
         currentUSer.ifPresent(appUser -> model.addAttribute("currentUser", appUser));
         return "home";
@@ -39,7 +39,7 @@ public class UserController {
 
     @GetMapping("/transfer")
     public String goToTransferPage(Model model, Principal principal) {
-        Optional<AppUser> currentUSer = appUserService.getAppUserByEmail(principal.getName());
+        Optional<AppUser> currentUSer = appUserService.getAppUserByUsername(principal.getName());
 
         currentUSer.ifPresent(appUser -> {
             model.addAttribute("currentUser", appUser);
@@ -53,7 +53,7 @@ public class UserController {
 
     @GetMapping("/profile")
     public String goToProfilePage(Model model, Principal principal) {
-        Optional<AppUser> currentUSer = appUserService.getAppUserByEmail(principal.getName());
+        Optional<AppUser> currentUSer = appUserService.getAppUserByUsername(principal.getName());
 
         currentUSer.ifPresent(appUser -> model.addAttribute("currentUser", appUser));
         return "profile";
@@ -63,7 +63,7 @@ public class UserController {
     @GetMapping("/contact")
     public String goToContactPage(Model model, Principal principal){
 
-        Optional<AppUser> currentUser = appUserService.getAppUserByEmail(principal.getName());
+        Optional<AppUser> currentUser = appUserService.getAppUserByUsername(principal.getName());
 
         currentUser.ifPresent(appUser -> {
             model.addAttribute("currentUser", appUser);
@@ -85,9 +85,18 @@ public class UserController {
         }
     }
 
+    /*
     @PostMapping("/addContact")
     public String addContact(Principal principal, @RequestParam("contactEmail") String contactEmail) {
         appUserService.addContact(principal.getName(), contactEmail);
+        return "redirect:/contact"; // redirect to same page
+    }
+
+     */
+
+    @PostMapping("/addContact")
+    public String addContact(Principal principal, @RequestParam("contactUsername") String contactUsername) {
+        appUserService.addContact(principal.getName(), contactUsername);
         return "redirect:/contact"; // redirect to same page
     }
 

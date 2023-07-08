@@ -25,7 +25,7 @@
         <li><a th:href="@{/contact}">Contact</a></li>
         <li><a th:href="@{/profile}">Profile</a></li>
         <li><a th:href="@{/transfer}">Transfer</a></li>
-        <li><a th:href="@{/myAccount}">Home</a></li>
+        <li><a th:href="@{/home}">Home</a></li>
     </ul>
   </div>
 </section>
@@ -35,6 +35,7 @@
   </nav>
 </section>
 <section id="profile-info">
+    <div class="field">User name: <span th:text ="${currentUser.username}"></span></div>
   <div class="field">First name: <span th:text ="${currentUser.firstName}"></span></div>
   <div class="field">Last name: <span th:text ="${currentUser.lastName}"></span></div>
   <div class="field">Email: <span th:text ="${currentUser.email}"></span></div>

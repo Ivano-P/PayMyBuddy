@@ -1,9 +1,11 @@
 package com.paymybuddy.paymybuddy.service;
 
 import com.paymybuddy.paymybuddy.exceptions.InsufficientFundsException;
+import com.paymybuddy.paymybuddy.model.AccountPayMyBuddy;
 import com.paymybuddy.paymybuddy.model.AppUser;
 import com.paymybuddy.paymybuddy.model.AppUserContact;
 import com.paymybuddy.paymybuddy.model.Wallet;
+import com.paymybuddy.paymybuddy.repository.AccountPayMyBuddyRepository;
 import com.paymybuddy.paymybuddy.repository.AppUserContactRepository;
 import com.paymybuddy.paymybuddy.repository.AppUserRepository;
 import com.paymybuddy.paymybuddy.repository.WalletRepository;
@@ -26,38 +28,40 @@ public class AppUserService {
     private  final AppUserContactRepository appUserContactRepository;
     private  final WalletRepository walletRepository;
     private final PasswordEncoder passwordEncoder;
+    private final AccountPayMyBuddyRepository accountPayMyBuddyRepository;
+
+
 
     //creat admin user for test, this  is called on startup
     @Transactional
     public AppUser creatAdminAppUser(){
 
         //check if first user (ADMIN) is created, if not in db creat it
-        Optional<AppUser> userCheck = appUserRepository.findById(1);
-        if(userCheck.isPresent()){
+        Optional<AppUser> AppUserCheck = appUserRepository.findById(1);
+        if(AppUserCheck.isPresent()){
             return null;
 
         }else {
             AppUser adminAppUser = new AppUser();
-            adminAppUser.setLastName("petty");
-            adminAppUser.setFirstName("ivano");
+            adminAppUser.setLastName("mister");
+            adminAppUser.setFirstName("tester");
+            adminAppUser.setUsername("mainadmin");
             adminAppUser.setEmail("mistertester@testmail.com");
-            adminAppUser.setRole("ADMIN");
+            adminAppUser.setRole(AppUser.Role.ADMIN);
             adminAppUser.setPassword(passwordEncoder.encode("Testpassword123*"));
 
+            //creatAndLinkWallet(adminAppUser);
             // Create new wallet
             Wallet wallet = new Wallet();
-            wallet.setBalance(BigDecimal.valueOf(10000.00));
-            wallet.setUserEmail(adminAppUser.getEmail());
-
+            wallet.setBalance(BigDecimal.valueOf(1000000));
+            wallet.setUsername(adminAppUser.getUsername());
             //Associate the wallet  with user
             adminAppUser.setWallet(wallet);
-
             //Associate the wallet  with user
             adminAppUser.setWallet(wallet);
-
-
             //Set the PorteMonnaie's utilisateur
             wallet.setAppUser(adminAppUser);
+
 
             //cascade setting saves the porteMonnaie as well
             return appUserRepository.save(adminAppUser);
@@ -69,23 +73,25 @@ public class AppUserService {
 
         //Encode the password
         appUser.setPassword(passwordEncoder.encode(appUser.getPassword()));
+        //appUser.setRole(AppUser.Role.USER);
 
-        // Create new wallet
-        Wallet wallet = new Wallet();
-        wallet.setBalance(BigDecimal.ZERO);
-        wallet.setUserEmail(appUser.getEmail());
-
-        //Associate the wallet  with user
-        appUser.setWallet(wallet);
-
-        // Set the default role of the user
-        appUser.setRole("USER");
-
-        //Set the Wallets user
-        wallet.setAppUser(appUser);
+        creatAndLinkWallet(appUser);
 
         //cascade setting saves the wallet as well
         return appUserRepository.save(appUser);
+    }
+
+    protected void creatAndLinkWallet(AppUser appUser){
+        // Create new wallet
+        Wallet wallet = new Wallet();
+        wallet.setBalance(BigDecimal.ZERO);
+        wallet.setUsername(appUser.getUsername());
+        //Associate the wallet  with user
+        appUser.setWallet(wallet);
+        //Associate the wallet  with user
+        appUser.setWallet(wallet);
+        //Set the PorteMonnaie's utilisateur
+        wallet.setAppUser(appUser);
     }
 
     @Transactional(readOnly = true)
@@ -103,6 +109,11 @@ public class AppUserService {
         return appUserRepository.findByEmail(email);
     }
 
+    @Transactional(readOnly = true)
+    public Optional<AppUser> getAppUserByUsername(String username) {
+        return appUserRepository.findByUsername(username);
+    }
+
     @Transactional
     public AppUser updateAppUser(AppUser appUser) {
         return appUserRepository.save(appUser);
@@ -113,9 +124,9 @@ public class AppUserService {
         appUserRepository.deleteById(id);
     }
 
-    public void addContact(String userEmail, String contactEmail) {
-        Optional<AppUser> userOptional = appUserRepository.findByEmail(userEmail);
-        Optional<AppUser> newContactOptional = appUserRepository.findByEmail(contactEmail);
+    public void addContact(String userUsername, String contactUsername) {
+        Optional<AppUser> userOptional = appUserRepository.findByUsername(userUsername);
+        Optional<AppUser> newContactOptional = appUserRepository.findByUsername(contactUsername);
 
         if (userOptional.isPresent() && newContactOptional.isPresent()) {
             AppUser user = userOptional.get();
@@ -149,8 +160,8 @@ public class AppUserService {
         return contacts;
     }
 
-    public void removeContact(String appUserEmail, Integer contactId){
-        Optional<AppUser> appUser = appUserRepository.findByEmail(appUserEmail);
+    public void removeContact(String appUserUsername, Integer contactId){
+        Optional<AppUser> appUser = appUserRepository.findByUsername(appUserUsername);
         Optional<AppUser> contactToRemove = appUserRepository.findById(contactId);
 
         //check if there is a row in AppUserContact with this AppUserid and contactId, if so remove it
@@ -167,30 +178,38 @@ public class AppUserService {
     }
 
     @Transactional
-    public void transferFunds (String appUserEmail, Integer contactId, BigDecimal amount){
-        Optional<AppUser> appUserOptional = appUserRepository.findByEmail(appUserEmail);
+    public void transferFunds (String appUserUsername, Integer contactId, BigDecimal amount){
+        Optional<AppUser> appUserOptional = appUserRepository.findByUsername(appUserUsername);
         Optional<AppUser> contactOptional = appUserRepository.findById(contactId);
 
         if(appUserOptional.isPresent() && contactOptional.isPresent()) {
             AppUser appUser = appUserOptional.get();
             AppUser contactToTransferTo = contactOptional.get();
 
-
             Optional<Wallet> appUserWalletOptional = walletRepository.findById(appUser.getId());
             Optional<Wallet> contactWalletOptional = walletRepository.findById(contactToTransferTo.getId());
+            Optional<AccountPayMyBuddy> pmbAccountOptional = accountPayMyBuddyRepository.findById(1);
 
-            if(appUserWalletOptional.isPresent() && contactWalletOptional.isPresent()){
+            if(appUserWalletOptional.isPresent() && contactWalletOptional.isPresent() && pmbAccountOptional.isPresent()){
                 Wallet appUserWallet = appUserWalletOptional.get();
                 Wallet contactToTransferToWallet = contactWalletOptional.get();
+                AccountPayMyBuddy pmbAccount = pmbAccountOptional.get();
 
-                int comparisonResult = appUserWallet.getBalance().compareTo(amount);
+                //calculate transaction fee
+                BigDecimal transactionFee = amount.multiply(BigDecimal.valueOf(0.005));
+                BigDecimal finalTransactionAmount = amount.add(transactionFee);
 
+                //check if sender balance is bigger or equal to amount plus transaction fee
+                int comparisonResult = appUserWallet.getBalance().compareTo(finalTransactionAmount);
                 if(comparisonResult >= 0){
-                    appUserWallet.setBalance(appUserWallet.getBalance().subtract(amount));
+
+                    appUserWallet.setBalance(appUserWallet.getBalance().subtract(finalTransactionAmount));
                     contactToTransferToWallet.setBalance(contactToTransferToWallet.getBalance().add(amount));
+                    pmbAccount.setBalance(pmbAccount.getBalance().add(transactionFee));
 
                     walletRepository.save(appUserWallet);
                     walletRepository.save(contactToTransferToWallet);
+                    accountPayMyBuddyRepository.save(pmbAccount);
                 }else {
                     throw new InsufficientFundsException("Insufficient funds for the transfer.");
                 }

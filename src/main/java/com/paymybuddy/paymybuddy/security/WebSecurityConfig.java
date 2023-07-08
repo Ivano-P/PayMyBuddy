@@ -1,6 +1,7 @@
 package com.paymybuddy.paymybuddy.security;
 
 import com.paymybuddy.paymybuddy.service.CustomUserDetailsService;
+import com.paymybuddy.paymybuddy.service.OAuth2LoginSuccessHandler;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -18,6 +19,7 @@ public class WebSecurityConfig {
 
     private final PasswordEncoder passwordEncoder;
     private final CustomUserDetailsService customUserDetailsService;
+    private final OAuth2LoginSuccessHandler oAuth2LoginSuccessHandler;
 
 
     @Bean
@@ -39,6 +41,9 @@ public class WebSecurityConfig {
                 .logoutSuccessUrl("/")
                 .invalidateHttpSession(true)
                 .deleteCookies("JSESSIONID");
+
+        httpSecurity.oauth2Login()
+                .successHandler(oAuth2LoginSuccessHandler);
 
         //to check user in db for login
         httpSecurity.userDetailsService(customUserDetailsService);

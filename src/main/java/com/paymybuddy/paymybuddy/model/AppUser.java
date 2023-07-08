@@ -13,20 +13,24 @@ public class AppUser {
     @Column(name = "id")
     private int id;
 
-    @Column(name = "last_name", nullable = false)
+    @Column(name = "last_name")
     private String lastName;
 
-    @Column(name = "first_name", nullable = false)
+    @Column(name = "first_name")
     private String firstName;
 
-    @Column(name = "email", nullable = false, unique = true)
+    @Column(name = "username", nullable = false, unique = true)
+    private String username;
+
+    @Column(name = "email", unique = true)
     private String email;
 
-    @Column(name = "password", nullable = false)
+    @Column(name = "password")
     private String password;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "role", nullable = false)
-    private String role;
+    private Role role = Role.USER;
 
     @OneToOne(mappedBy = "appUser", orphanRemoval = true, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Wallet wallet;
@@ -34,4 +38,10 @@ public class AppUser {
     @OneToOne(orphanRemoval = true)
     @JoinColumn(name = "bank_account_id", referencedColumnName = "id")
     private BankAccount bankAccount;
+
+    public enum Role {
+        USER,
+        ADMIN
+    }
+
 }
