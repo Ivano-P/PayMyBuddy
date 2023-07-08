@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+<section id="navbar" th:fragment="navbar">
+  <div id="home-button-div">
+    <ul>
+      <li id="home-li"><a id="home-button" href="/">Pay My Buddy</a></li>
+    </ul>
+  </div>
+
+  <div class = navbar-pages>
+    <ul>
+      <li>
+        <form th:action="@{/logout}" method="post" >
+          <button type="submit">Log off</button>
+        </form>
+      </li>
+      <li><a th:href="@{/contact}">Contact</a></li>
+      <li><a th:href="@{/profile}">Profile</a></li>
+      <li><a th:href="@{/transfer}">Transfer</a></li>
+      <li><a th:href="@{/home}">Home</a></li>
+    </ul>
+  </div>
+</section>
+</body>
+</html>

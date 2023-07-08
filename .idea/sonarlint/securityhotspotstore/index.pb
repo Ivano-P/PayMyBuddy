@@ -11,5 +11,3 @@ q
 Asrc/main/java/com/paymybuddy/paymybuddy/model/AppUserContact.java,8\c\8c0f8d5af4d724c8d503f249b24a2bfdbc02739f
 7
 pom.xml,4\4\442292b8a7efeabbe4cc176709b833b1792140ec
-t
-Dsrc/main/java/com/paymybuddy/paymybuddy/model/AccountPayMyBuddy.java,d\c\dc7345b86fa9f1c30cf2103489b6f6f0c02c87bf

@@ -196,7 +196,7 @@ public class AppUserService {
                 AccountPayMyBuddy pmbAccount = pmbAccountOptional.get();
 
                 //calculate transaction fee
-                BigDecimal transactionFee = amount.multiply(BigDecimal.valueOf(0.005));
+                BigDecimal transactionFee = amount.multiply(BigDecimal.valueOf(pmbAccount.getTransactionFee()));
                 BigDecimal finalTransactionAmount = amount.add(transactionFee);
 
                 //check if sender balance is bigger or equal to amount plus transaction fee

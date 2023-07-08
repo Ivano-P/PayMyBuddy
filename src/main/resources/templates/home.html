@@ -8,27 +8,8 @@
     <title>home</title>
 </head>
 <body>
-<section id="navbar">
-    <div id="home-button-div">
-        <ul>
-            <li id="home-li"><a id="home-button" href="/">Pay My Buddy</a></li>
-        </ul>
-    </div>
+<section th:insert="fragments :: navbar"></section>
 
-    <div class = navbar-pages>
-        <ul>
-            <li>
-                <form th:action="@{/logout}" method="post" >
-                    <button type="submit">Log off</button>
-                </form>
-            </li>
-            <li><a th:href="@{/contact}">Contact</a></li>
-            <li><a th:href="@{/profile}">Profile</a></li>
-            <li><a th:href="@{/transfer}">Transfer</a></li>
-            <li><a th:href="@{/home}">Home</a></li>
-        </ul>
-    </div>
-</section>
 <section id="path-bar">
     <nav>
         Home

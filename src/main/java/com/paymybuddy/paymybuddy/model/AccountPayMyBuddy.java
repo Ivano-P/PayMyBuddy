@@ -17,5 +17,8 @@ public class AccountPayMyBuddy {
 
     @Column(name = "balance", nullable = false)
     private BigDecimal balance;
+
+    @Column(name = "transaction_fee")
+    private double transactionFee = 0.005;
 }
 
