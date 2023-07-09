@@ -17,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -128,7 +129,9 @@ public class AppUserService {
         Optional<AppUser> userOptional = appUserRepository.findByUsername(userUsername);
         Optional<AppUser> newContactOptional = appUserRepository.findByUsername(contactUsername);
 
-        if (userOptional.isPresent() && newContactOptional.isPresent()) {
+        if(newContactOptional.isEmpty()){
+            throw new NoSuchElementException();
+        }else if (userOptional.isPresent()) {
             AppUser user = userOptional.get();
             AppUser newContact = newContactOptional.get();
 

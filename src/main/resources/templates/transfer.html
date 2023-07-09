@@ -17,6 +17,7 @@
 </section>
 
 <section id="transfer-setup">
+    <div th:insert="fragments :: errorPanel"></div> <!-- hidden div to display error message-->
     <div class="field">Balance: <span th:text ="${currentUser.wallet.balance}"></span></div>
     <div id="contact_list">
         <h1>Select Contact For transfer</h1>
