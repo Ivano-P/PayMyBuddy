@@ -22,5 +22,10 @@
     </ul>
   </div>
 </section>
+
+<div  th:if="${errorMsg}" th:fragment="errorPanel" class="error-message" role="alert">
+  <p th:text="${errorMsg}"></p>
+</div>
+
 </body>
 </html>
