@@ -1,15 +1,13 @@
 package com.paymybuddy.paymybuddy.service;
 
 import com.paymybuddy.paymybuddy.exceptions.InsufficientFundsException;
-import com.paymybuddy.paymybuddy.model.AccountPayMyBuddy;
-import com.paymybuddy.paymybuddy.model.AppUser;
-import com.paymybuddy.paymybuddy.model.AppUserContact;
-import com.paymybuddy.paymybuddy.model.Wallet;
+import com.paymybuddy.paymybuddy.model.*;
 import com.paymybuddy.paymybuddy.repository.AccountPayMyBuddyRepository;
 import com.paymybuddy.paymybuddy.repository.AppUserContactRepository;
 import com.paymybuddy.paymybuddy.repository.AppUserRepository;
 import com.paymybuddy.paymybuddy.repository.WalletRepository;
 import lombok.AllArgsConstructor;
+import lombok.Value;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -29,6 +27,7 @@ public class AppUserService {
     private  final WalletRepository walletRepository;
     private final PasswordEncoder passwordEncoder;
     private final AccountPayMyBuddyRepository accountPayMyBuddyRepository;
+    private final AppPmbService appPmbService;
 
 
 
@@ -44,7 +43,7 @@ public class AppUserService {
         }else {
             AppUser adminAppUser = new AppUser();
             adminAppUser.setLastName("mister");
-            adminAppUser.setFirstName("tester");
+             adminAppUser.setFirstName("tester");
             adminAppUser.setUsername("mainadmin");
             adminAppUser.setEmail("mistertester@testmail.com");
             adminAppUser.setRole(AppUser.Role.ADMIN);
@@ -178,7 +177,7 @@ public class AppUserService {
     }
 
     @Transactional
-    public void transferFunds (String appUserUsername, Integer contactId, BigDecimal amount){
+    public void transferFunds (String appUserUsername, Integer contactId, BigDecimal amount, String description){
         Optional<AppUser> appUserOptional = appUserRepository.findByUsername(appUserUsername);
         Optional<AppUser> contactOptional = appUserRepository.findById(contactId);
 
@@ -190,9 +189,10 @@ public class AppUserService {
             Optional<Wallet> contactWalletOptional = walletRepository.findById(contactToTransferTo.getId());
             Optional<AccountPayMyBuddy> pmbAccountOptional = accountPayMyBuddyRepository.findById(1);
 
-            if(appUserWalletOptional.isPresent() && contactWalletOptional.isPresent() && pmbAccountOptional.isPresent()){
+            if(appUserWalletOptional.isPresent() && contactWalletOptional.isPresent() && pmbAccountOptional
+                    .isPresent()){
                 Wallet appUserWallet = appUserWalletOptional.get();
-                Wallet contactToTransferToWallet = contactWalletOptional.get();
+                Wallet recepientAppUserWallet = contactWalletOptional.get();
                 AccountPayMyBuddy pmbAccount = pmbAccountOptional.get();
 
                 //calculate transaction fee
@@ -204,20 +204,42 @@ public class AppUserService {
                 if(comparisonResult >= 0){
 
                     appUserWallet.setBalance(appUserWallet.getBalance().subtract(finalTransactionAmount));
-                    contactToTransferToWallet.setBalance(contactToTransferToWallet.getBalance().add(amount));
+                    recepientAppUserWallet.setBalance(recepientAppUserWallet.getBalance().add(amount));
                     pmbAccount.setBalance(pmbAccount.getBalance().add(transactionFee));
 
                     walletRepository.save(appUserWallet);
-                    walletRepository.save(contactToTransferToWallet);
+                    walletRepository.save(recepientAppUserWallet);
                     accountPayMyBuddyRepository.save(pmbAccount);
+
+                    if(description.isEmpty()){
+                        appPmbService.persistTransaction(appUserWallet.getId(), recepientAppUserWallet.getId(),
+                                amount, transactionFee, Transaction.TransactionType.send, Optional.empty());
+                    }else{
+                        appPmbService.persistTransaction(appUserWallet.getId(), recepientAppUserWallet.getId(),
+                                amount, transactionFee, Transaction.TransactionType.send, description
+                                        .describeConstable());
+                    }
+
+
                 }else {
                     throw new InsufficientFundsException("Insufficient funds for the transfer.");
                 }
+                /*
+                int senderId, int recepientId,
+                                          BigDecimal amout, BigDecimal transactionFee,
+                                          Transaction.TransactionType transactionType,
+                                          Optional<String> description
+                 */
 
             }
 
         }
     }
 
+    public void transactionHistory(int appUserId){
+
+
+
+    }
 }
 

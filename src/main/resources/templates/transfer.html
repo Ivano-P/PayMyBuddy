@@ -19,18 +19,28 @@
 <section id="transfer-setup">
     <div class="field">Balance: <span th:text ="${currentUser.wallet.balance}"></span></div>
     <div id="contact_list">
-        <h1>Select Contact For transfer</h1>
+        <h2>Select Contact For transfer</h2>
         <form th:action="@{/transfer}" method="post">
-            <label for="contactSelect">Choose a contact:</label>
+            <label for="contactSelect">Select a contact:</label>
             <select id="contactSelect" name="contactId">
                 <option th:each="contact : ${contacts}" th:value="${contact.id}"
                         th:text="${contact.firstName + ' ' + contact.lastName + ' (' + contact.username + ')'}"></option>
             </select>
+
+            <label for="description">enter a short description</label>
+            <input type="text" name="description" id="description"
+                   placeholder="transaction description">
+
             <label for="balance">Add amount :</label>
             <input type="text" name="amount" id="balance" placeholder="0">
             <button type="submit">Transfer</button>
         </form>
     </div>
+</section>
+
+<section id="transaction_history">
+    <h2>Transaction history</h2>
+
 </section>
 
 </body>

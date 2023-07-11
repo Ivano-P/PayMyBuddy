@@ -109,8 +109,9 @@ public class UserController {
     @PostMapping("/transfer")
     public String transferFunds(Principal principal,
                                 @RequestParam("contactId") Integer contactId,
-                                @RequestParam("amount") BigDecimal amount) {
-        appUserService.transferFunds(principal.getName(), contactId, amount);
+                                @RequestParam("amount") BigDecimal amount,
+                                @RequestParam(value = "description", required = false) String description) {
+        appUserService.transferFunds(principal.getName(), contactId, amount, description);
         return "redirect:/transfer"; // redirect back to the transfer page
     }
 }
