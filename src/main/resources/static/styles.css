@@ -18,16 +18,20 @@ body {
     display: block;
     padding: 14px 16px;
     text-decoration: none;
+}
+
+#navbar li {
     color: black;
+}
+
+#navbar li.active {
+    color: blue;
 }
 
 #home-button-div {
     float: left;
 }
 
-#navbar li a.active {
-    color: blue;
-}
 
 #home-button {
     background-color: rgb(138, 195, 73);
@@ -35,13 +39,17 @@ body {
     color: white;
 }
 
-#path-bar {
+#path-bar, #welcome-msg {
     background-color: rgb(245, 245, 245);
     padding: 10px;
 }
 
-#profile-info, #transfer-setup {
-    width: 50%;
+#welcome-msg {
+    margin: auto;
+}
+
+#profile-info, #transfer-setup, #transaction_history {
+    width: 75%;
     margin: auto;
     padding: 10px;
 }
@@ -64,7 +72,6 @@ body {
 
 .field {
     background-color: rgb(245, 245, 245);
-    margin: 10px;
     padding: 10px;
 }
 
@@ -73,10 +80,37 @@ body {
     margin: auto;
 }
 
+
 #submit-btn {
     background-color: rgb(92, 185, 92);
     color: white;
     padding: 10px 24px;
     border: none;
     cursor: pointer;
+}
+
+
+
+#transaction_history {
+    width: 75%;
+    margin: 0 auto;
+}
+
+#transaction_history table {
+    width: 100%;
+    margin-top: 20px;
+    border-collapse: collapse;
+}
+
+#transaction_history table th, #transaction_history table td {
+    border: 1px solid #ddd;
+    padding: 8px;
+}
+
+#transaction_history table th {
+    padding-top: 12px;
+    padding-bottom: 12px;
+    text-align: left;
+    background-color: #4CAF50;
+    color: white;
 }

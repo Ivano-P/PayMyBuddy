@@ -1,23 +1,23 @@
 package com.paymybuddy.paymybuddy.service;
 
+import com.paymybuddy.paymybuddy.dto.TransactionForAppUserHistory;
 import com.paymybuddy.paymybuddy.exceptions.InsufficientFundsException;
 import com.paymybuddy.paymybuddy.model.*;
-import com.paymybuddy.paymybuddy.repository.AccountPayMyBuddyRepository;
-import com.paymybuddy.paymybuddy.repository.AppUserContactRepository;
-import com.paymybuddy.paymybuddy.repository.AppUserRepository;
-import com.paymybuddy.paymybuddy.repository.WalletRepository;
+import com.paymybuddy.paymybuddy.repository.*;
 import lombok.AllArgsConstructor;
-import lombok.Value;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+@Log4j2
 @Service
 @AllArgsConstructor(onConstructor = @__(@Autowired))
 public class AppUserService {
@@ -28,6 +28,7 @@ public class AppUserService {
     private final PasswordEncoder passwordEncoder;
     private final AccountPayMyBuddyRepository accountPayMyBuddyRepository;
     private final AppPmbService appPmbService;
+    private final TransactionRepository transactionRepository;
 
 
 
@@ -49,26 +50,31 @@ public class AppUserService {
             adminAppUser.setRole(AppUser.Role.ADMIN);
             adminAppUser.setPassword(passwordEncoder.encode("Testpassword123*"));
 
-            //creatAndLinkWallet(adminAppUser);
-            // Create new wallet
-            Wallet wallet = new Wallet();
-            wallet.setBalance(BigDecimal.valueOf(1000000));
-            wallet.setUsername(adminAppUser.getUsername());
-            //Associate the wallet  with user
-            adminAppUser.setWallet(wallet);
-            //Associate the wallet  with user
-            adminAppUser.setWallet(wallet);
-            //Set the PorteMonnaie's utilisateur
-            wallet.setAppUser(adminAppUser);
-
+            setAdminUserWalletBalance(adminAppUser);
 
             //cascade setting saves the porteMonnaie as well
             return appUserRepository.save(adminAppUser);
         }
     }
 
+    //set admin user balance for test. add 1 000 000 to admin wallet
+    private void setAdminUserWalletBalance(AppUser appUser){
+        //creatAndLinkWallet(adminAppUser);
+        // Create new wallet
+        Wallet wallet = new Wallet();
+        wallet.setBalance(BigDecimal.valueOf(1000000));
+        wallet.setUsername(appUser.getUsername());
+        //Associate the wallet  with user
+        appUser.setWallet(wallet);
+        //Associate the wallet  with user
+        appUser.setWallet(wallet);
+        //Set the PorteMonnaie's utilisateur
+        wallet.setAppUser(appUser);
+
+    }
+
     @Transactional
-    public AppUser createAppUserAndWallet(AppUser appUser) {
+    public AppUser createAppUser(AppUser appUser) {
 
         //Encode the password
         appUser.setPassword(passwordEncoder.encode(appUser.getPassword()));
@@ -224,22 +230,77 @@ public class AppUserService {
                 }else {
                     throw new InsufficientFundsException("Insufficient funds for the transfer.");
                 }
-                /*
-                int senderId, int recepientId,
-                                          BigDecimal amout, BigDecimal transactionFee,
-                                          Transaction.TransactionType transactionType,
-                                          Optional<String> description
-                 */
+
+            }
+        }
+    }
+
+    @Transactional
+    public List<TransactionForAppUserHistory> getTransactionHistory(String username){
+        Optional<AppUser> appUserOptional = appUserRepository.findByUsername(username);
+        int appUserId;
+        if(appUserOptional.isPresent()){
+            appUserId = appUserOptional.get().getId();
+        }else {
+            appUserId = 0;
+            log.error("AppUser not found");
+            //TODO: figure out what to do it app user not found
+        }
+
+
+        List<Transaction> appUSertransactions = transactionRepository
+                .findBySenderIdOrRecepientId(appUserId,appUserId);
+
+        List<TransactionForAppUserHistory> transactionsHistory = new ArrayList<>();
+
+        if(!appUSertransactions.isEmpty()){
+            //creat one AppUserTransactionHistory for each transaction in db.
+            for(Transaction transaction : appUSertransactions){
+
+                //find contactId in transaction
+                int contactId;
+                if(appUserId == transaction.getSenderId()){
+                    contactId = transaction.getRecepientId();
+
+                    //find the contactAppUSer in db
+                    Optional<AppUser> contactAppUserOptionnal = appUserRepository
+                            .findById(contactId);
+
+                    //add each TransactionForAppUserHistory to transactionsHistory
+                    if (contactAppUserOptionnal.isPresent()){
+                        AppUser contact = contactAppUserOptionnal.get();
+
+                        TransactionForAppUserHistory simplifiedTransaction = new TransactionForAppUserHistory(contact
+                                .getUsername(), transaction.getDescription(), transaction.getAmount().negate(),
+                                Transaction.TransactionType.send);
+                        transactionsHistory.add(simplifiedTransaction);
+                    }
+
+                }else {
+                    contactId = transaction.getSenderId();
+
+                    //find the contactAppUSer in db
+                    Optional<AppUser> contactAppUserOptionnal = appUserRepository
+                            .findById(contactId);
+
+                    //add each TransactionForAppUserHistory to transactionsHistory
+                    if (contactAppUserOptionnal.isPresent()){
+                        AppUser contact = contactAppUserOptionnal.get();
+
+                        TransactionForAppUserHistory simplifiedTransaction = new TransactionForAppUserHistory(contact
+                                .getUsername(), transaction.getDescription(), transaction.getAmount(),
+                                Transaction.TransactionType.receive);
+                        transactionsHistory.add(simplifiedTransaction);
+                    }
+
+                }
 
             }
 
         }
+
+        return transactionsHistory;
     }
 
-    public void transactionHistory(int appUserId){
-
-
-
-    }
 }
 

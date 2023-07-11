@@ -1,5 +1,6 @@
 package com.paymybuddy.paymybuddy.controller;
 
+import com.paymybuddy.paymybuddy.dto.TransactionForAppUserHistory;
 import com.paymybuddy.paymybuddy.model.AppUser;
 import com.paymybuddy.paymybuddy.service.AppUserService;
 import lombok.AllArgsConstructor;
@@ -47,6 +48,11 @@ public class UserController {
             // Fetch the contacts for the current user and add them to the model
             List<AppUser> contacts = appUserService.getContactsForUser(appUser);
             model.addAttribute("contacts", contacts);
+
+            //fetch list of TransactionForAppUserHistory
+            List<TransactionForAppUserHistory> transactions = appUserService
+                    .getTransactionHistory(principal.getName());
+            model.addAttribute("transactions", transactions);
         });
         return "transfer";
     }
@@ -78,7 +84,7 @@ public class UserController {
     @PostMapping("/register")
     public String registerAppUser(@ModelAttribute AppUser appUser){
 
-        if (appUserService.createAppUserAndWallet(appUser) != null) {
+        if (appUserService.createAppUser(appUser) != null) {
             return "registrationSuccessful";
         } else {
             return "registrationFailure";
