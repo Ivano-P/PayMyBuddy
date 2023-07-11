@@ -18,20 +18,59 @@
 
 <section id="transfer-setup">
     <div th:insert="fragments :: errorPanel"></div> <!-- hidden div to display error message-->
-    <div class="field">Balance: <span th:text ="${currentUser.wallet.balance}"></span></div>
+    <div class="field">Balance: <span th:text ="${currentUser.wallet.balance} + '€'"></span></div>
+
     <div id="contact_list">
-        <h1>Select Contact For transfer</h1>
+        <h2>Select Contact For transfer</h2>
         <form th:action="@{/transfer}" method="post">
-            <label for="contactSelect">Choose a contact:</label>
-            <select id="contactSelect" name="contactId">
-                <option th:each="contact : ${contacts}" th:value="${contact.id}"
-                        th:text="${contact.firstName + ' ' + contact.lastName + ' (' + contact.username + ')'}"></option>
-            </select>
-            <label for="balance">Add amount :</label>
-            <input type="text" name="amount" id="balance" placeholder="0">
+            <div>
+                <label for="contactSelect"></label>
+                <select id="contactSelect" name="contactId">
+                    <option value="" disabled selected>Select Contact</option>
+                    <option th:each="contact : ${contacts}" th:value="${contact.id}"
+                            th:text="${contact.firstName + ' ' + contact.lastName + ' (' + contact.username + ')'}">
+                    </option>
+                </select>
+
+                <label for="balance">Add amount :</label>
+                <input type="text" name="amount" id="balance" placeholder="0">
+            </div>
+
+            <div>
+                <label for="description">Enter transaction description</label>
+                <input type="text" name="description" id="description"
+                       placeholder="transaction description">
+            </div>
+
             <button type="submit">Transfer</button>
         </form>
     </div>
+</section>
+
+<section id="transaction_history">
+    <h2>Transaction history</h2>
+    <table>
+        <thead>
+        <tr>
+            <th>Contact</th>
+            <th>Type</th>
+            <th>Description</th>
+            <th>Amount</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="transaction : ${transactions}">
+            <td th:text="${transaction.contactUsername}"></td>
+            <td th:text="${transaction.transactionType}"></td>
+            <td th:text="${transaction.description}"></td>
+            <td th:text="${transaction.amount + '€'}">
+
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+
 </section>
 
 </body>

@@ -21,7 +21,8 @@ public class CustomUserDetailsService implements UserDetailsService {
     @Transactional(readOnly = true)
     public UserDetails loadUserByUsername(String usernameOrEmail) throws UsernameNotFoundException {
         AppUser appUser = appUserRepository.findByUsernameOrEmail(usernameOrEmail, usernameOrEmail)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found with username or email: " + usernameOrEmail));
+                .orElseThrow(() ->
+                        new UsernameNotFoundException("User not found with username or email: " + usernameOrEmail));
 
         UserDetails userDetails;
         if (appUser.getPassword() == null) {  // For OAuth2 user
