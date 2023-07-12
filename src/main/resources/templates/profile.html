@@ -24,7 +24,7 @@
 
 </section>
 
-<section id="deposits-withdrawals">
+<section id="bank-account">
 
   <div th:insert="fragments :: errorPanel"></div> <!-- hidden div to display error message-->
 
@@ -69,20 +69,7 @@
     </form>
   </div>
 
-  <div th:if="${hasBankAccount}">
-    <form action="#" th:action="@{/balance}" method="post" class="withdraw">
-      <label for="balance">Withdraw amount :</label>
-      <input type="text" name="amount" id="balance" placeholder="0">
-      <button type="submit" class="update-btn">withdraw</button>
-    </form>
-
-    <form action="#" th:action="@{/deposit}" method="post">
-      <label for="depositBtn"></label>
-      <input type="hidden" name="depositBtn" id="depositBtn">
-      <button type="submit" class="update-btn">deposit</button>
-    </form>
-
-  </div>
+  <!-- removed deposit and withdrawal section from here-->
 
 </section>
 

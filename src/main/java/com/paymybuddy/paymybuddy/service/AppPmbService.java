@@ -5,6 +5,7 @@ import com.paymybuddy.paymybuddy.model.Transaction;
 import com.paymybuddy.paymybuddy.repository.AccountPayMyBuddyRepository;
 import com.paymybuddy.paymybuddy.repository.TransactionRepository;
 import lombok.AllArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -12,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
 import java.util.Optional;
 
+@Log4j2
 @Service
 @AllArgsConstructor(onConstructor = @__(@Autowired))
 public class AppPmbService {
@@ -45,7 +47,19 @@ public class AppPmbService {
         return transactionRepository.save(transaction);
     }
 
+    public String getPmbIban(){
+        Optional<AccountPayMyBuddy> accountPmbOptional = accountPayMyBuddyRepository.findById(1);
+        String pmbIban = null;
 
+        if(accountPmbOptional.isPresent()){
+            pmbIban = accountPmbOptional.get().getIban();
+        }else {
+            log.error("pmb account is not persisted in db or does not contain iban");
+
+        }
+
+        return pmbIban;
+    }
 
 
 }

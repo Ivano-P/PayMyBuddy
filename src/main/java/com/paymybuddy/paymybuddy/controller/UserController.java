@@ -3,11 +3,12 @@ package com.paymybuddy.paymybuddy.controller;
 import com.paymybuddy.paymybuddy.dto.TransactionForAppUserHistory;
 import com.paymybuddy.paymybuddy.model.AppUser;
 import com.paymybuddy.paymybuddy.model.BankAccount;
+import com.paymybuddy.paymybuddy.service.AppPmbService;
 import com.paymybuddy.paymybuddy.service.AppUserService;
+import com.paymybuddy.paymybuddy.service.BankAccountService;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.stereotype.Repository;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -24,6 +25,8 @@ import java.util.Optional;
 public class UserController {
 
     private final AppUserService appUserService;
+    private final BankAccountService bankAccountService;
+    private final AppPmbService appPmbService;
 
     //go to registration page
     @GetMapping("/register")
@@ -51,12 +54,27 @@ public class UserController {
             List<AppUser> contacts = appUserService.getContactsForUser(appUser);
             model.addAttribute("contacts", contacts);
 
+            boolean hasBankAccount = bankAccountService.hasBankAccount(principal.getName());
+
+            model.addAttribute("hasBankAccount", hasBankAccount);
+
             //fetch list of TransactionForAppUserHistory
             List<TransactionForAppUserHistory> transactions = appUserService
                     .getTransactionHistory(principal.getName());
             model.addAttribute("transactions", transactions);
         });
         return "transfer";
+    }
+
+    @GetMapping("/iban")
+    public String goToIban(Model model, Principal principal){
+        Optional<AppUser> currentUSer = appUserService.getAppUserByUsername(principal.getName());
+        currentUSer.ifPresent(appUser -> model.addAttribute("currentUser", appUser));
+
+        String iban = appPmbService.getPmbIban();
+        model.addAttribute("iban", iban);
+
+        return "iban";
     }
 
     @GetMapping("/profile")
@@ -68,10 +86,10 @@ public class UserController {
             currentUserId = currentUser.get().getId();
         }
 
-        boolean hasBankAccount = appUserService.hasBankAccount(principal.getName());
+        boolean hasBankAccount = bankAccountService.hasBankAccount(principal.getName());
         model.addAttribute("hasBankAccount", hasBankAccount);
         if(hasBankAccount){
-           BankAccount bankAccount = appUserService
+           BankAccount bankAccount = bankAccountService
                     .getAppUserBankAccount(currentUserId);
 
             model.addAttribute("bankAccount", bankAccount);
@@ -145,26 +163,30 @@ public class UserController {
                                  @RequestParam("iban") String iban){
 
         //check bank account validity
-        BankAccount bankAccountToAdd = appUserService
+        BankAccount bankAccountToAdd = bankAccountService
                 .checkBankAccountValidity(principal
                         .getName(), lastName, firstName, iban);
 
         //add/update the appusers bank account.
-        appUserService.addOrUpdateBankAccount(bankAccountToAdd);
+        bankAccountService.addOrUpdateBankAccount(bankAccountToAdd);
         return "redirect:/profile"; // redirect back to the profile page
     }
 
-    @PostMapping("removeBankAccount")
+    @PostMapping("/removeBankAccount")
     public String removeBankAccount(@RequestParam("appUserId") Integer appUserId){
-        appUserService.removeBankAccount(appUserId);
+        bankAccountService.removeBankAccount(appUserId);
 
         return "redirect:/profile"; // redirect back to the profile page
     }
 
-    @PostMapping("deposit")
+    @PostMapping("/deposit")
     public String depositFunds(){
+        boolean showIban = true;
+        bankAccountService.showIbanForDeposit(showIban);
 
-        return "redirect:/profile"; // redirect back to the profile page
+        return "redirect:/iban"; // redirect back to the profile page
     }
+
+
 
 }

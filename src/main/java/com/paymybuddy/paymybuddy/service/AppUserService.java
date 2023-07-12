@@ -33,7 +33,7 @@ public class AppUserService {
     private final AccountPayMyBuddyRepository accountPayMyBuddyRepository;
     private final AppPmbService appPmbService;
     private final TransactionRepository transactionRepository;
-    private final BankAccountRepository bankAccountRepository;
+
 
 
 
@@ -300,78 +300,6 @@ public class AppUserService {
         }
 
         return transactionsHistory;
-    }
-
-    public BankAccount checkBankAccountValidity(String username, String lasName,
-                                                String firstName, String iban){
-        BankAccount bankAccountToAdd = new BankAccount();
-        Optional<AppUser> appUserOptional = getAppUserByUsername(username);
-        if(appUserOptional.isPresent()){
-            AppUser appUserToCompare = appUserOptional.get();
-
-            //check that name entered is the same as username on app.
-            if (lasName.equals(appUserToCompare.getLastName()) && firstName.equals(appUserToCompare.getFirstName())){
-                String fullName = lasName + " " + firstName;
-                int ibanLenght = iban.length();
-                if(ibanLenght > 21 && ibanLenght < 34){
-                     bankAccountToAdd = new BankAccount(appUserToCompare.getId(), fullName, iban);
-                }else {
-                    log.error("Invalid Iban Exception");
-                    throw new InvalidIbanException("Invalid Iban, Iban must be between 22 and 34 characters");
-                }
-            }else{
-                log.debug("AccountMustBeToUsersNameException");
-                throw new AccountMustBeToUsersNameException("Account must be to user's name");
-            }
-        }
-        log.debug(bankAccountToAdd);
-        return bankAccountToAdd;
-
-    }
-
-
-    public void addOrUpdateBankAccount(BankAccount bankAccount){
-
-        Optional<BankAccount> bankAccountOptional = bankAccountRepository.findById(bankAccount.getId());
-
-        if(bankAccountOptional.isEmpty()){
-            bankAccountRepository.save(bankAccount);
-        }else{
-            bankAccountRepository.deleteById(bankAccount.getId());
-            bankAccountRepository.save(bankAccount);
-        }
-    }
-
-
-    public boolean hasBankAccount(String username) {
-        Optional<AppUser> appUser = getAppUserByUsername(username);
-        boolean hasBankAccount = false;
-        if (appUser.isPresent()) {
-            Optional<BankAccount> bankAccountOptional = bankAccountRepository.findById(appUser.get().getId());
-            if(bankAccountOptional.isPresent()) {
-                hasBankAccount = true;
-            }
-        }
-
-        log.debug(hasBankAccount);
-        return hasBankAccount;
-    }
-
-    public BankAccount getAppUserBankAccount(int currentAppUserId){
-        Optional<BankAccount> bankAccountOptional = bankAccountRepository.findById(currentAppUserId);
-        BankAccount currentBankAccount = new BankAccount();
-
-        if (bankAccountOptional.isPresent()){
-           currentBankAccount = bankAccountOptional.get();
-        }else {
-            log.error("Error with saved bank account in db");
-        }
-
-           return currentBankAccount;
-    }
-
-    public void removeBankAccount(int appUserId){
-            bankAccountRepository.deleteById(appUserId);
     }
 
 }

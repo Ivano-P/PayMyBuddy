@@ -70,8 +70,20 @@
         </tbody>
     </table>
 
-
 </section>
+
+<section id="deposit-and-withdrawal">
+
+    <form action="#" th:action="@{/deposit}" method="get" id="deposit-form">
+        <label for="depositBtn"></label>
+        <input type="hidden" name="depositBtn" id="depositBtn">
+        <button type="submit" class="update-btn">deposit</button>
+    </form>
+
+        <a th:href="@{/iban}" class="update-btn">withdraw</a>
+
+
+</section >
 
 </body>
 </html>
