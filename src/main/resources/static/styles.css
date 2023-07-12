@@ -48,7 +48,8 @@ body {
     margin: auto;
 }
 
-#profile-info, #transfer-setup, #transaction_history, #bank-account, #deposit-information {
+#profile-info, #transfer-setup, #transaction_history, #bank-account, #deposit-information, #withdrawal-div,
+#deposit-div, #balance-and-deposit {
     width: 75%;
     margin: auto;
     padding: 10px;
@@ -81,20 +82,24 @@ body {
 }
 
 
-.submit-amount-btn , .update-btn, #remove-btn {
+.submit-amount-btn , .btn, #remove-btn {
     background-color: rgb(92, 185, 92);
     color: white;
     padding: 10px 24px;
     border: none;
     cursor: pointer;
+    margin: 20px;
 
+}
+
+#close-iban-btn{
+    margin: auto;
 }
 
 
 #remove-btn{
     margin-top : 1em;
 }
-
 
 
 .error-message {
@@ -150,3 +155,6 @@ body {
     width: 16em;
 }
 
+#transfer-setup{
+    display: flex;
+}

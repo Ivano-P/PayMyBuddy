@@ -10,24 +10,33 @@ import java.util.NoSuchElementException;
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
+    private static final String ERRORMESSAGE = "errorMsg";
+
     @ExceptionHandler(NoSuchElementException.class)
     public String handleNoSuchElementException(NoSuchElementException nsee, RedirectAttributes redirectAttributes) {
-        redirectAttributes.addFlashAttribute("errorMsg", "Contact not found");
+        redirectAttributes.addFlashAttribute(ERRORMESSAGE, nsee.getMessage());
         return "redirect:/contact";
     }
 
     @ExceptionHandler(AccountMustBeToUsersNameException.class)
     public String handleAccountMustBeToUsersNameException(AccountMustBeToUsersNameException ambtune,
                                                           RedirectAttributes redirectAttributes) {
-        redirectAttributes.addFlashAttribute("errorMsg", "Account must be to user's name");
+        redirectAttributes.addFlashAttribute(ERRORMESSAGE, ambtune.getMessage());
         return "redirect:/profile";
     }
 
     @ExceptionHandler(InvalidIbanException.class)
     public String handleInvalidIbanException(InvalidIbanException iie,
                                                           RedirectAttributes redirectAttributes) {
-        redirectAttributes.addFlashAttribute("errorMsg", "Invalid Iban, Iban must be between " +
-                "22 and 34 characters");
+        redirectAttributes.addFlashAttribute(ERRORMESSAGE, iie.getMessage());
         return "redirect:/profile";
     }
+
+    @ExceptionHandler(NoBankAccountException.class)
+    public String handleNoBankAccountException(NoBankAccountException nbae,
+                                             RedirectAttributes redirectAttributes) {
+        redirectAttributes.addFlashAttribute(ERRORMESSAGE, nbae.getMessage());
+        return "redirect:/transfer";
+    }
+
 }

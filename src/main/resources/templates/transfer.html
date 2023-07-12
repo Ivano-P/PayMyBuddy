@@ -16,9 +16,19 @@
     </nav>
 </section>
 
+<div th:insert="fragments :: errorPanel"></div> <!-- hidden div to display error message-->
+<section id="balance-and-deposit">
+    <div class="field">
+        Balance: <span th:text="${currentUser.wallet.balance} + '€'"></span>
+
+        <a th:href="@{/iban}" class="btn">deposit</a>
+    </div>
+    <div id="deposit-div">
+
+    </div>
+</section>
+
 <section id="transfer-setup">
-    <div th:insert="fragments :: errorPanel"></div> <!-- hidden div to display error message-->
-    <div class="field">Balance: <span th:text ="${currentUser.wallet.balance} + '€'"></span></div>
 
     <div id="contact_list">
         <h2>Select Contact For transfer</h2>
@@ -43,6 +53,21 @@
             </div>
 
             <button type="submit" class="submit-amount-btn">Transfer</button>
+        </form>
+    </div>
+
+    <div id="withdrawal-div" th:if="${hasBankAccount}">
+        <h2>Withdraw funds to bank account</h2>
+        <form action="#" th:action="@{/withdrawal}" method="post" id="withdrawal-form">
+            <label for="amount">Enter amount</label>
+            <input type="text" name="amount" id="amount" th:placeholder="0">
+            <button type="submit" class="btn">withdrawal</button>
+        </form>
+    </div>
+
+    <div id="withdrawal-ko-div" th:if="${!hasBankAccount}">
+        <form action="#" th:action="@{/noAccountForWithdrawal}" method="post" id="withdrawal-ko-form">
+            <button type="submit" class="btn">withdrawal</button>
         </form>
     </div>
 </section>
@@ -71,19 +96,6 @@
     </table>
 
 </section>
-
-<section id="deposit-and-withdrawal">
-
-    <form action="#" th:action="@{/deposit}" method="get" id="deposit-form">
-        <label for="depositBtn"></label>
-        <input type="hidden" name="depositBtn" id="depositBtn">
-        <button type="submit" class="update-btn">deposit</button>
-    </form>
-
-        <a th:href="@{/iban}" class="update-btn">withdraw</a>
-
-
-</section >
 
 </body>
 </html>

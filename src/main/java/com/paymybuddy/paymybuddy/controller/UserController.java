@@ -6,6 +6,7 @@ import com.paymybuddy.paymybuddy.model.BankAccount;
 import com.paymybuddy.paymybuddy.service.AppPmbService;
 import com.paymybuddy.paymybuddy.service.AppUserService;
 import com.paymybuddy.paymybuddy.service.BankAccountService;
+import com.paymybuddy.paymybuddy.service.TransactionService;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -27,6 +28,7 @@ public class UserController {
     private final AppUserService appUserService;
     private final BankAccountService bankAccountService;
     private final AppPmbService appPmbService;
+    private final TransactionService transactionService;
 
     //go to registration page
     @GetMapping("/register")
@@ -59,7 +61,7 @@ public class UserController {
             model.addAttribute("hasBankAccount", hasBankAccount);
 
             //fetch list of TransactionForAppUserHistory
-            List<TransactionForAppUserHistory> transactions = appUserService
+            List<TransactionForAppUserHistory> transactions = transactionService
                     .getTransactionHistory(principal.getName());
             model.addAttribute("transactions", transactions);
         });
@@ -152,7 +154,7 @@ public class UserController {
                                 @RequestParam("contactId") Integer contactId,
                                 @RequestParam("amount") BigDecimal amount,
                                 @RequestParam(value = "description", required = false) String description) {
-        appUserService.transferFunds(principal.getName(), contactId, amount, description);
+        transactionService.transferFunds(principal.getName(), contactId, amount, description);
         return "redirect:/transfer"; // redirect back to the transfer page
     }
 
@@ -169,14 +171,14 @@ public class UserController {
 
         //add/update the appusers bank account.
         bankAccountService.addOrUpdateBankAccount(bankAccountToAdd);
-        return "redirect:/profile"; // redirect back to the profile page
+        return "redirect:/profile";
     }
 
     @PostMapping("/removeBankAccount")
     public String removeBankAccount(@RequestParam("appUserId") Integer appUserId){
         bankAccountService.removeBankAccount(appUserId);
 
-        return "redirect:/profile"; // redirect back to the profile page
+        return "redirect:/profile";
     }
 
     @PostMapping("/deposit")
@@ -184,9 +186,21 @@ public class UserController {
         boolean showIban = true;
         bankAccountService.showIbanForDeposit(showIban);
 
-        return "redirect:/iban"; // redirect back to the profile page
+        return "redirect:/iban";
     }
 
+    @PostMapping("/withdrawal")
+    public String withdrawFunds(Principal principal, @RequestParam("amount") Integer amount){
+
+
+        return "redirect:/transfer";
+    }
+
+    @PostMapping("/noAccountForWithdrawal")
+    public String indicateAddBankAccount(){
+        bankAccountService.noBankAccountForWithdrawal();
+        return "redirect:/transfer";
+    }
 
 
 }

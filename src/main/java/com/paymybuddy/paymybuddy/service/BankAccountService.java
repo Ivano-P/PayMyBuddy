@@ -2,6 +2,7 @@ package com.paymybuddy.paymybuddy.service;
 
 import com.paymybuddy.paymybuddy.exceptions.AccountMustBeToUsersNameException;
 import com.paymybuddy.paymybuddy.exceptions.InvalidIbanException;
+import com.paymybuddy.paymybuddy.exceptions.NoBankAccountException;
 import com.paymybuddy.paymybuddy.model.AppUser;
 import com.paymybuddy.paymybuddy.model.BankAccount;
 import com.paymybuddy.paymybuddy.repository.BankAccountRepository;
@@ -94,12 +95,12 @@ public class BankAccountService {
         bankAccountRepository.deleteById(appUserId);
     }
 
-    public boolean showIbanForDeposit(){
-        return false;
-    }
-
     public boolean showIbanForDeposit(boolean showIban){
         return showIban = true;
+    }
+
+    public void noBankAccountForWithdrawal(){
+        throw new NoBankAccountException("Withdrawal not possible, no bank account added");
     }
 
 }
