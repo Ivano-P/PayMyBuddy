@@ -48,7 +48,7 @@ body {
     margin: auto;
 }
 
-#profile-info, #transfer-setup, #transaction_history {
+#profile-info, #transfer-setup, #transaction_history, #deposits-withdrawals {
     width: 75%;
     margin: auto;
     padding: 10px;
@@ -75,19 +75,25 @@ body {
     padding: 10px;
 }
 
-.deposit {
+.withdraw {
     width: 50%;
     margin: auto;
 }
 
 
-#submit-btn {
+.submit-amount-btn , .update-btn, #remove-btn {
     background-color: rgb(92, 185, 92);
     color: white;
     padding: 10px 24px;
     border: none;
     cursor: pointer;
 }
+
+#remove-btn{
+    margin-top : 1em;
+}
+
+
 
 .error-message {
     position: fixed;
@@ -113,18 +119,19 @@ body {
     margin: 0 auto;
 }
 
-#transaction_history table {
+.transaction-tables, #bank-account-table {
     width: 100%;
     margin-top: 20px;
     border-collapse: collapse;
 }
 
-#transaction_history table th, #transaction_history table td {
+#transaction_history table th, #transaction_history table td,
+#bank-account-table td , #bank-account-table th{
     border: 1px solid #ddd;
     padding: 8px;
 }
 
-#transaction_history table th {
+#transaction_history table th , #bank-account-table th{
     padding-top: 12px;
     padding-bottom: 12px;
     text-align: left;
@@ -132,3 +139,6 @@ body {
     color: white;
 }
 
+#iban{
+    width: 16em;
+}

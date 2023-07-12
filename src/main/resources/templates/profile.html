@@ -15,20 +15,77 @@
   </nav>
 </section>
 <section id="profile-info">
-    <div class="field">User name: <span th:text ="${currentUser.username}"></span></div>
+  <div class="field">User name: <span th:text ="${currentUser.username}"></span></div>
   <div class="field">First name: <span th:text ="${currentUser.firstName}"></span></div>
   <div class="field">Last name: <span th:text ="${currentUser.lastName}"></span></div>
   <div class="field">Email: <span th:text ="${currentUser.email}"></span></div>
-  <!--
-  <div class="field">Balance: <span th:text ="${currentUser.wallet.balance} + '€'"></span></div>
-  -->
+
+  <button type="button" class="update-btn">update</button>
 
 </section>
-<form action="#" th:action="@{/balance}" method="post" class="deposit">
-  <label for="balance">Add amount :</label>
-  <input type="text" name="amount" id="balance" placeholder="0">
-  <button type="submit" id="submit-btn">Add</button>
-</form>
+
+<section id="deposits-withdrawals">
+
+  <div th:insert="fragments :: errorPanel"></div> <!-- hidden div to display error message-->
+
+  <div class="field">Balance: <span th:text ="${currentUser.wallet.balance} + '€'"></span></div>
+
+  <div th:if="${hasBankAccount}" id="saved-bank-Account">
+    <table id="bank-account-table" >
+      <thead>
+      <tr>
+        <th>Account owner</th>
+        <th>Iban</th>
+      </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td th:text="${bankAccount.getTitle()}"></td>
+          <td th:text="${bankAccount.getIban()}"></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <form th:action="@{/removeBankAccount}" method="post">
+      <input type="hidden" th:value="${currentUser.getId()}" name="appUserId">
+      <button type="submit" id="remove-btn">Remove bank account</button>
+    </form>
+  </div>
+
+
+  <div th:if="${!hasBankAccount}" id="add-bank-account">
+    <form th:action="@{/addBankAccount}"  method="post">
+
+      <label for="lastName"><b>Last name</b></label>
+      <input type="text" id="lastName" name="lastName" placeholder="Enter last name ">
+
+      <label for="firstName"><b>First Name</b></label>
+      <input type="text" id="firstName" name="firstName" placeholder="Enter first name ">
+
+      <label for="Iban"><b>Iban</b></label>
+      <input type="text" id="iban" name="iban" placeholder="FR1212341234123412341234567">
+
+      <button type="submit" id="update-btn">Add bank account</button>
+    </form>
+  </div>
+
+  <div th:if="${hasBankAccount}">
+    <form action="#" th:action="@{/balance}" method="post" class="withdraw">
+      <label for="balance">Withdraw amount :</label>
+      <input type="text" name="amount" id="balance" placeholder="0">
+      <button type="submit" class="update-btn">withdraw</button>
+    </form>
+
+    <form action="#" th:action="@{/deposit}" method="post">
+      <label for="depositBtn"></label>
+      <input type="hidden" name="depositBtn" id="depositBtn">
+      <button type="submit" class="update-btn">deposit</button>
+    </form>
+
+  </div>
+
+</section>
+
 </body>
 </html>
 

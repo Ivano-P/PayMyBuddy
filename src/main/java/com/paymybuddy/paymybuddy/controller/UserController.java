@@ -2,10 +2,12 @@ package com.paymybuddy.paymybuddy.controller;
 
 import com.paymybuddy.paymybuddy.dto.TransactionForAppUserHistory;
 import com.paymybuddy.paymybuddy.model.AppUser;
+import com.paymybuddy.paymybuddy.model.BankAccount;
 import com.paymybuddy.paymybuddy.service.AppUserService;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.stereotype.Repository;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -59,9 +61,24 @@ public class UserController {
 
     @GetMapping("/profile")
     public String goToProfilePage(Model model, Principal principal) {
-        Optional<AppUser> currentUSer = appUserService.getAppUserByUsername(principal.getName());
+        Optional<AppUser> currentUser = appUserService.getAppUserByUsername(principal.getName());
+        int currentUserId = 0;
 
-        currentUSer.ifPresent(appUser -> model.addAttribute("currentUser", appUser));
+        if(currentUser.isPresent()){
+            currentUserId = currentUser.get().getId();
+        }
+
+        boolean hasBankAccount = appUserService.hasBankAccount(principal.getName());
+        model.addAttribute("hasBankAccount", hasBankAccount);
+        if(hasBankAccount){
+           BankAccount bankAccount = appUserService
+                    .getAppUserBankAccount(currentUserId);
+
+            model.addAttribute("bankAccount", bankAccount);
+        }
+
+
+        currentUser.ifPresent(appUser -> model.addAttribute("currentUser", appUser));
         return "profile";
     }
 
@@ -120,4 +137,34 @@ public class UserController {
         appUserService.transferFunds(principal.getName(), contactId, amount, description);
         return "redirect:/transfer"; // redirect back to the transfer page
     }
+
+    @PostMapping("/addBankAccount")
+    public String addBankAccount(Principal principal,
+                                 @RequestParam("lastName") String lastName,
+                                 @RequestParam("firstName") String firstName,
+                                 @RequestParam("iban") String iban){
+
+        //check bank account validity
+        BankAccount bankAccountToAdd = appUserService
+                .checkBankAccountValidity(principal
+                        .getName(), lastName, firstName, iban);
+
+        //add/update the appusers bank account.
+        appUserService.addOrUpdateBankAccount(bankAccountToAdd);
+        return "redirect:/profile"; // redirect back to the profile page
+    }
+
+    @PostMapping("removeBankAccount")
+    public String removeBankAccount(@RequestParam("appUserId") Integer appUserId){
+        appUserService.removeBankAccount(appUserId);
+
+        return "redirect:/profile"; // redirect back to the profile page
+    }
+
+    @PostMapping("deposit")
+    public String depositFunds(){
+
+        return "redirect:/profile"; // redirect back to the profile page
+    }
+
 }

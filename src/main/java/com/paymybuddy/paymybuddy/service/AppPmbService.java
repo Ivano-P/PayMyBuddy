@@ -6,7 +6,6 @@ import com.paymybuddy.paymybuddy.repository.AccountPayMyBuddyRepository;
 import com.paymybuddy.paymybuddy.repository.TransactionRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -31,10 +30,10 @@ public class AppPmbService {
         }
     }
 
-    public Transaction persistTransaction(int senderId, int recepientId,
-                                          BigDecimal amout, BigDecimal transactionFee,
-                                          Transaction.TransactionType transactionType,
-                                          Optional<String> description){
+    public Transaction saveTransaction(int senderId, int recepientId,
+                                       BigDecimal amout, BigDecimal transactionFee,
+                                       Transaction.TransactionType transactionType,
+                                       Optional<String> description){
         Transaction transaction = new Transaction();
         transaction.setSenderId(senderId);
         transaction.setRecepientId(recepientId);
@@ -45,6 +44,7 @@ public class AppPmbService {
 
         return transactionRepository.save(transaction);
     }
+
 
 
 

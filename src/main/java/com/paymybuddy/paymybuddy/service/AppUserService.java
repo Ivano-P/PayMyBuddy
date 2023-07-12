@@ -1,7 +1,9 @@
 package com.paymybuddy.paymybuddy.service;
 
 import com.paymybuddy.paymybuddy.dto.TransactionForAppUserHistory;
+import com.paymybuddy.paymybuddy.exceptions.AccountMustBeToUsersNameException;
 import com.paymybuddy.paymybuddy.exceptions.InsufficientFundsException;
+import com.paymybuddy.paymybuddy.exceptions.InvalidIbanException;
 import com.paymybuddy.paymybuddy.model.*;
 import com.paymybuddy.paymybuddy.repository.*;
 import lombok.AllArgsConstructor;
@@ -18,6 +20,7 @@ import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+@Transactional
 @Log4j2
 @Service
 @AllArgsConstructor(onConstructor = @__(@Autowired))
@@ -30,11 +33,11 @@ public class AppUserService {
     private final AccountPayMyBuddyRepository accountPayMyBuddyRepository;
     private final AppPmbService appPmbService;
     private final TransactionRepository transactionRepository;
+    private final BankAccountRepository bankAccountRepository;
 
 
 
     //creat admin user for test, this  is called on startup
-    @Transactional
     public AppUser creatAdminAppUser(){
 
         //check if first user (ADMIN) is created, if not in db creat it
@@ -45,7 +48,7 @@ public class AppUserService {
         }else {
             AppUser adminAppUser = new AppUser();
             adminAppUser.setLastName("mister");
-             adminAppUser.setFirstName("tester");
+            adminAppUser.setFirstName("tester");
             adminAppUser.setUsername("mainadmin");
             adminAppUser.setEmail("mistertester@testmail.com");
             adminAppUser.setRole(AppUser.Role.ADMIN);
@@ -60,7 +63,6 @@ public class AppUserService {
 
     //set admin user balance for test. add 1 000 000 to admin wallet
     private void setAdminUserWalletBalance(AppUser appUser){
-        //creatAndLinkWallet(adminAppUser);
         // Create new wallet
         Wallet wallet = new Wallet();
         wallet.setBalance(BigDecimal.valueOf(1000000));
@@ -74,7 +76,7 @@ public class AppUserService {
 
     }
 
-    @Transactional
+
     public AppUser createAppUser(AppUser appUser) {
 
         //Encode the password
@@ -115,17 +117,14 @@ public class AppUserService {
         return appUserRepository.findByEmail(email);
     }
 
-    @Transactional(readOnly = true)
     public Optional<AppUser> getAppUserByUsername(String username) {
         return appUserRepository.findByUsername(username);
     }
 
-    @Transactional
     public AppUser updateAppUser(AppUser appUser) {
         return appUserRepository.save(appUser);
     }
 
-    @Transactional
     public void deleteAppUser(int id) {
         appUserRepository.deleteById(id);
     }
@@ -155,7 +154,6 @@ public class AppUserService {
 
     }
 
-    @Transactional(readOnly = true)
     public List<AppUser> getContactsForUser(AppUser user) {
         // Fetch the AppUserContact instances for the given user
         List<AppUserContact> userContacts = appUserContactRepository.findByAppUser(user);
@@ -185,7 +183,6 @@ public class AppUserService {
 
     }
 
-    @Transactional
     public void transferFunds (String appUserUsername, Integer contactId, BigDecimal amount, String description){
         Optional<AppUser> appUserOptional = appUserRepository.findByUsername(appUserUsername);
         Optional<AppUser> contactOptional = appUserRepository.findById(contactId);
@@ -221,10 +218,10 @@ public class AppUserService {
                     accountPayMyBuddyRepository.save(pmbAccount);
 
                     if(description.isEmpty()){
-                        appPmbService.persistTransaction(appUserWallet.getId(), recepientAppUserWallet.getId(),
+                        appPmbService.saveTransaction(appUserWallet.getId(), recepientAppUserWallet.getId(),
                                 amount, transactionFee, Transaction.TransactionType.send, Optional.empty());
                     }else{
-                        appPmbService.persistTransaction(appUserWallet.getId(), recepientAppUserWallet.getId(),
+                        appPmbService.saveTransaction(appUserWallet.getId(), recepientAppUserWallet.getId(),
                                 amount, transactionFee, Transaction.TransactionType.send, description
                                         .describeConstable());
                     }
@@ -238,7 +235,7 @@ public class AppUserService {
         }
     }
 
-    @Transactional
+
     public List<TransactionForAppUserHistory> getTransactionHistory(String username){
         Optional<AppUser> appUserOptional = appUserRepository.findByUsername(username);
         int appUserId;
@@ -303,6 +300,78 @@ public class AppUserService {
         }
 
         return transactionsHistory;
+    }
+
+    public BankAccount checkBankAccountValidity(String username, String lasName,
+                                                String firstName, String iban){
+        BankAccount bankAccountToAdd = new BankAccount();
+        Optional<AppUser> appUserOptional = getAppUserByUsername(username);
+        if(appUserOptional.isPresent()){
+            AppUser appUserToCompare = appUserOptional.get();
+
+            //check that name entered is the same as username on app.
+            if (lasName.equals(appUserToCompare.getLastName()) && firstName.equals(appUserToCompare.getFirstName())){
+                String fullName = lasName + " " + firstName;
+                int ibanLenght = iban.length();
+                if(ibanLenght > 21 && ibanLenght < 34){
+                     bankAccountToAdd = new BankAccount(appUserToCompare.getId(), fullName, iban);
+                }else {
+                    log.error("Invalid Iban Exception");
+                    throw new InvalidIbanException("Invalid Iban, Iban must be between 22 and 34 characters");
+                }
+            }else{
+                log.debug("AccountMustBeToUsersNameException");
+                throw new AccountMustBeToUsersNameException("Account must be to user's name");
+            }
+        }
+        log.debug(bankAccountToAdd);
+        return bankAccountToAdd;
+
+    }
+
+
+    public void addOrUpdateBankAccount(BankAccount bankAccount){
+
+        Optional<BankAccount> bankAccountOptional = bankAccountRepository.findById(bankAccount.getId());
+
+        if(bankAccountOptional.isEmpty()){
+            bankAccountRepository.save(bankAccount);
+        }else{
+            bankAccountRepository.deleteById(bankAccount.getId());
+            bankAccountRepository.save(bankAccount);
+        }
+    }
+
+
+    public boolean hasBankAccount(String username) {
+        Optional<AppUser> appUser = getAppUserByUsername(username);
+        boolean hasBankAccount = false;
+        if (appUser.isPresent()) {
+            Optional<BankAccount> bankAccountOptional = bankAccountRepository.findById(appUser.get().getId());
+            if(bankAccountOptional.isPresent()) {
+                hasBankAccount = true;
+            }
+        }
+
+        log.debug(hasBankAccount);
+        return hasBankAccount;
+    }
+
+    public BankAccount getAppUserBankAccount(int currentAppUserId){
+        Optional<BankAccount> bankAccountOptional = bankAccountRepository.findById(currentAppUserId);
+        BankAccount currentBankAccount = new BankAccount();
+
+        if (bankAccountOptional.isPresent()){
+           currentBankAccount = bankAccountOptional.get();
+        }else {
+            log.error("Error with saved bank account in db");
+        }
+
+           return currentBankAccount;
+    }
+
+    public void removeBankAccount(int appUserId){
+            bankAccountRepository.deleteById(appUserId);
     }
 
 }

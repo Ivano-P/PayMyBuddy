@@ -56,7 +56,7 @@ public class Transaction {
     public enum TransactionType {
         send,
         receive,
-        fund,
+        deposit,
         withdrawal
     }
 }
