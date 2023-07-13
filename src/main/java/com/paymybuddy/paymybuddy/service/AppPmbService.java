@@ -1,7 +1,6 @@
 package com.paymybuddy.paymybuddy.service;
 
 import com.paymybuddy.paymybuddy.model.AccountPayMyBuddy;
-import com.paymybuddy.paymybuddy.model.Transaction;
 import com.paymybuddy.paymybuddy.repository.AccountPayMyBuddyRepository;
 import com.paymybuddy.paymybuddy.repository.TransactionRepository;
 import lombok.AllArgsConstructor;
@@ -18,7 +17,6 @@ import java.util.Optional;
 @AllArgsConstructor(onConstructor = @__(@Autowired))
 public class AppPmbService {
     private final AccountPayMyBuddyRepository accountPayMyBuddyRepository;
-    private final TransactionRepository transactionRepository;
 
     @Transactional
     public AccountPayMyBuddy creatPmbAccount(){
@@ -32,20 +30,6 @@ public class AppPmbService {
         }
     }
 
-    public Transaction saveTransaction(int senderId, int recepientId,
-                                       BigDecimal amout, BigDecimal transactionFee,
-                                       Transaction.TransactionType transactionType,
-                                       Optional<String> description){
-        Transaction transaction = new Transaction();
-        transaction.setSenderId(senderId);
-        transaction.setRecepientId(recepientId);
-        transaction.setAmount(amout);
-        transaction.setTransactionFee(transactionFee);
-        transaction.setTransactionType(transactionType);
-        description.ifPresent(transaction::setDescription);
-
-        return transactionRepository.save(transaction);
-    }
 
     public String getPmbIban(){
         Optional<AccountPayMyBuddy> accountPmbOptional = accountPayMyBuddyRepository.findById(1);

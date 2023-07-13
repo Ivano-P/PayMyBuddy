@@ -1,12 +1,12 @@
 package com.paymybuddy.paymybuddy.service;
 
-import com.paymybuddy.paymybuddy.dto.TransactionForAppUserHistory;
-import com.paymybuddy.paymybuddy.exceptions.AccountMustBeToUsersNameException;
-import com.paymybuddy.paymybuddy.exceptions.InsufficientFundsException;
-import com.paymybuddy.paymybuddy.exceptions.InvalidIbanException;
-import com.paymybuddy.paymybuddy.exceptions.NoBankAccountException;
-import com.paymybuddy.paymybuddy.model.*;
-import com.paymybuddy.paymybuddy.repository.*;
+import com.paymybuddy.paymybuddy.model.AppUser;
+import com.paymybuddy.paymybuddy.model.AppUserContact;
+import com.paymybuddy.paymybuddy.model.Transaction;
+import com.paymybuddy.paymybuddy.repository.AccountPayMyBuddyRepository;
+import com.paymybuddy.paymybuddy.repository.AppUserContactRepository;
+import com.paymybuddy.paymybuddy.repository.AppUserRepository;
+import com.paymybuddy.paymybuddy.repository.TransactionRepository;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +15,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
@@ -29,79 +28,9 @@ public class AppUserService {
 
     private final AppUserRepository appUserRepository;
     private  final AppUserContactRepository appUserContactRepository;
-    private  final WalletRepository walletRepository;
+    private  final WalletService walletService;
     private final PasswordEncoder passwordEncoder;
-    private final AccountPayMyBuddyRepository accountPayMyBuddyRepository;
-    private final AppPmbService appPmbService;
-    private final TransactionRepository transactionRepository;
 
-
-
-
-    //creat admin user for test, this  is called on startup
-    public AppUser creatAdminAppUser(){
-
-        //check if first user (ADMIN) is created, if not in db creat it
-        Optional<AppUser> AppUserCheck = appUserRepository.findById(1);
-        if(AppUserCheck.isPresent()){
-            return null;
-
-        }else {
-            AppUser adminAppUser = new AppUser();
-            adminAppUser.setLastName("mister");
-            adminAppUser.setFirstName("tester");
-            adminAppUser.setUsername("mainadmin");
-            adminAppUser.setEmail("mistertester@testmail.com");
-            adminAppUser.setRole(AppUser.Role.ADMIN);
-            adminAppUser.setPassword(passwordEncoder.encode("Testpassword123*"));
-
-            setAdminUserWalletBalance(adminAppUser);
-
-            //cascade setting saves the porteMonnaie as well
-            return appUserRepository.save(adminAppUser);
-        }
-    }
-
-    //set admin user balance for test. add 1 000 000 to admin wallet
-    private void setAdminUserWalletBalance(AppUser appUser){
-        // Create new wallet
-        Wallet wallet = new Wallet();
-        wallet.setBalance(BigDecimal.valueOf(1000000));
-        wallet.setUsername(appUser.getUsername());
-        //Associate the wallet  with user
-        appUser.setWallet(wallet);
-        //Associate the wallet  with user
-        appUser.setWallet(wallet);
-        //Set the PorteMonnaie's utilisateur
-        wallet.setAppUser(appUser);
-
-    }
-
-
-    public AppUser createAppUser(AppUser appUser) {
-
-        //Encode the password
-        appUser.setPassword(passwordEncoder.encode(appUser.getPassword()));
-        //appUser.setRole(AppUser.Role.USER);
-
-        creatAndLinkWallet(appUser);
-
-        //cascade setting saves the wallet as well
-        return appUserRepository.save(appUser);
-    }
-
-    protected void creatAndLinkWallet(AppUser appUser){
-        // Create new wallet
-        Wallet wallet = new Wallet();
-        wallet.setBalance(BigDecimal.ZERO);
-        wallet.setUsername(appUser.getUsername());
-        //Associate the wallet  with user
-        appUser.setWallet(wallet);
-        //Associate the wallet  with user
-        appUser.setWallet(wallet);
-        //Set the PorteMonnaie's utilisateur
-        wallet.setAppUser(appUser);
-    }
 
     @Transactional(readOnly = true)
     public List<AppUser> getAllAppUsers() {
@@ -129,6 +58,49 @@ public class AppUserService {
     public void deleteAppUser(int id) {
         appUserRepository.deleteById(id);
     }
+
+
+    //creat admin user for test, this  is called on startup
+    public AppUser creatAdminAppUser(){
+
+        //check if first user (ADMIN) is created, if not in db creat it
+        Optional<AppUser> AppUserCheck = appUserRepository.findById(1);
+        if(AppUserCheck.isPresent()){
+            return null;
+
+        }else {
+            AppUser adminAppUser = new AppUser();
+            adminAppUser.setLastName("mister");
+            adminAppUser.setFirstName("tester");
+            adminAppUser.setUsername("mainadmin");
+            adminAppUser.setEmail("mistertester@testmail.com");
+            adminAppUser.setRole(AppUser.Role.ADMIN);
+            adminAppUser.setPassword(passwordEncoder.encode("Testpassword123*"));
+
+            walletService.setAdminUserWalletBalance(adminAppUser);
+
+            //cascade setting saves the porteMonnaie as well
+            return appUserRepository.save(adminAppUser);
+        }
+    }
+
+
+
+
+    public AppUser createAppUser(AppUser appUser) {
+
+        //Encode the password
+        appUser.setPassword(passwordEncoder.encode(appUser.getPassword()));
+        //appUser.setRole(AppUser.Role.USER);
+
+        walletService.creatAndLinkWallet(appUser);
+
+        //cascade setting saves the wallet as well
+        return appUserRepository.save(appUser);
+    }
+
+
+
 
     public void addContact(String userUsername, String contactUsername) {
         Optional<AppUser> userOptional = appUserRepository.findByUsername(userUsername);

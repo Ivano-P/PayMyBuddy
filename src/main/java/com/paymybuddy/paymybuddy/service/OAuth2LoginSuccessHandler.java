@@ -28,6 +28,8 @@ import java.util.List;
 public class OAuth2LoginSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
     private final AppUserRepository appUserRepository;
     private final AppUserService appUserService;
+    private final WalletService walletService;
+
 
 
     @Override
@@ -45,7 +47,7 @@ public class OAuth2LoginSuccessHandler extends SimpleUrlAuthenticationSuccessHan
             githubUser = appUserRepository.findByUsername(githubUsername).orElseGet(() -> {
                 finalGithubUser.setUsername(githubUsername);
 
-                appUserService.creatAndLinkWallet(finalGithubUser);
+                walletService.creatAndLinkWallet(finalGithubUser);
 
                 return appUserRepository.save(finalGithubUser);
             });

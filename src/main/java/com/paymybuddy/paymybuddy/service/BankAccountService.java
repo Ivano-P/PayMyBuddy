@@ -23,6 +23,24 @@ public class BankAccountService {
     private final BankAccountRepository bankAccountRepository;
     private final AppUserService appUserService;
 
+
+    public void removeBankAccount(int appUserId){
+        bankAccountRepository.deleteById(appUserId);
+    }
+
+    public void updateBankAccount(BankAccount bankAccount){
+
+        Optional<BankAccount> bankAccountOptional = bankAccountRepository.findById(bankAccount.getId());
+
+        if(bankAccountOptional.isEmpty()){
+            bankAccountRepository.save(bankAccount);
+        }else{
+            bankAccountRepository.deleteById(bankAccount.getId());
+            bankAccountRepository.save(bankAccount);
+        }
+    }
+
+
     public BankAccount checkBankAccountValidity(String username, String lasName,
                                                 String firstName, String iban){
         BankAccount bankAccountToAdd = new BankAccount();
@@ -48,19 +66,6 @@ public class BankAccountService {
         log.debug(bankAccountToAdd);
         return bankAccountToAdd;
 
-    }
-
-
-    public void addOrUpdateBankAccount(BankAccount bankAccount){
-
-        Optional<BankAccount> bankAccountOptional = bankAccountRepository.findById(bankAccount.getId());
-
-        if(bankAccountOptional.isEmpty()){
-            bankAccountRepository.save(bankAccount);
-        }else{
-            bankAccountRepository.deleteById(bankAccount.getId());
-            bankAccountRepository.save(bankAccount);
-        }
     }
 
 
@@ -91,9 +96,7 @@ public class BankAccountService {
         return currentBankAccount;
     }
 
-    public void removeBankAccount(int appUserId){
-        bankAccountRepository.deleteById(appUserId);
-    }
+
 
     public boolean showIbanForDeposit(boolean showIban){
         return showIban = true;
@@ -102,5 +105,6 @@ public class BankAccountService {
     public void noBankAccountForWithdrawal(){
         throw new NoBankAccountException("Withdrawal not possible, no bank account added");
     }
+
 
 }

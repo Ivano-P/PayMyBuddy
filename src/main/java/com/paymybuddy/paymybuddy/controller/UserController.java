@@ -170,7 +170,7 @@ public class UserController {
                         .getName(), lastName, firstName, iban);
 
         //add/update the appusers bank account.
-        bankAccountService.addOrUpdateBankAccount(bankAccountToAdd);
+        bankAccountService.updateBankAccount(bankAccountToAdd);
         return "redirect:/profile";
     }
 
@@ -189,18 +189,28 @@ public class UserController {
         return "redirect:/iban";
     }
 
-    @PostMapping("/withdrawal")
-    public String withdrawFunds(Principal principal, @RequestParam("amount") Integer amount){
-
-
+    @PostMapping("/withdrawFunds")
+    public String withdrawFunds(Principal principal, @RequestParam("amount") BigDecimal amount){
+        transactionService.withdrawFunds(principal.getName(), amount);
         return "redirect:/transfer";
     }
+
+    //for test
+    //TODO: remove after test
+    @PostMapping("/testDepositFunds")
+    public String testDepositFunds(Principal principal){
+        transactionService.genarateTestDepostion(principal.getName());
+        return "redirect:/transfer";
+    }
+
 
     @PostMapping("/noAccountForWithdrawal")
     public String indicateAddBankAccount(){
         bankAccountService.noBankAccountForWithdrawal();
         return "redirect:/transfer";
     }
+
+
 
 
 }

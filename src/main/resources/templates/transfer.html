@@ -22,10 +22,9 @@
         Balance: <span th:text="${currentUser.wallet.balance} + '€'"></span>
 
         <a th:href="@{/iban}" class="btn">deposit</a>
-    </div>
-    <div id="deposit-div">
 
     </div>
+
 </section>
 
 <section id="transfer-setup">
@@ -58,13 +57,14 @@
 
     <div id="withdrawal-div" th:if="${hasBankAccount}">
         <h2>Withdraw funds to bank account</h2>
-        <form action="#" th:action="@{/withdrawal}" method="post" id="withdrawal-form">
+        <form action="#" th:action="@{/withdrawFunds}" method="post" id="withdrawal-form">
             <label for="amount">Enter amount</label>
             <input type="text" name="amount" id="amount" th:placeholder="0">
             <button type="submit" class="btn">withdrawal</button>
         </form>
     </div>
 
+    <!-- this button appears if user doesnt have bank account linked and indicates to add bank account for withdrawal -->
     <div id="withdrawal-ko-div" th:if="${!hasBankAccount}">
         <form action="#" th:action="@{/noAccountForWithdrawal}" method="post" id="withdrawal-ko-form">
             <button type="submit" class="btn">withdrawal</button>
@@ -79,7 +79,7 @@
         <tr>
             <th>Contact</th>
             <th>Description</th>
-            <th>Type</th>
+            <th>Transaction type</th>
             <th>Amount</th>
         </tr>
         </thead>
@@ -94,6 +94,11 @@
         </tr>
         </tbody>
     </table>
+    <form action="#" th:action="@{/testDepositFunds}" method="post" id="deposit-form">
+        <label for="null"></label>
+        <input type="hidden" name="null" id="null" >
+        <button type="submit" class="btn">test deposit</button>
+    </form>
 
 </section>
 
