@@ -46,4 +46,24 @@ public class GlobalExceptionHandler {
         return "redirect:/update_profile";
     }
 
+    @ExceptionHandler(ContactNotFoundException.class)
+    public String handleContactNotFoundException(ContactNotFoundException cnfe,
+                                             RedirectAttributes redirectAttributes) {
+        redirectAttributes.addFlashAttribute(ERRORMESSAGE, cnfe.getMessage());
+        return "redirect:/contact";
+    }
+    @ExceptionHandler(NoContactSelectedException.class)
+    public String handleNoContactSelectedException(NoContactSelectedException ncse,
+                                             RedirectAttributes redirectAttributes) {
+        redirectAttributes.addFlashAttribute(ERRORMESSAGE, ncse.getMessage());
+        return "redirect:/transfer";
+    }
+
+    @ExceptionHandler(InsufficientFundsException.class)
+    public String handleInsufficientFundsException(InsufficientFundsException ife,
+                                             RedirectAttributes redirectAttributes) {
+        redirectAttributes.addFlashAttribute(ERRORMESSAGE, ife.getMessage());
+        return "redirect:/transfer";
+    }
+
 }
