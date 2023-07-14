@@ -106,90 +106,94 @@ public class TransactionService {
                 .orElseThrow(() -> new UsernameNotFoundException("AppUser not found"))
                 .getId();
 
+        List<Transaction> appUserTransactions = transactionRepository
+                .findBySenderIdOrRecepientId(appUserId, appUserId);
 
-        List<Transaction> appUSertransactions = transactionRepository
-                .findBySenderIdOrRecepientId(appUserId,appUserId);
+        return convertToTransactionHistory(appUserTransactions, appUserId);
+    }
 
+    private List<TransactionForAppUserHistory> convertToTransactionHistory(List<Transaction> transactions, int appUserId) {
         List<TransactionForAppUserHistory> transactionsHistory = new ArrayList<>();
 
-        if(!appUSertransactions.isEmpty()){
-            //creat one AppUserTransactionHistory for each transaction in db.
-            for(Transaction transaction : appUSertransactions){
+        for(Transaction transaction : transactions){
+            TransactionForAppUserHistory simplifiedTransaction;
 
-                if(transaction.getTransactionType() == Transaction
-                        .TransactionType.send || transaction.getTransactionType() == Transaction
-                        .TransactionType.receive){
-
-                    //find contactId in transaction
-                    int contactId;
-                    if(appUserId == transaction.getSenderId()){
-                        contactId = transaction.getRecepientId();
-
-                        //find the contactAppUSer in db
-                        Optional<AppUser> contactAppUserOptional = appUserService
-                                .getAppUserById(contactId);
-
-                        //add each TransactionForAppUserHistory to transactionsHistory
-                        if (contactAppUserOptional.isPresent()){
-                            AppUser contact = contactAppUserOptional.get();
-
-                            TransactionForAppUserHistory simplifiedTransaction = new TransactionForAppUserHistory(contact
-                                    .getUsername(), transaction.getDescription(), transaction.getAmount().negate(),
-                                    Transaction.TransactionType.send);
-                            transactionsHistory.add(simplifiedTransaction);
-                        }
-
-                    }else {
-                        contactId = transaction.getSenderId();
-
-                        //find the contactAppUSer in db
-                        Optional<AppUser> contactAppUserOptionnal = appUserService
-                                .getAppUserById(contactId);
-
-                        //add each TransactionForAppUserHistory to transactionsHistory
-                        if (contactAppUserOptionnal.isPresent()){
-                            AppUser contact = contactAppUserOptionnal.get();
-
-                            TransactionForAppUserHistory simplifiedTransaction = new TransactionForAppUserHistory(contact
-                                    .getUsername(), transaction.getDescription(), transaction.getAmount(),
-                                    Transaction.TransactionType.receive);
-                            transactionsHistory.add(simplifiedTransaction);
-                        }
-
-                    }
-
-                } else if (transaction.getTransactionType() == Transaction
-                        .TransactionType.withdrawal){
-
-                    TransactionForAppUserHistory simplifiedTransaction = new TransactionForAppUserHistory(null,
-                            transaction.getDescription(), transaction.getAmount().negate(),
-                            Transaction.TransactionType.withdrawal);
-                    transactionsHistory.add(simplifiedTransaction);
-
-                }else if (transaction.getTransactionType() == Transaction.TransactionType.deposit ){
-                    TransactionForAppUserHistory simplifiedTransaction = new TransactionForAppUserHistory(null,
-                            transaction.getDescription(), transaction.getAmount(),
-                            Transaction.TransactionType.deposit);
-                    transactionsHistory.add(simplifiedTransaction);
-
-                }
-
+            if(transaction.getTransactionType() == Transaction.TransactionType.send
+                    || transaction.getTransactionType() == Transaction.TransactionType.receive) {
+                simplifiedTransaction = handleSendReceiveTransactions(transaction, appUserId);
+            } else {
+                simplifiedTransaction = handleNonDepositWithdrawalTransactions(transaction);
             }
 
+            if (simplifiedTransaction != null) {
+                transactionsHistory.add(simplifiedTransaction);
+            }
         }
 
         return transactionsHistory;
     }
 
+    private TransactionForAppUserHistory handleSendReceiveTransactions(Transaction transaction, int appUserId) {
+        //find contactId in transaction
+        int contactId;
+        if(appUserId == transaction.getSenderId()){
+            contactId = transaction.getRecepientId();
+
+            //find the contactAppUSer in db
+            Optional<AppUser> contactAppUserOptional = appUserService
+                    .getAppUserById(contactId);
+
+            //add each TransactionForAppUserHistory to transactionsHistory
+            if (contactAppUserOptional.isPresent()){
+                AppUser contact = contactAppUserOptional.get();
+
+                return new TransactionForAppUserHistory(contact
+                         .getUsername(), transaction.getDescription(), transaction.getAmount().negate(),
+                         Transaction.TransactionType.send);
+            }
+
+        }else {
+            contactId = transaction.getSenderId();
+
+            //find the contactAppUSer in db
+            Optional<AppUser> contactAppUserOptionnal = appUserService
+                    .getAppUserById(contactId);
+
+            //add each TransactionForAppUserHistory to transactionsHistory
+            if (contactAppUserOptionnal.isPresent()){
+                AppUser contact = contactAppUserOptionnal.get();
+
+                return new TransactionForAppUserHistory(contact
+                        .getUsername(), transaction.getDescription(), transaction.getAmount(),
+                        Transaction.TransactionType.receive);
+            }
+        }
+        return null;
+    }
+
+    private TransactionForAppUserHistory handleNonDepositWithdrawalTransactions(Transaction transaction) {
+        if (transaction.getTransactionType() == Transaction
+                .TransactionType.withdrawal){
+
+            return new TransactionForAppUserHistory(null,
+                    transaction.getDescription(), transaction.getAmount().negate(),
+                    Transaction.TransactionType.withdrawal);
+
+
+        }else if (transaction.getTransactionType() == Transaction.TransactionType.deposit ){
+            return new TransactionForAppUserHistory(null,
+                    transaction.getDescription(), transaction.getAmount(),
+                    Transaction.TransactionType.deposit);
+
+        }
+        return null;
+    }
+
     public void withdrawFunds(String username, BigDecimal amount){
         //get id
-        Optional<AppUser> appUserOptional = appUserService.getAppUserByUsername(username);
-        AppUser appUser = null;
-        if(appUserOptional.isPresent()){
-            appUser = appUserOptional.get();
-        }else {
-            throw new NoSuchElementException("User not found");
-        }
+        AppUser appUser = appUserService.getAppUserByUsername(username)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+
 
         Wallet appUserWallet = null;
         Optional<Wallet> walletOptional =  walletService.getWalletById(appUser.getId());
@@ -207,13 +211,8 @@ public class TransactionService {
     //for test
     public void genarateTestDepostion(String username){
         //get id
-        Optional<AppUser> appUserOptional = appUserService.getAppUserByUsername(username);
-        AppUser appUser = null;
-        if(appUserOptional.isPresent()){
-            appUser = appUserOptional.get();
-        }else {
-            throw new NoSuchElementException("User not found");
-        }
+        AppUser appUser = appUserService.getAppUserByUsername(username)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
 
         Wallet appUserWallet = null;
         Optional<Wallet> walletOptional =  walletService.getWalletById(appUser.getId());
