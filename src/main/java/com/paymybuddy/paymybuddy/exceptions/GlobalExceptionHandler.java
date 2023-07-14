@@ -2,7 +2,6 @@ package com.paymybuddy.paymybuddy.exceptions;
 
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.NoSuchElementException;
@@ -45,5 +44,21 @@ public class GlobalExceptionHandler {
         redirectAttributes.addFlashAttribute(ERRORMESSAGE, muie.getMessage());
         return "redirect:/update_profile";
     }
+
+    @ExceptionHandler(ContactNotFoundException.class)
+    public String handleContactNotFoundException(ContactNotFoundException cnfe,
+                                             RedirectAttributes redirectAttributes) {
+        redirectAttributes.addFlashAttribute(ERRORMESSAGE, cnfe.getMessage());
+        return "redirect:/contact";
+    }
+
+    @ExceptionHandler(InsufficientFundsException.class)
+    public String handleInsufficientFundsException(InsufficientFundsException ife,
+                                                   RedirectAttributes redirectAttributes) {
+        redirectAttributes.addFlashAttribute(ERRORMESSAGE, ife.getMessage());
+        return "redirect:/transfer";
+    }
+
+
 
 }

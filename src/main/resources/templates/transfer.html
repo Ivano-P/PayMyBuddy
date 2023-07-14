@@ -34,7 +34,7 @@
         <form th:action="@{/transfer}" method="post">
             <div>
                 <label for="contactSelect"></label>
-                <select id="contactSelect" name="contactId">
+                <select id="contactSelect" name="contactId" required>
                     <option value="" disabled selected>Select Contact</option>
                     <option th:each="contact : ${contacts}" th:value="${contact.id}"
                             th:text="${contact.username + ' (' +contact.firstName + ' ' + contact.lastName + ')'}">
@@ -42,7 +42,7 @@
                 </select>
 
                 <label for="balance">Add amount :</label>
-                <input type="text" name="amount" id="balance" placeholder="0">
+                <input type="text" name="amount" id="balance" placeholder="0" min="1" required>
             </div>
 
             <div>

@@ -1,7 +1,6 @@
 package com.paymybuddy.paymybuddy.controller;
 
 import com.paymybuddy.paymybuddy.dto.TransactionForAppUserHistory;
-import com.paymybuddy.paymybuddy.exceptions.MissingUserInfoException;
 import com.paymybuddy.paymybuddy.model.AppUser;
 import com.paymybuddy.paymybuddy.model.BankAccount;
 import com.paymybuddy.paymybuddy.service.AppPmbService;
@@ -155,7 +154,7 @@ public class UserController {
     @PostMapping("/removeContact")
     public String removeContact(Principal principal, @RequestParam("contactId") Integer contactId) {
         appUserService.removeContact(principal.getName(), contactId);
-        return "redirect:contact"; // redirect to same page
+        return "redirect:/contact"; // redirect to same page
     }
 
     @PostMapping("/transfer")
@@ -163,6 +162,7 @@ public class UserController {
                                 @RequestParam("contactId") Integer contactId,
                                 @RequestParam("amount") BigDecimal amount,
                                 @RequestParam(value = "description", required = false) String description) {
+
         transactionService.transferFunds(principal.getName(), contactId, amount, description);
         return "redirect:/transfer"; // redirect back to the transfer page
     }

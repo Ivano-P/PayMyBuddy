@@ -42,7 +42,6 @@ public class WalletService {
         // Create new wallet
         Wallet wallet = new Wallet();
         wallet.setBalance(BigDecimal.valueOf(1000000));
-        wallet.setUsername(appUser.getUsername());
         //Associate the wallet  with user
         appUser.setWallet(wallet);
         //Associate the wallet  with user
@@ -56,7 +55,6 @@ public class WalletService {
         // Create new wallet
         Wallet wallet = new Wallet();
         wallet.setBalance(BigDecimal.ZERO);
-        wallet.setUsername(appUser.getUsername());
         //Associate the wallet  with user
         appUser.setWallet(wallet);
         //Associate the wallet  with user

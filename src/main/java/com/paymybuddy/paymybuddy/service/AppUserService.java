@@ -1,5 +1,6 @@
 package com.paymybuddy.paymybuddy.service;
 
+import com.paymybuddy.paymybuddy.exceptions.ContactNotFoundException;
 import com.paymybuddy.paymybuddy.exceptions.MissingUserInfoException;
 import com.paymybuddy.paymybuddy.model.AppUser;
 import com.paymybuddy.paymybuddy.model.AppUserContact;
@@ -104,7 +105,7 @@ public class AppUserService {
         Optional<AppUser> newContactOptional = appUserRepository.findByUsername(contactUsername);
 
         if(newContactOptional.isEmpty()){
-            throw new NoSuchElementException();
+            throw new ContactNotFoundException();
         }else if (userOptional.isPresent()) {
             AppUser user = userOptional.get();
             AppUser newContact = newContactOptional.get();

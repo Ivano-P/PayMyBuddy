@@ -2,6 +2,8 @@ package com.paymybuddy.paymybuddy.model;
 
 import jakarta.persistence.*;
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
+
 import lombok.Data;
 
 @Entity
@@ -24,6 +26,9 @@ public class Transaction {
 
     @Column(name = "amount", nullable = false)
     private BigDecimal amount;
+
+    @Column(name = "time_stamp")
+    private LocalDateTime timeStamp;
 
     @Column(name = "transaction_fee")
     private BigDecimal transactionFee;
