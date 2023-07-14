@@ -52,13 +52,6 @@ public class OAuth2LoginSuccessHandler extends SimpleUrlAuthenticationSuccessHan
                 return appUserRepository.save(finalGithubUser);
             });
 
-            /*
-            githubUser = appUserRepository.findByUsername(githubUsername).orElseGet(() -> {
-            githubUser.setUsername(githubUsername);
-            appUserService.creatAndLinkWallet(githubUser);
-            return appUserRepository.save(githubUser);
-            });
-             */
 
             // Create a list of GrantedAuthority and insert the created user's role
             List<GrantedAuthority> authorities = List.of(new SimpleGrantedAuthority("ROLE_" + githubUser.getRole().name()));
@@ -77,7 +70,7 @@ public class OAuth2LoginSuccessHandler extends SimpleUrlAuthenticationSuccessHan
 
         }
 
-        //super.onAuthenticationSuccess(request, response, authentication);
+
 
     }
 }

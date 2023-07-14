@@ -39,4 +39,11 @@ public class GlobalExceptionHandler {
         return "redirect:/transfer";
     }
 
+    @ExceptionHandler(MissingUserInfoException.class)
+    public String handleMissingUserInfoException(MissingUserInfoException muie,
+                                             RedirectAttributes redirectAttributes) {
+        redirectAttributes.addFlashAttribute(ERRORMESSAGE, muie.getMessage());
+        return "redirect:/update_profile";
+    }
+
 }

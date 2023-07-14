@@ -1,12 +1,10 @@
 package com.paymybuddy.paymybuddy.service;
 
+import com.paymybuddy.paymybuddy.exceptions.MissingUserInfoException;
 import com.paymybuddy.paymybuddy.model.AppUser;
 import com.paymybuddy.paymybuddy.model.AppUserContact;
-import com.paymybuddy.paymybuddy.model.Transaction;
-import com.paymybuddy.paymybuddy.repository.AccountPayMyBuddyRepository;
 import com.paymybuddy.paymybuddy.repository.AppUserContactRepository;
 import com.paymybuddy.paymybuddy.repository.AppUserRepository;
-import com.paymybuddy.paymybuddy.repository.TransactionRepository;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +12,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.math.BigDecimal;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
@@ -156,8 +153,17 @@ public class AppUserService {
 
     }
 
+    public void checkIfAllUserInfoPresent(AppUser appUser){
+        boolean allInfoArePresent;
 
+        allInfoArePresent = appUser.getFirstName() != null && appUser.getLastName() != null && appUser
+                .getEmail() != null;
 
+        if(!allInfoArePresent){
+            throw new MissingUserInfoException("First name, last name and email must be registered");
+        }
+
+    }
 
 
 }

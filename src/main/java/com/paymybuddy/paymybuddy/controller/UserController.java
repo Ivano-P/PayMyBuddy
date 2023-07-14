@@ -1,6 +1,7 @@
 package com.paymybuddy.paymybuddy.controller;
 
 import com.paymybuddy.paymybuddy.dto.TransactionForAppUserHistory;
+import com.paymybuddy.paymybuddy.exceptions.MissingUserInfoException;
 import com.paymybuddy.paymybuddy.model.AppUser;
 import com.paymybuddy.paymybuddy.model.BankAccount;
 import com.paymybuddy.paymybuddy.service.AppPmbService;
@@ -9,6 +10,7 @@ import com.paymybuddy.paymybuddy.service.BankAccountService;
 import com.paymybuddy.paymybuddy.service.TransactionService;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -41,7 +43,11 @@ public class UserController {
     public String goToHomePage(Model model, Principal principal) {
         Optional<AppUser> currentUSer = appUserService.getAppUserByUsername(principal.getName());
 
-        currentUSer.ifPresent(appUser -> model.addAttribute("currentUser", appUser));
+        currentUSer.ifPresent(appUser -> {
+            model.addAttribute("currentUser", appUser);
+            appUserService.checkIfAllUserInfoPresent(appUser);
+        });
+
         return "home";
     }
 
@@ -51,6 +57,7 @@ public class UserController {
 
         currentUSer.ifPresent(appUser -> {
             model.addAttribute("currentUser", appUser);
+            appUserService.checkIfAllUserInfoPresent(appUser);
 
             // Fetch the contacts for the current user and add them to the model
             List<AppUser> contacts = appUserService.getContactsForUser(appUser);
@@ -81,24 +88,23 @@ public class UserController {
 
     @GetMapping("/profile")
     public String goToProfilePage(Model model, Principal principal) {
-        Optional<AppUser> currentUser = appUserService.getAppUserByUsername(principal.getName());
-        int currentUserId = 0;
+        Optional<AppUser> appUserOptional = appUserService.getAppUserByUsername(principal.getName());
+        appUserOptional.ifPresent(appUser -> {
+            model.addAttribute("currentUser", appUser);
+            appUserService.checkIfAllUserInfoPresent(appUser);
+            boolean hasBankAccount = bankAccountService.hasBankAccount(principal.getName());
 
-        if(currentUser.isPresent()){
-            currentUserId = currentUser.get().getId();
-        }
+            model.addAttribute("hasBankAccount", hasBankAccount);
+            if(hasBankAccount){
+                BankAccount bankAccount = bankAccountService
+                        .getAppUserBankAccount(appUser.getId());
 
-        boolean hasBankAccount = bankAccountService.hasBankAccount(principal.getName());
-        model.addAttribute("hasBankAccount", hasBankAccount);
-        if(hasBankAccount){
-           BankAccount bankAccount = bankAccountService
-                    .getAppUserBankAccount(currentUserId);
+                model.addAttribute("bankAccount", bankAccount);
+            }
 
-            model.addAttribute("bankAccount", bankAccount);
-        }
+        });
 
 
-        currentUser.ifPresent(appUser -> model.addAttribute("currentUser", appUser));
         return "profile";
     }
 
@@ -110,9 +116,12 @@ public class UserController {
 
         currentUser.ifPresent(appUser -> {
             model.addAttribute("currentUser", appUser);
+            appUserService.checkIfAllUserInfoPresent(appUser);
+
             // Fetch the contacts for the current user and add them to the model
             List<AppUser> contacts = appUserService.getContactsForUser(appUser);
             model.addAttribute("contacts", contacts);
+
 
         } );
         return "contact";
@@ -210,7 +219,35 @@ public class UserController {
         return "redirect:/transfer";
     }
 
+    @GetMapping("update_profile")
+    public String goToUpdateProfileInfoPage(Model model, Principal principal){
 
+        String username = principal.getName();
+        Optional<AppUser> currentUser = appUserService.getAppUserByUsername(username);
+
+        currentUser.ifPresent(appUser -> {
+            model.addAttribute("currentUser", appUser);
+            model.addAttribute("appUser", new AppUser());
+        });
+
+        return "update_profile";
+    }
+
+    @PostMapping("/updateProfileInfo")
+    public String updateProfileInfo(@ModelAttribute AppUser updatedUser, Principal principal, Model model){
+        String username = principal.getName();
+        Optional<AppUser> appUserOptional = appUserService.getAppUserByUsername(username);
+        AppUser existingAppUser = appUserOptional
+                .orElseThrow(() -> new UsernameNotFoundException("User not found Exception"));
+
+        existingAppUser.setFirstName(updatedUser.getFirstName());
+        existingAppUser.setLastName(updatedUser.getLastName());
+        existingAppUser.setEmail(updatedUser.getEmail());
+
+        appUserService.updateAppUser(existingAppUser);
+
+        return "redirect:/profile";
+    }
 
 
 }
