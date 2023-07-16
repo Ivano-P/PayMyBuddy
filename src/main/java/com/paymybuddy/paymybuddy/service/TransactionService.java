@@ -1,7 +1,12 @@
 package com.paymybuddy.paymybuddy.service;
 
 import com.paymybuddy.paymybuddy.dto.TransactionForAppUserHistory;
-import com.paymybuddy.paymybuddy.exceptions.*;
+
+import com.paymybuddy.paymybuddy.exceptions.InsufficientFundsException;
+import com.paymybuddy.paymybuddy.exceptions.NoContactSelectedException;
+import com.paymybuddy.paymybuddy.exceptions.PmbAccountNotFound;
+import com.paymybuddy.paymybuddy.exceptions.WalletNotFoundException;
+
 import com.paymybuddy.paymybuddy.model.AccountPayMyBuddy;
 import com.paymybuddy.paymybuddy.model.AppUser;
 import com.paymybuddy.paymybuddy.model.Transaction;
@@ -17,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+
 import java.util.*;
 
 @Transactional
@@ -64,6 +70,7 @@ public class TransactionService {
                 .orElseThrow(() -> new WalletNotFoundException("User wallet nor found"));
         Wallet recepientAppUserWallet = contactWalletOptional
                 .orElseThrow(() -> new WalletNotFoundException("Contact wallet nor found"));
+
         AccountPayMyBuddy pmbAccount = pmbAccountOptional.orElseThrow(PmbAccountNotFound::new);
 
         //calculate transaction fee

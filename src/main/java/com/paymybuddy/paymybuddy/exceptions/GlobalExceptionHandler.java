@@ -55,12 +55,6 @@ public class GlobalExceptionHandler {
         return "redirect:/update_profile";
     }
 
-    @ExceptionHandler(NoContactSelectedException.class)
-    public String handleNoContactSelectedException(NoContactSelectedException ncse,
-                                                   RedirectAttributes redirectAttributes) {
-        redirectAttributes.addFlashAttribute(ERRORMESSAGE, ncse.getMessage());
-        return "redirect:/transfer";
-    }
 
     @ExceptionHandler(ContactNotFoundException.class)
     public String handleContactNotFoundException(ContactNotFoundException cnfe,
@@ -76,7 +70,11 @@ public class GlobalExceptionHandler {
         return "redirect:/transfer";
     }
 
-
-
+    @ExceptionHandler(NoContactSelectedException.class)
+    public String handleNoContactSelectedException(NoContactSelectedException ncse,
+                                             RedirectAttributes redirectAttributes) {
+        redirectAttributes.addFlashAttribute(ERRORMESSAGE, ncse.getMessage());
+        return "redirect:/transfer";
+    }
 
 }
