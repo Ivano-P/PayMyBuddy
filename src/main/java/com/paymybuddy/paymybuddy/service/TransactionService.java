@@ -2,10 +2,7 @@ package com.paymybuddy.paymybuddy.service;
 
 import com.paymybuddy.paymybuddy.dto.TransactionForAppUserHistory;
 
-import com.paymybuddy.paymybuddy.exceptions.InsufficientFundsException;
-import com.paymybuddy.paymybuddy.exceptions.NoContactSelectedException;
-import com.paymybuddy.paymybuddy.exceptions.PmbAccountNotFound;
-import com.paymybuddy.paymybuddy.exceptions.WalletNotFoundException;
+import com.paymybuddy.paymybuddy.exceptions.*;
 
 import com.paymybuddy.paymybuddy.model.AccountPayMyBuddy;
 import com.paymybuddy.paymybuddy.model.AppUser;
@@ -54,6 +51,9 @@ public class TransactionService {
 
 
     public void transferFunds (String appUserUsername, Integer contactId, BigDecimal amount, String description){
+        if(amount.compareTo(BigDecimal.ZERO) <=0 || amount.compareTo(BigDecimal.valueOf(10000)) > 0){
+            throw new InvalidAmountException();
+        }
         Optional<AppUser> appUserOptional = appUserService.getAppUserByUsername(appUserUsername);
         Optional<AppUser> contactOptional = appUserService.getAppUserById(contactId);
 

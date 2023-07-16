@@ -41,7 +41,7 @@ public class WalletService {
     public void setAdminUserWalletBalance(AppUser appUser){
         // Create new wallet
         Wallet wallet = new Wallet();
-        wallet.setBalance(BigDecimal.valueOf(1000000));
+        wallet.setBalance(BigDecimal.valueOf(10000));
         //Associate the wallet  with user
         appUser.setWallet(wallet);
         //Associate the wallet  with user

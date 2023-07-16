@@ -77,4 +77,11 @@ public class GlobalExceptionHandler {
         return "redirect:/transfer";
     }
 
+    @ExceptionHandler(InvalidAmountException.class)
+    public String handleInvalidAmountException(InvalidAmountException iae,
+                                             RedirectAttributes redirectAttributes) {
+        redirectAttributes.addFlashAttribute(ERRORMESSAGE, iae.getMessage());
+        return "redirect:/transfer";
+    }
+
 }
