@@ -1,7 +1,10 @@
 package com.paymybuddy.paymybuddy.exceptions;
 
+import jakarta.transaction.InvalidTransactionException;
+import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.NoSuchElementException;
@@ -38,6 +41,13 @@ public class GlobalExceptionHandler {
         return "redirect:/transfer";
     }
 
+    @ExceptionHandler(MissingServletRequestParameterException.class)
+    public String handleMissingServletRequestParameterException(RedirectAttributes redirectAttributes) {
+        redirectAttributes
+                .addFlashAttribute(ERRORMESSAGE, "contact and amount must be defined for transfer");
+        return "redirect:/transfer";
+    }
+
     @ExceptionHandler(MissingUserInfoException.class)
     public String handleMissingUserInfoException(MissingUserInfoException muie,
                                              RedirectAttributes redirectAttributes) {
@@ -58,6 +68,7 @@ public class GlobalExceptionHandler {
         redirectAttributes.addFlashAttribute(ERRORMESSAGE, ife.getMessage());
         return "redirect:/transfer";
     }
+
 
 
 
