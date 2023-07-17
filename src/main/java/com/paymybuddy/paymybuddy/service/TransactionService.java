@@ -33,6 +33,8 @@ public class TransactionService {
     private final AccountPayMyBuddyRepository accountPayMyBuddyRepository;
     private final AppUserService appUserService;
 
+    private final AppPmbService appPmbService;
+
     public void saveTransaction(int senderId, int recepientId,
                                 BigDecimal amout, BigDecimal transactionFee,
                                 Transaction.TransactionType transactionType,
@@ -63,15 +65,13 @@ public class TransactionService {
 
         Optional<Wallet> appUserWalletOptional = walletService.getWalletById(appUser.getId());
         Optional<Wallet> contactWalletOptional = walletService.getWalletById(contactAppUser.getId());
-        Optional<AccountPayMyBuddy> pmbAccountOptional = accountPayMyBuddyRepository.findById(1);
-
 
         Wallet appUserWallet = appUserWalletOptional
                 .orElseThrow(() -> new WalletNotFoundException("User wallet nor found"));
         Wallet recepientAppUserWallet = contactWalletOptional
                 .orElseThrow(() -> new WalletNotFoundException("Contact wallet nor found"));
 
-        AccountPayMyBuddy pmbAccount = pmbAccountOptional.orElseThrow(PmbAccountNotFound::new);
+        AccountPayMyBuddy pmbAccount = appPmbService.getPmbAccountOptional().orElseThrow(PmbAccountNotFound::new);
 
         //calculate transaction fee
         BigDecimal transactionFee = amount.multiply(BigDecimal.valueOf(pmbAccount.getTransactionFee()));
