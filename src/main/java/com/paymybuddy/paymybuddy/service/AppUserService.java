@@ -14,9 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Transactional
 @Log4j2
@@ -49,8 +47,8 @@ public class AppUserService {
         return appUserRepository.findByUsername(username);
     }
 
-    public AppUser updateAppUser(AppUser appUser) {
-        return appUserRepository.save(appUser);
+    public void updateAppUser(AppUser appUser) {
+        appUserRepository.save(appUser);
     }
 
     public void deleteAppUser(int id) {
@@ -59,14 +57,11 @@ public class AppUserService {
 
 
     //creat admin user for test, this  is called on startup
-    public AppUser creatAdminAppUser(){
+    public void creatMainAdminAppUser(){
 
         //check if first user (ADMIN) is created, if not in db creat it
-        Optional<AppUser> AppUserCheck = appUserRepository.findById(1);
-        if(AppUserCheck.isPresent()){
-            return null;
-
-        }else {
+        Optional<AppUser> appUserCheck = appUserRepository.findById(1);
+        if(appUserCheck.isEmpty()){
             AppUser adminAppUser = new AppUser();
             adminAppUser.setLastName("mister");
             adminAppUser.setFirstName("tester");
@@ -78,7 +73,8 @@ public class AppUserService {
             walletService.setAdminUserWalletBalance(adminAppUser);
 
             //cascade setting saves the porteMonnaie as well
-            return appUserRepository.save(adminAppUser);
+            appUserRepository.save(adminAppUser);
+
         }
     }
 
@@ -89,7 +85,6 @@ public class AppUserService {
 
         //Encode the password
         appUser.setPassword(passwordEncoder.encode(appUser.getPassword()));
-        //appUser.setRole(AppUser.Role.USER);
 
         walletService.creatAndLinkWallet(appUser);
 
@@ -105,6 +100,7 @@ public class AppUserService {
         Optional<AppUser> newContactOptional = appUserRepository.findByUsername(contactUsername);
 
         if(newContactOptional.isEmpty()){
+            log.error("contact ContactNotFoundException when user attempted to add contact");
             throw new ContactNotFoundException();
         }else if (userOptional.isPresent()) {
             AppUser user = userOptional.get();
@@ -130,11 +126,10 @@ public class AppUserService {
         List<AppUserContact> userContacts = appUserContactRepository.findByAppUser(user);
 
         // Map the list of AppUserContact instances to a list of AppUser instances
-        List<AppUser> contacts = userContacts.stream()
-                .map(AppUserContact::getContact)
-                .collect(Collectors.toList());
 
-        return contacts;
+        return userContacts.stream()
+                .map(AppUserContact::getContact)
+                .toList();
     }
 
     public void removeContact(String appUserUsername, Integer contactId){

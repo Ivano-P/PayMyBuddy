@@ -19,7 +19,7 @@ public class PaymybuddyApplication {
 		AppUserService appUserService = context.getBean(AppUserService.class);
 		AppPmbService appPmbService = context.getBean(AppPmbService.class);
 
-		appUserService.creatAdminAppUser();
+		appUserService.creatMainAdminAppUser();
 		appPmbService.creatPmbAccount();
 
 	}
