@@ -13,6 +13,8 @@ import com.paymybuddy.paymybuddy.repository.TransactionRepository;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -32,7 +34,6 @@ public class TransactionService {
     private final WalletService walletService;
     private final AccountPayMyBuddyRepository accountPayMyBuddyRepository;
     private final AppUserService appUserService;
-
     private final AppPmbService appPmbService;
 
     public void saveTransaction(int senderId, int recepientId,
@@ -104,36 +105,38 @@ public class TransactionService {
     }
 
 
-    public List<TransactionForAppUserHistory> getTransactionHistory(String username){
+    // get the paged transaction history of a specific user
+    public Page<TransactionForAppUserHistory> getTransactionHistory(String username, Pageable pageable){
         int appUserId = appUserService.getAppUserByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("AppUser not found"))
                 .getId();
 
-        List<Transaction> appUserTransactions = transactionRepository
-                .findBySenderIdOrRecepientIdOrderByIdDesc(appUserId, appUserId);
+        Page<Transaction> appUserTransactions = transactionRepository
+                .findBySenderIdOrRecepientIdOrderByIdDesc(appUserId, appUserId, pageable);
 
-        return convertToTransactionHistory(appUserTransactions, appUserId);
+       /* Map each Transaction object in the Page into a TransactionForAppUserHistory object
+          The resulting Page contains the same paging information as the original, but with the mapped content
+       */
+        return appUserTransactions.map(transaction -> convertToTransactionHistory(transaction, appUserId));
     }
 
+    //convert a Transaction object to a TransactionForAppUserHistory object
+    private TransactionForAppUserHistory convertToTransactionHistory(Transaction transaction, int appUserId) {
 
-    private List<TransactionForAppUserHistory> convertToTransactionHistory(List<Transaction> transactions, int appUserId) {
-        List<TransactionForAppUserHistory> transactionsHistory = new ArrayList<>();
+        TransactionForAppUserHistory simplifiedTransaction;
 
-        for(Transaction transaction : transactions){
-            TransactionForAppUserHistory simplifiedTransaction;
-
-            if(transaction.getTransactionType() == Transaction.TransactionType.send
-                    || transaction.getTransactionType() == Transaction.TransactionType.receive) {
-                simplifiedTransaction = handleSendReceiveTransactions(transaction, appUserId);
-            } else {
-                simplifiedTransaction = handleNonDepositWithdrawalTransactions(transaction);
-            }
-
-            if (simplifiedTransaction != null) {
-                transactionsHistory.add(simplifiedTransaction);
-            }
+        // If the transaction type is send or receive,
+        // then handle it with handleSendReceiveTransactions
+        if(transaction.getTransactionType() == Transaction.TransactionType.send
+                || transaction.getTransactionType() == Transaction.TransactionType.receive) {
+            simplifiedTransaction = handleSendReceiveTransactions(transaction, appUserId);
+        } else {
+            // Otherwise, handle it with handleNonDepositWithdrawalTransactions
+            simplifiedTransaction = handleNonDepositWithdrawalTransactions(transaction);
         }
-        return transactionsHistory;
+
+        // Return the converted transaction
+        return simplifiedTransaction;
     }
 
     private TransactionForAppUserHistory handleSendReceiveTransactions(Transaction transaction, int appUserId) {

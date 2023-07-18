@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="https://www.thymeleaf.org"
-      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+>
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width; initial-scale=1">
@@ -74,7 +74,7 @@
 
 <section id="transaction_history">
     <h2>Transaction history</h2>
-    <table class="transaction-tables" id="transfer-history">
+    <table>
         <thead>
         <tr>
             <th>Contact</th>
@@ -83,8 +83,9 @@
             <th>Amount</th>
         </tr>
         </thead>
+
         <tbody>
-        <tr th:each="transaction : ${transactions}">
+        <tr th:each="transaction : ${transactions.content}">
             <td th:text="${transaction.contactUsername}"></td>
             <td th:text="${transaction.description}"></td>
             <td th:text="${transaction.transactionType}"></td>
@@ -94,9 +95,30 @@
         </tr>
         </tbody>
     </table>
+
+    <!-- Pagination -->
+    <div th:with="start=${totalPages > currentPage + 4 ? currentPage : totalPages - 5}, end=${start + 4 < totalPages ? start + 4 : totalPages - 1}">
+        <button th:onclick="'window.location.href=\'/transfer?page=0\''">First page</button>
+        <button th:if="${transactions.hasPrevious()}"
+                th:onclick="'window.location.href=\'/transfer?page=' + (${transactions.number - 1}) + '\''"> previous </button>
+
+        <span th:each="pageNumber : ${#numbers.sequence(start, end)}">
+    <button th:onclick="'window.location.href=\'/transfer?page=' + (${pageNumber}) + '\''"
+            th:text="${pageNumber + 1}"
+            th:style="${pageNumber == currentPage} ? 'font-weight: bold;' : ''"></button>
+    </span>
+
+        <button th:if="${transactions.hasNext()}"
+                th:onclick="'window.location.href=\'/transfer?page=' + (${transactions.number + 1}) + '\''"> next </button>
+        <button th:onclick="'window.location.href=\'/transfer?page=' + (${totalPages - 1}) + '\''">Last page</button>
+    </div>
+
+
+
+
     <form action="#" th:action="@{/testDepositFunds}" method="post" id="deposit-form">
         <label for="null"></label>
-        <input type="hidden" name="null" id="null" >
+        <input type="hidden" name="null" id="null">
         <button type="submit" class="btn">test deposit</button>
     </form>
 

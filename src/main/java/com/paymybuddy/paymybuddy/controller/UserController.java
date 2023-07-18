@@ -9,6 +9,9 @@ import com.paymybuddy.paymybuddy.service.BankAccountService;
 import com.paymybuddy.paymybuddy.service.TransactionService;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -31,8 +34,6 @@ public class UserController {
     private final AppPmbService appPmbService;
     private final TransactionService transactionService;
 
-    private final String CURRENTUSER = "currentUser";
-
 
     @GetMapping("/register")
     public String showRegistrationForm(Model model) {
@@ -45,7 +46,7 @@ public class UserController {
         Optional<AppUser> currentUSer = appUserService.getAppUserByUsername(principal.getName());
 
         currentUSer.ifPresent(appUser -> {
-            model.addAttribute(CURRENTUSER, appUser);
+            model.addAttribute("currentUser", appUser);
             appUserService.checkIfAllUserInfoPresent(appUser);
         });
 
@@ -53,11 +54,12 @@ public class UserController {
     }
 
     @GetMapping("/transfer")
-    public String goToTransferPage(Model model, Principal principal) {
+    public String goToTransferPage(Model model, Principal principal, @RequestParam(defaultValue = "0") int page) {
         Optional<AppUser> currentUSer = appUserService.getAppUserByUsername(principal.getName());
+        PageRequest pageRequest = PageRequest.of(page, 5);
 
         currentUSer.ifPresent(appUser -> {
-            model.addAttribute(CURRENTUSER, appUser);
+            model.addAttribute("currentUser", appUser);
             appUserService.checkIfAllUserInfoPresent(appUser);
 
             // Fetch the contacts for the current user and add them to the model
@@ -69,9 +71,15 @@ public class UserController {
             model.addAttribute("hasBankAccount", hasBankAccount);
 
             //fetch list of TransactionForAppUserHistory
-            List<TransactionForAppUserHistory> transactions = transactionService
-                    .getTransactionHistory(principal.getName());
+            Page<TransactionForAppUserHistory> transactions = transactionService
+                    .getTransactionHistory(principal.getName(), pageRequest);
             model.addAttribute("transactions", transactions);
+
+            int totalPages = transactions.getTotalPages();
+            System.out.println("Total pages: " + transactions.getTotalPages()); // add this
+            System.out.println("Current page: " + page); // add this
+            model.addAttribute("totalPages", totalPages);
+            model.addAttribute("currentPage", page);
         });
         return "transfer";
     }
@@ -79,7 +87,7 @@ public class UserController {
     @GetMapping("/iban")
     public String goToIban(Model model, Principal principal) {
         Optional<AppUser> currentUSer = appUserService.getAppUserByUsername(principal.getName());
-        currentUSer.ifPresent(appUser -> model.addAttribute(CURRENTUSER, appUser));
+        currentUSer.ifPresent(appUser -> model.addAttribute("currentUser", appUser));
 
         String iban = appPmbService.getPmbIban();
         model.addAttribute("iban", iban);
@@ -91,7 +99,7 @@ public class UserController {
     public String goToProfilePage(Model model, Principal principal) {
         Optional<AppUser> appUserOptional = appUserService.getAppUserByUsername(principal.getName());
         appUserOptional.ifPresent(appUser -> {
-            model.addAttribute(CURRENTUSER, appUser);
+            model.addAttribute("currentUser", appUser);
             appUserService.checkIfAllUserInfoPresent(appUser);
             boolean hasBankAccount = bankAccountService.hasBankAccount(principal.getName());
 
@@ -116,7 +124,7 @@ public class UserController {
         Optional<AppUser> currentUser = appUserService.getAppUserByUsername(principal.getName());
 
         currentUser.ifPresent(appUser -> {
-            model.addAttribute(CURRENTUSER, appUser);
+            model.addAttribute("currentUser", appUser);
             appUserService.checkIfAllUserInfoPresent(appUser);
 
             // Fetch the contacts for the current user and add them to the model
@@ -219,7 +227,7 @@ public class UserController {
         Optional<AppUser> currentUser = appUserService.getAppUserByUsername(username);
 
         currentUser.ifPresent(appUser -> {
-            model.addAttribute(CURRENTUSER, appUser);
+            model.addAttribute("currentUser", appUser);
             model.addAttribute("appUser", new AppUser());
         });
 
