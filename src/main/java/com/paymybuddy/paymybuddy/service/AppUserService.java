@@ -73,7 +73,7 @@ public class AppUserService {
             adminAppUser.setUsername("mainadmin");
             adminAppUser.setEmail("mistertester@testmail.com");
             adminAppUser.setRole(AppUser.Role.ADMIN);
-            adminAppUser.setPassword(passwordEncoder.encode("Testpassword123*"));
+            adminAppUser.setPassword(passwordEncoder.encode(System.getenv("PMB_MAINADMIN_PASSWORD")));
 
             walletService.setAdminUserWalletBalance(adminAppUser);
 
