@@ -72,7 +72,7 @@ public class TransactionService {
         Wallet recepientAppUserWallet = contactWalletOptional
                 .orElseThrow(() -> new WalletNotFoundException("Contact wallet nor found"));
 
-        AccountPayMyBuddy pmbAccount = appPmbService.getPmbAccountOptional().orElseThrow(PmbAccountNotFound::new);
+        AccountPayMyBuddy pmbAccount = appPmbService.getAccountPmb();
 
         //calculate transaction fee
         BigDecimal transactionFee = amount.multiply(BigDecimal.valueOf(pmbAccount.getTransactionFee()));

@@ -16,36 +16,34 @@ import java.util.Optional;
 @AllArgsConstructor(onConstructor = @__(@Autowired))
 public class AppPmbService {
     private final AccountPayMyBuddyRepository accountPayMyBuddyRepository;
-    final int PMBACCOUNTID = 1;
+    static final int PMB_ACCOUNT_ID = 1;
 
-    public Optional<AccountPayMyBuddy> getPmbAccountOptional(){
-        return accountPayMyBuddyRepository.findById(PMBACCOUNTID);
+    public AccountPayMyBuddy getAccountPmb() {
+        Optional<AccountPayMyBuddy> accountPayMyBuddyOptional = accountPayMyBuddyRepository.findById(PMB_ACCOUNT_ID);
+        return accountPayMyBuddyOptional.orElseThrow(() -> new RuntimeException("Account not found"));
     }
 
+    public boolean checkIfPmbAccountIsPresent() {
+        Optional<AccountPayMyBuddy> pmbAccountOptional = accountPayMyBuddyRepository.findById(PMB_ACCOUNT_ID);
+
+        return pmbAccountOptional.isPresent();
+    }
+
+    //this is called on launch so i dont want to throw error if no AccountPmb is found
     @Transactional
-    public AccountPayMyBuddy creatPmbAccount(){
-        getPmbAccountOptional();
-        if(getPmbAccountOptional().isPresent()){
-            return null;
-        }else {
+    public void creatPmbAccount() {
+        if (checkIfPmbAccountIsPresent()) {
             AccountPayMyBuddy pmbAccount = new AccountPayMyBuddy();
             pmbAccount.setBalance(BigDecimal.ZERO);
-            return accountPayMyBuddyRepository.save(pmbAccount);
+            accountPayMyBuddyRepository.save(pmbAccount);
+
+        } else {
+            log.debug("pmb account already created");
         }
     }
 
-
-    public String getPmbIban(){
-        String pmbIban = null;
-
-        if(getPmbAccountOptional().isPresent()){
-            pmbIban = getPmbAccountOptional().get().getIban();
-        }else {
-            log.error("pmb account is not persisted in db or does not contain iban");
-
-        }
-
-        return pmbIban;
+    public String getPmbIban() {
+        return getAccountPmb().getIban();
     }
 
 
