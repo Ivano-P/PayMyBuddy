@@ -21,7 +21,7 @@ public class AccountPayMyBuddy {
     @Column(name = "transaction_fee")
     private double transactionFee = 0.005;
 
-    @Column(name = "iban", nullable = false)
+    @Column(name = "iban", nullable = false, length = 34)
     private String iban = "FR345678911234567892123";
 }
 

@@ -22,7 +22,7 @@ public class BankAccount {
     @Column(name = "title", nullable = false)
     private String title;
 
-    @Column(name = "iban", nullable = false)
+    @Column(name = "iban", nullable = false, length = 34)
     private String iban;
 
 }

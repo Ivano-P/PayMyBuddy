@@ -31,7 +31,9 @@ public class UserController {
     private final AppPmbService appPmbService;
     private final TransactionService transactionService;
 
-    //go to registration page
+    private final String CURRENTUSER = "currentUser";
+
+
     @GetMapping("/register")
     public String showRegistrationForm(Model model) {
         model.addAttribute("appUser", new AppUser());
@@ -43,7 +45,7 @@ public class UserController {
         Optional<AppUser> currentUSer = appUserService.getAppUserByUsername(principal.getName());
 
         currentUSer.ifPresent(appUser -> {
-            model.addAttribute("currentUser", appUser);
+            model.addAttribute(CURRENTUSER, appUser);
             appUserService.checkIfAllUserInfoPresent(appUser);
         });
 
@@ -55,7 +57,7 @@ public class UserController {
         Optional<AppUser> currentUSer = appUserService.getAppUserByUsername(principal.getName());
 
         currentUSer.ifPresent(appUser -> {
-            model.addAttribute("currentUser", appUser);
+            model.addAttribute(CURRENTUSER, appUser);
             appUserService.checkIfAllUserInfoPresent(appUser);
 
             // Fetch the contacts for the current user and add them to the model
@@ -75,9 +77,9 @@ public class UserController {
     }
 
     @GetMapping("/iban")
-    public String goToIban(Model model, Principal principal){
+    public String goToIban(Model model, Principal principal) {
         Optional<AppUser> currentUSer = appUserService.getAppUserByUsername(principal.getName());
-        currentUSer.ifPresent(appUser -> model.addAttribute("currentUser", appUser));
+        currentUSer.ifPresent(appUser -> model.addAttribute(CURRENTUSER, appUser));
 
         String iban = appPmbService.getPmbIban();
         model.addAttribute("iban", iban);
@@ -89,12 +91,12 @@ public class UserController {
     public String goToProfilePage(Model model, Principal principal) {
         Optional<AppUser> appUserOptional = appUserService.getAppUserByUsername(principal.getName());
         appUserOptional.ifPresent(appUser -> {
-            model.addAttribute("currentUser", appUser);
+            model.addAttribute(CURRENTUSER, appUser);
             appUserService.checkIfAllUserInfoPresent(appUser);
             boolean hasBankAccount = bankAccountService.hasBankAccount(principal.getName());
 
             model.addAttribute("hasBankAccount", hasBankAccount);
-            if(hasBankAccount){
+            if (hasBankAccount) {
                 BankAccount bankAccount = bankAccountService
                         .getAppUserBankAccount(appUser.getId());
 
@@ -109,12 +111,12 @@ public class UserController {
 
 
     @GetMapping("/contact")
-    public String goToContactPage(Model model, Principal principal){
+    public String goToContactPage(Model model, Principal principal) {
 
         Optional<AppUser> currentUser = appUserService.getAppUserByUsername(principal.getName());
 
         currentUser.ifPresent(appUser -> {
-            model.addAttribute("currentUser", appUser);
+            model.addAttribute(CURRENTUSER, appUser);
             appUserService.checkIfAllUserInfoPresent(appUser);
 
             // Fetch the contacts for the current user and add them to the model
@@ -122,12 +124,12 @@ public class UserController {
             model.addAttribute("contacts", contacts);
 
 
-        } );
+        });
         return "contact";
     }
 
     @PostMapping("/register")
-    public String registerAppUser(@ModelAttribute AppUser appUser){
+    public String registerAppUser(@ModelAttribute AppUser appUser) {
 
         if (appUserService.createAppUser(appUser) != null) {
             return "registrationSuccessful";
@@ -135,15 +137,6 @@ public class UserController {
             return "registrationFailure";
         }
     }
-
-    /*
-    @PostMapping("/addContact")
-    public String addContact(Principal principal, @RequestParam("contactEmail") String contactEmail) {
-        appUserService.addContact(principal.getName(), contactEmail);
-        return "redirect:/contact"; // redirect to same page
-    }
-
-     */
 
     @PostMapping("/addContact")
     public String addContact(Principal principal, @RequestParam("contactUsername") String contactUsername) {
@@ -171,7 +164,7 @@ public class UserController {
     public String addBankAccount(Principal principal,
                                  @RequestParam("lastName") String lastName,
                                  @RequestParam("firstName") String firstName,
-                                 @RequestParam("iban") String iban){
+                                 @RequestParam("iban") String iban) {
 
         //check bank account validity
         BankAccount bankAccountToAdd = bankAccountService
@@ -184,14 +177,14 @@ public class UserController {
     }
 
     @PostMapping("/removeBankAccount")
-    public String removeBankAccount(@RequestParam("appUserId") Integer appUserId){
+    public String removeBankAccount(@RequestParam("appUserId") Integer appUserId) {
         bankAccountService.removeBankAccount(appUserId);
 
         return "redirect:/profile";
     }
 
     @PostMapping("/deposit")
-    public String depositFunds(){
+    public String depositFunds() {
         boolean showIban = true;
         bankAccountService.showIbanForDeposit(showIban);
 
@@ -199,7 +192,7 @@ public class UserController {
     }
 
     @PostMapping("/withdrawFunds")
-    public String withdrawFunds(Principal principal, @RequestParam("amount") BigDecimal amount){
+    public String withdrawFunds(Principal principal, @RequestParam("amount") BigDecimal amount) {
         transactionService.withdrawFunds(principal.getName(), amount);
         return "redirect:/transfer";
     }
@@ -207,26 +200,26 @@ public class UserController {
     //for test
     //TODO: remove after test
     @PostMapping("/testDepositFunds")
-    public String testDepositFunds(Principal principal){
+    public String testDepositFunds(Principal principal) {
         transactionService.genarateTestDepostion(principal.getName());
         return "redirect:/transfer";
     }
 
 
     @PostMapping("/noAccountForWithdrawal")
-    public String indicateAddBankAccount(){
+    public String indicateAddBankAccount() {
         bankAccountService.noBankAccountForWithdrawal();
         return "redirect:/transfer";
     }
 
     @GetMapping("update_profile")
-    public String goToUpdateProfileInfoPage(Model model, Principal principal){
+    public String goToUpdateProfileInfoPage(Model model, Principal principal) {
 
         String username = principal.getName();
         Optional<AppUser> currentUser = appUserService.getAppUserByUsername(username);
 
         currentUser.ifPresent(appUser -> {
-            model.addAttribute("currentUser", appUser);
+            model.addAttribute(CURRENTUSER, appUser);
             model.addAttribute("appUser", new AppUser());
         });
 
@@ -234,7 +227,7 @@ public class UserController {
     }
 
     @PostMapping("/updateProfileInfo")
-    public String updateProfileInfo(@ModelAttribute AppUser updatedUser, Principal principal, Model model){
+    public String updateProfileInfo(@ModelAttribute AppUser updatedUser, Principal principal, Model model) {
         String username = principal.getName();
         Optional<AppUser> appUserOptional = appUserService.getAppUserByUsername(username);
         AppUser existingAppUser = appUserOptional
