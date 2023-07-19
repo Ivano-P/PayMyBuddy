@@ -1,7 +1,6 @@
 package com.paymybuddy.paymybuddy.service;
 
 import com.paymybuddy.paymybuddy.model.AppUser;
-import com.paymybuddy.paymybuddy.model.Transaction;
 import com.paymybuddy.paymybuddy.model.Wallet;
 import com.paymybuddy.paymybuddy.repository.WalletRepository;
 import lombok.AllArgsConstructor;
@@ -32,8 +31,8 @@ public class WalletService {
         return walletRepository.findAll();
     }
 
-    public Wallet updateWallet(Wallet wallet) {
-        return walletRepository.save(wallet);
+    public void updateWallet(Wallet wallet) {
+        walletRepository.save(wallet);
     }
 
 
@@ -46,7 +45,7 @@ public class WalletService {
         appUser.setWallet(wallet);
         //Associate the wallet  with user
         appUser.setWallet(wallet);
-        //Set the PorteMonnaie's utilisateur
+        //Set the appUser Wallet
         wallet.setAppUser(appUser);
 
     }
@@ -59,7 +58,7 @@ public class WalletService {
         appUser.setWallet(wallet);
         //Associate the wallet  with user
         appUser.setWallet(wallet);
-        //Set the PorteMonnaie's utilisateur
+        //Set the appUser Wallet
         wallet.setAppUser(appUser);
 
     }

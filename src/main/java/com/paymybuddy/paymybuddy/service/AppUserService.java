@@ -23,8 +23,8 @@ import java.util.Optional;
 public class AppUserService {
 
     private final AppUserRepository appUserRepository;
-    private  final AppUserContactRepository appUserContactRepository;
-    private  final WalletService walletService;
+    private final AppUserContactRepository appUserContactRepository;
+    private final WalletService walletService;
     private final PasswordEncoder passwordEncoder;
 
 
@@ -57,11 +57,11 @@ public class AppUserService {
 
 
     //creat admin user for test, this  is called on startup
-    public void creatMainAdminAppUser(){
+    public void creatMainAdminAppUser() {
 
         //check if first user (ADMIN) is created, if not in db creat it
         Optional<AppUser> appUserCheck = appUserRepository.findById(1);
-        if(appUserCheck.isEmpty()){
+        if (appUserCheck.isEmpty()) {
             AppUser adminAppUser = new AppUser();
             adminAppUser.setLastName("mister");
             adminAppUser.setFirstName("tester");
@@ -79,8 +79,6 @@ public class AppUserService {
     }
 
 
-
-
     public AppUser createAppUser(AppUser appUser) {
 
         //Encode the password
@@ -93,16 +91,14 @@ public class AppUserService {
     }
 
 
-
-
     public void addContact(String userUsername, String contactUsername) {
         Optional<AppUser> userOptional = appUserRepository.findByUsername(userUsername);
         Optional<AppUser> newContactOptional = appUserRepository.findByUsername(contactUsername);
 
-        if(newContactOptional.isEmpty()){
+        if (newContactOptional.isEmpty()) {
             log.error("contact ContactNotFoundException when user attempted to add contact");
             throw new ContactNotFoundException();
-        }else if (userOptional.isPresent()) {
+        } else if (userOptional.isPresent()) {
             AppUser user = userOptional.get();
             AppUser newContact = newContactOptional.get();
 
@@ -115,7 +111,7 @@ public class AppUserService {
             appUserContact.setAppUser(user);
             appUserContact.setContact(newContact);
 
-             appUserContactRepository.save(appUserContact);
+            appUserContactRepository.save(appUserContact);
 
         }
 
@@ -132,12 +128,12 @@ public class AppUserService {
                 .toList();
     }
 
-    public void removeContact(String appUserUsername, Integer contactId){
+    public void removeContact(String appUserUsername, Integer contactId) {
         Optional<AppUser> appUser = appUserRepository.findByUsername(appUserUsername);
         Optional<AppUser> contactToRemove = appUserRepository.findById(contactId);
 
         //check if there is a row in AppUserContact with this AppUserid and contactId, if so remove it
-        if(appUser.isPresent() && contactToRemove.isPresent()) {
+        if (appUser.isPresent() && contactToRemove.isPresent()) {
             AppUserContact.AppUserContactId id = new AppUserContact.AppUserContactId();
             id.setAppUserId(appUser.get().getId());
             id.setContactId(contactToRemove.get().getId());
@@ -149,13 +145,13 @@ public class AppUserService {
 
     }
 
-    public void checkIfAllUserInfoPresent(AppUser appUser){
+    public void checkIfAllUserInfoPresent(AppUser appUser) {
         boolean allInfoArePresent;
 
         allInfoArePresent = appUser.getFirstName() != null && appUser.getLastName() != null && appUser
                 .getEmail() != null;
 
-        if(!allInfoArePresent){
+        if (!allInfoArePresent) {
             throw new MissingUserInfoException("First name, last name and email must be registered");
         }
 
