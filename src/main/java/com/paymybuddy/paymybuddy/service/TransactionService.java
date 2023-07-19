@@ -36,6 +36,8 @@ public class TransactionService {
     private final AppUserService appUserService;
     private final AppPmbService appPmbService;
 
+private static final String CURRENT_USER_NOT_FOUND = "current user not found";
+
     public void saveTransaction(int senderId, int recepientId,
                                 BigDecimal amout, BigDecimal transactionFee,
                                 Transaction.TransactionType transactionType,
@@ -61,7 +63,7 @@ public class TransactionService {
         Optional<AppUser> contactOptional = appUserService.getAppUserById(contactId);
 
         AppUser contactAppUser = contactOptional.orElseThrow(NoContactSelectedException::new);
-        AppUser appUser = appUserOptional.orElseThrow(() -> new UsernameNotFoundException("User not found"));
+        AppUser appUser = appUserOptional.orElseThrow(() -> new UsernameNotFoundException(CURRENT_USER_NOT_FOUND));
 
 
         Optional<Wallet> appUserWalletOptional = walletService.getWalletById(appUser.getId());
@@ -92,10 +94,10 @@ public class TransactionService {
 
             if(description.isEmpty()){
                 saveTransaction(appUserWallet.getId(), recepientAppUserWallet.getId(),
-                        amount, transactionFee, Transaction.TransactionType.send, Optional.empty());
+                        amount, transactionFee, Transaction.TransactionType.SEND, Optional.empty());
             }else{
                 saveTransaction(appUserWallet.getId(), recepientAppUserWallet.getId(),
-                        amount, transactionFee, Transaction.TransactionType.send, description
+                        amount, transactionFee, Transaction.TransactionType.SEND, description
                                 .describeConstable());
             }
 
@@ -127,8 +129,8 @@ public class TransactionService {
 
         // If the transaction type is send or receive,
         // then handle it with handleSendReceiveTransactions
-        if(transaction.getTransactionType() == Transaction.TransactionType.send
-                || transaction.getTransactionType() == Transaction.TransactionType.receive) {
+        if(transaction.getTransactionType() == Transaction.TransactionType.SEND
+                || transaction.getTransactionType() == Transaction.TransactionType.RECEIVE) {
             simplifiedTransaction = handleSendReceiveTransactions(transaction, appUserId);
         } else {
             // Otherwise, handle it with handleNonDepositWithdrawalTransactions
@@ -155,7 +157,7 @@ public class TransactionService {
 
                 return new TransactionForAppUserHistory(contact
                          .getUsername(), transaction.getDescription(), transaction.getAmount().negate(),
-                         Transaction.TransactionType.send);
+                         Transaction.TransactionType.SEND);
             }
 
         }else {
@@ -171,7 +173,7 @@ public class TransactionService {
 
                 return new TransactionForAppUserHistory(contact
                         .getUsername(), transaction.getDescription(), transaction.getAmount(),
-                        Transaction.TransactionType.receive);
+                        Transaction.TransactionType.RECEIVE);
             }
         }
         return null;
@@ -179,17 +181,17 @@ public class TransactionService {
 
     private TransactionForAppUserHistory handleNonDepositWithdrawalTransactions(Transaction transaction) {
         if (transaction.getTransactionType() == Transaction
-                .TransactionType.withdrawal){
+                .TransactionType.WITHDRAWAL){
 
             return new TransactionForAppUserHistory(null,
                     transaction.getDescription(), transaction.getAmount().negate(),
-                    Transaction.TransactionType.withdrawal);
+                    Transaction.TransactionType.WITHDRAWAL);
 
 
-        }else if (transaction.getTransactionType() == Transaction.TransactionType.deposit ){
+        }else if (transaction.getTransactionType() == Transaction.TransactionType.DEPOSIT){
             return new TransactionForAppUserHistory(null,
                     transaction.getDescription(), transaction.getAmount(),
-                    Transaction.TransactionType.deposit);
+                    Transaction.TransactionType.DEPOSIT);
 
         }
         return null;
@@ -198,7 +200,7 @@ public class TransactionService {
     public void withdrawFunds(String username, BigDecimal amount){
         //get id
         AppUser appUser = appUserService.getAppUserByUsername(username)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+                .orElseThrow(() -> new UsernameNotFoundException(CURRENT_USER_NOT_FOUND));
 
 
         Wallet appUserWallet = null;
@@ -218,7 +220,7 @@ public class TransactionService {
         appUserWallet.setBalance(appUserWallet.getBalance().subtract(amount));
         walletService.updateWallet(appUserWallet);
         saveTransaction(appUserWallet.getId(), appUser.getId(), amount, BigDecimal.ZERO,
-                Transaction.TransactionType.withdrawal, Optional.of("Bank account withdrawal"));
+                Transaction.TransactionType.WITHDRAWAL, Optional.of("Bank account withdrawal"));
 
     }
 
@@ -226,7 +228,7 @@ public class TransactionService {
     public void genarateTestDepostion(String username){
         //get id
         AppUser appUser = appUserService.getAppUserByUsername(username)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+                .orElseThrow(() -> new UsernameNotFoundException(CURRENT_USER_NOT_FOUND));
 
         Wallet appUserWallet = null;
         Optional<Wallet> walletOptional =  walletService.getWalletById(appUser.getId());
@@ -236,7 +238,7 @@ public class TransactionService {
         appUserWallet.setBalance(appUserWallet.getBalance().add(amount));
         walletService.updateWallet(appUserWallet);
         saveTransaction(appUserWallet.getId(), appUser.getId(), amount, BigDecimal.ZERO,
-                Transaction.TransactionType.deposit, Optional.of("Bank account deposit"));
+                Transaction.TransactionType.DEPOSIT, Optional.of("Bank account deposit"));
 
     }
 

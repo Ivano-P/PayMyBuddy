@@ -20,7 +20,7 @@
   <div class="field">Last name: <span th:text ="${currentUser.lastName}"></span></div>
   <div class="field">Email: <span th:text ="${currentUser.email}"></span></div>
 
-  <button type="button" class="update-btn">update</button>
+  <a th:href="@{/update_profile}" class="btn">update</a>
 
 </section>
 

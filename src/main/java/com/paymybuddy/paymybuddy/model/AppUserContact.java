@@ -21,7 +21,7 @@ public class AppUserContact {
     @ManyToOne
     @MapsId("contactId")
     @JoinColumn(name = "contact_id")
-    private AppUser Contact;
+    private AppUser contact;
 
     @Data
     @Embeddable

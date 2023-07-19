@@ -36,11 +36,10 @@ public class OAuth2LoginSuccessHandler extends SimpleUrlAuthenticationSuccessHan
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
                                         Authentication authentication) throws IOException, ServletException {
 
-        if (authentication instanceof OAuth2AuthenticationToken) {
-            OAuth2AuthenticationToken token = (OAuth2AuthenticationToken) authentication;
+        if (authentication instanceof OAuth2AuthenticationToken token) {
             DefaultOAuth2User user = (DefaultOAuth2User) token.getPrincipal();
 
-            //use github users username and creat a fictional email
+            //use GitHub users username and creat a fictional email
             String githubUsername = user.getAttribute("login");
             AppUser githubUser = new AppUser();
             AppUser finalGithubUser = githubUser;
