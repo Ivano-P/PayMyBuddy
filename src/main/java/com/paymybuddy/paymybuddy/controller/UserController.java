@@ -76,8 +76,6 @@ public class UserController {
             model.addAttribute("transactions", transactions);
 
             int totalPages = transactions.getTotalPages();
-            System.out.println("Total pages: " + transactions.getTotalPages()); // add this
-            System.out.println("Current page: " + page); // add this
             model.addAttribute("totalPages", totalPages);
             model.addAttribute("currentPage", page);
         });
@@ -93,6 +91,14 @@ public class UserController {
         model.addAttribute("iban", iban);
 
         return "iban";
+    }
+
+    @PostMapping("/deposit")
+    public String depositFunds() {
+        boolean showIban = true;
+        bankAccountService.showIbanForDeposit(showIban);
+
+        return "redirect:/iban";
     }
 
     @GetMapping("/profile")
@@ -191,13 +197,6 @@ public class UserController {
         return "redirect:/profile";
     }
 
-    @PostMapping("/deposit")
-    public String depositFunds() {
-        boolean showIban = true;
-        bankAccountService.showIbanForDeposit(showIban);
-
-        return "redirect:/iban";
-    }
 
     @PostMapping("/withdrawFunds")
     public String withdrawFunds(Principal principal, @RequestParam("amount") BigDecimal amount) {

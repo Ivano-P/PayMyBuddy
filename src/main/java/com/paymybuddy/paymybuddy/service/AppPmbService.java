@@ -29,10 +29,10 @@ public class AppPmbService {
         return pmbAccountOptional.isPresent();
     }
 
-    //this is called on launch so i dont want to throw error if no AccountPmb is found
+    //this is called on launch. I don't want to throw error if no AccountPmb is found, I just want it to be created
     @Transactional
     public void creatPmbAccount() {
-        if (checkIfPmbAccountIsPresent()) {
+        if (!checkIfPmbAccountIsPresent()) {
             AccountPayMyBuddy pmbAccount = new AccountPayMyBuddy();
             pmbAccount.setBalance(BigDecimal.ZERO);
             accountPayMyBuddyRepository.save(pmbAccount);

@@ -96,11 +96,11 @@ public class BankAccountService {
         return currentBankAccount;
     }
 
-
-
     public boolean showIbanForDeposit(boolean showIban){
         return showIban = true;
     }
+
+
 
     public void noBankAccountForWithdrawal(){
         throw new NoBankAccountException("Withdrawal not possible, no bank account added");
