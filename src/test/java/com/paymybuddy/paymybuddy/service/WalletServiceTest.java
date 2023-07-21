@@ -3,7 +3,6 @@ package com.paymybuddy.paymybuddy.service;
 import com.paymybuddy.paymybuddy.model.AppUser;
 import com.paymybuddy.paymybuddy.model.Wallet;
 import com.paymybuddy.paymybuddy.repository.WalletRepository;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -15,21 +14,17 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 class WalletServiceTest {
 
+    @InjectMocks
     WalletService walletService;
     @Mock
     private WalletRepository walletRepository;
-
-    @BeforeEach
-    public void setUp(){
-        walletService = new WalletService(walletRepository);
-    }
 
     @Test
     void testGetWalletById() {

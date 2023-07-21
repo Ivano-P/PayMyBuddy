@@ -9,6 +9,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
@@ -22,17 +23,13 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 class BankAccountServiceTest {
 
+    @InjectMocks
+    private BankAccountService bankAccountService;
     @Mock
     private BankAccountRepository bankAccountRepository;
     @Mock
     private AppUserService appUserService;
 
-    private BankAccountService bankAccountService;
-
-    @BeforeEach
-    public void setUp() {
-        bankAccountService = new BankAccountService(bankAccountRepository, appUserService);
-    }
 
     @AfterEach
     public void tearDown() {

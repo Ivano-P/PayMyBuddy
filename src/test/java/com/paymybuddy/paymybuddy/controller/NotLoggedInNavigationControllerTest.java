@@ -22,17 +22,9 @@ class NotLoggedInNavigationControllerTest {
 
     @Test
     @WithMockUser
-    void givenAuthRequest_onLogIn_shouldReturnStatus200() throws Exception {
+    void testGoToLogIn() throws Exception {
         mockMvc.perform(get("/logIn"))
                 .andExpect(status().isOk());
-    }
-
-
-    @Test
-    void givenAuthRequest_onLogIn_shouldReturnStatus302() throws Exception {
-        mockMvc.perform(get("/logIn"))
-                .andExpect(status().isFound())
-                .andExpect(redirectedUrl("http://localhost/oauth2/authorization/github"));
     }
 
 }

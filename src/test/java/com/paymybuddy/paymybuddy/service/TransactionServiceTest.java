@@ -9,10 +9,10 @@ import com.paymybuddy.paymybuddy.model.Transaction;
 import com.paymybuddy.paymybuddy.model.Wallet;
 import com.paymybuddy.paymybuddy.repository.AccountPayMyBuddyRepository;
 import com.paymybuddy.paymybuddy.repository.TransactionRepository;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Page;
@@ -25,16 +25,16 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class TransactionServiceTest {
 
+    @InjectMocks
     private TransactionService transactionService;
-
     @Mock
     private TransactionRepository transactionRepository;
     @Mock
@@ -46,11 +46,6 @@ class TransactionServiceTest {
     @Mock
     private AppPmbService appPmbService;
 
-    @BeforeEach
-    public void setUp(){
-        transactionService = new TransactionService(transactionRepository, walletService, accountPayMyBuddyRepository,
-                appUserService, appPmbService);
-    }
 
     @Test
     void testSaveTransaction(){

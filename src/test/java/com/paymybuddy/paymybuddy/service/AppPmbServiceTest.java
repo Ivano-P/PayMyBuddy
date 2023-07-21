@@ -2,10 +2,11 @@ package com.paymybuddy.paymybuddy.service;
 
 import com.paymybuddy.paymybuddy.model.AccountPayMyBuddy;
 import com.paymybuddy.paymybuddy.repository.AccountPayMyBuddyRepository;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.math.BigDecimal;
 import java.util.Optional;
@@ -14,19 +15,15 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
-
+@ExtendWith(MockitoExtension.class)
 class AppPmbServiceTest {
 
     @Mock
     private AccountPayMyBuddyRepository accountPayMyBuddyRepository;
 
+    @InjectMocks
     private AppPmbService appPmbService;
 
-    @BeforeEach
-    void setup() {
-        MockitoAnnotations.openMocks(this);
-        appPmbService = new AppPmbService(accountPayMyBuddyRepository);
-    }
 
     @Test
     void testGetAccountPmb_AccountExists() {
