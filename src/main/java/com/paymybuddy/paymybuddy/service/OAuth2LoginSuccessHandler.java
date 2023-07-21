@@ -1,7 +1,6 @@
 package com.paymybuddy.paymybuddy.service;
 
 import com.paymybuddy.paymybuddy.model.AppUser;
-import com.paymybuddy.paymybuddy.model.Wallet;
 import com.paymybuddy.paymybuddy.repository.AppUserRepository;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -19,15 +18,12 @@ import org.springframework.security.web.authentication.SimpleUrlAuthenticationSu
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
-import java.math.BigDecimal;
-import java.util.Arrays;
 import java.util.List;
 
 @AllArgsConstructor(onConstructor = @__(@Autowired))
 @Component
 public class OAuth2LoginSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
     private final AppUserRepository appUserRepository;
-    private final AppUserService appUserService;
     private final WalletService walletService;
 
 
