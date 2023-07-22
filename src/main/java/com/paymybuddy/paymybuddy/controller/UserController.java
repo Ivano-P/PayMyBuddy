@@ -80,7 +80,7 @@ public class UserController {
                 .getTransactionHistory(principal.getName(), pageRequest);
         model.addAttribute("transactions", transactions);
 
-        int totalPages = transactions.getTotalPages();
+        int totalPages = transactions.getTotalPages() - 1;
         model.addAttribute("totalPages", totalPages);
         model.addAttribute("currentPage", page);
 

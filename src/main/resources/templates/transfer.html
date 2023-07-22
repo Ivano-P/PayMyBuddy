@@ -97,20 +97,21 @@
     </table>
 
     <!-- Pagination -->
-    <div th:with="start=${totalPages > currentPage + 4 ? currentPage : totalPages - 5}, end=${start + 4 < totalPages ? start + 4 : totalPages - 1}">
+    <div th:with="start=${totalPages > 5 ? (currentPage < 3 ? 0 : (currentPage > totalPages - 3 ? totalPages - 5 : currentPage - 2)) : 0},
+              end=${totalPages > 5 ? (currentPage < 3 ? 5 : (currentPage > totalPages - 3 ? totalPages : currentPage + 3)) : totalPages}">
         <button th:onclick="'window.location.href=\'/transfer?page=0\''">First page</button>
         <button th:if="${transactions.hasPrevious()}"
                 th:onclick="'window.location.href=\'/transfer?page=' + (${transactions.number - 1}) + '\''"> previous </button>
 
         <span th:each="pageNumber : ${#numbers.sequence(start, end)}">
-    <button th:onclick="'window.location.href=\'/transfer?page=' + (${pageNumber}) + '\''"
-            th:text="${pageNumber + 1}"
-            th:style="${pageNumber == currentPage} ? 'font-weight: bold;' : ''"></button>
+        <button th:onclick="'window.location.href=\'/transfer?page=' + (${pageNumber}) + '\''"
+                th:text="${pageNumber + 1}"
+                th:style="${pageNumber == currentPage} ? 'font-weight: bold;' : ''"></button>
     </span>
 
         <button th:if="${transactions.hasNext()}"
                 th:onclick="'window.location.href=\'/transfer?page=' + (${transactions.number + 1}) + '\''"> next </button>
-        <button th:onclick="'window.location.href=\'/transfer?page=' + (${totalPages - 1}) + '\''">Last page</button>
+        <button th:onclick="'window.location.href=\'/transfer?page=' + (${totalPages}) + '\''">Last page</button>
     </div>
 
 
