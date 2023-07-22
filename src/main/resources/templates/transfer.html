@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="https://www.thymeleaf.org"
-      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+>
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width; initial-scale=1">
@@ -16,24 +16,33 @@
     </nav>
 </section>
 
+<div th:insert="fragments :: errorPanel"></div> <!-- hidden div to display error message-->
+<section id="balance-and-deposit">
+    <div class="field">
+        Balance: <span th:text="${currentUser.wallet.balance} + '€'"></span>
+
+        <a th:href="@{/iban}" class="btn">deposit</a>
+
+    </div>
+
+</section>
+
 <section id="transfer-setup">
-    <div th:insert="fragments :: errorPanel"></div> <!-- hidden div to display error message-->
-    <div class="field">Balance: <span th:text ="${currentUser.wallet.balance} + '€'"></span></div>
 
     <div id="contact_list">
         <h2>Select Contact For transfer</h2>
         <form th:action="@{/transfer}" method="post">
             <div>
                 <label for="contactSelect"></label>
-                <select id="contactSelect" name="contactId">
+                <select id="contactSelect" name="contactId" required>
                     <option value="" disabled selected>Select Contact</option>
                     <option th:each="contact : ${contacts}" th:value="${contact.id}"
-                            th:text="${contact.firstName + ' ' + contact.lastName + ' (' + contact.username + ')'}">
+                            th:text="${contact.username + ' (' +contact.firstName + ' ' + contact.lastName + ')'}">
                     </option>
                 </select>
 
                 <label for="balance">Add amount :</label>
-                <input type="text" name="amount" id="balance" placeholder="0">
+                <input type="text" name="amount" id="balance" placeholder="0" th:min="1" required>
             </div>
 
             <div>
@@ -42,7 +51,23 @@
                        placeholder="transaction description">
             </div>
 
-            <button type="submit">Transfer</button>
+            <button type="submit" class="submit-amount-btn">Transfer</button>
+        </form>
+    </div>
+
+    <div id="withdrawal-div" th:if="${hasBankAccount}">
+        <h2>Withdraw funds to bank account</h2>
+        <form action="#" th:action="@{/withdrawFunds}" method="post" id="withdrawal-form">
+            <label for="amount">Enter amount</label>
+            <input type="text" name="amount" id="amount" th:placeholder="0">
+            <button type="submit" class="btn">withdrawal</button>
+        </form>
+    </div>
+
+    <!-- this button appears if user doesnt have bank account linked and indicates to add bank account for withdrawal -->
+    <div id="withdrawal-ko-div" th:if="${!hasBankAccount}">
+        <form action="#" th:action="@{/noAccountForWithdrawal}" method="post" id="withdrawal-ko-form">
+            <button type="submit" class="btn">withdrawal</button>
         </form>
     </div>
 </section>
@@ -53,16 +78,17 @@
         <thead>
         <tr>
             <th>Contact</th>
-            <th>Type</th>
             <th>Description</th>
+            <th>Transaction type</th>
             <th>Amount</th>
         </tr>
         </thead>
+
         <tbody>
-        <tr th:each="transaction : ${transactions}">
+        <tr th:each="transaction : ${transactions.content}">
             <td th:text="${transaction.contactUsername}"></td>
-            <td th:text="${transaction.transactionType}"></td>
             <td th:text="${transaction.description}"></td>
+            <td th:text="${transaction.transactionType}"></td>
             <td th:text="${transaction.amount + '€'}">
 
             </td>
@@ -70,6 +96,30 @@
         </tbody>
     </table>
 
+    <!-- Pagination -->
+    <div th:with="start=${totalPages > currentPage + 4 ? currentPage : totalPages - 5}, end=${start + 4 < totalPages ? start + 4 : totalPages - 1}">
+        <button th:onclick="'window.location.href=\'/transfer?page=0\''">First page</button>
+        <button th:if="${transactions.hasPrevious()}"
+                th:onclick="'window.location.href=\'/transfer?page=' + (${transactions.number - 1}) + '\''"> previous </button>
+
+        <span th:each="pageNumber : ${#numbers.sequence(start, end)}">
+    <button th:onclick="'window.location.href=\'/transfer?page=' + (${pageNumber}) + '\''"
+            th:text="${pageNumber + 1}"
+            th:style="${pageNumber == currentPage} ? 'font-weight: bold;' : ''"></button>
+    </span>
+
+        <button th:if="${transactions.hasNext()}"
+                th:onclick="'window.location.href=\'/transfer?page=' + (${transactions.number + 1}) + '\''"> next </button>
+        <button th:onclick="'window.location.href=\'/transfer?page=' + (${totalPages - 1}) + '\''">Last page</button>
+    </div>
+
+
+     <!-- //TODO: remove in production -->
+    <form action="#" th:action="@{/testDepositFunds}" method="post" id="deposit-form">
+        <label for="null"></label>
+        <input type="hidden" name="null" id="null">
+        <button type="submit" class="btn">test deposit</button>
+    </form>
 
 </section>
 

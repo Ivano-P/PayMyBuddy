@@ -1,9 +1,11 @@
 package com.paymybuddy.paymybuddy.service;
 
-import com.paymybuddy.paymybuddy.dto.TransactionForAppUserHistory;
-import com.paymybuddy.paymybuddy.exceptions.InsufficientFundsException;
-import com.paymybuddy.paymybuddy.model.*;
-import com.paymybuddy.paymybuddy.repository.*;
+import com.paymybuddy.paymybuddy.exceptions.ContactNotFoundException;
+import com.paymybuddy.paymybuddy.exceptions.MissingUserInfoException;
+import com.paymybuddy.paymybuddy.model.AppUser;
+import com.paymybuddy.paymybuddy.model.AppUserContact;
+import com.paymybuddy.paymybuddy.repository.AppUserContactRepository;
+import com.paymybuddy.paymybuddy.repository.AppUserRepository;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,94 +13,20 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
+@Transactional
 @Log4j2
 @Service
 @AllArgsConstructor(onConstructor = @__(@Autowired))
 public class AppUserService {
 
     private final AppUserRepository appUserRepository;
-    private  final AppUserContactRepository appUserContactRepository;
-    private  final WalletRepository walletRepository;
+    private final AppUserContactRepository appUserContactRepository;
+    private final WalletService walletService;
     private final PasswordEncoder passwordEncoder;
-    private final AccountPayMyBuddyRepository accountPayMyBuddyRepository;
-    private final AppPmbService appPmbService;
-    private final TransactionRepository transactionRepository;
 
-
-
-    //creat admin user for test, this  is called on startup
-    @Transactional
-    public AppUser creatAdminAppUser(){
-
-        //check if first user (ADMIN) is created, if not in db creat it
-        Optional<AppUser> AppUserCheck = appUserRepository.findById(1);
-        if(AppUserCheck.isPresent()){
-            return null;
-
-        }else {
-            AppUser adminAppUser = new AppUser();
-            adminAppUser.setLastName("mister");
-             adminAppUser.setFirstName("tester");
-            adminAppUser.setUsername("mainadmin");
-            adminAppUser.setEmail("mistertester@testmail.com");
-            adminAppUser.setRole(AppUser.Role.ADMIN);
-            adminAppUser.setPassword(passwordEncoder.encode("Testpassword123*"));
-
-            setAdminUserWalletBalance(adminAppUser);
-
-            //cascade setting saves the porteMonnaie as well
-            return appUserRepository.save(adminAppUser);
-        }
-    }
-
-    //set admin user balance for test. add 1 000 000 to admin wallet
-    private void setAdminUserWalletBalance(AppUser appUser){
-        //creatAndLinkWallet(adminAppUser);
-        // Create new wallet
-        Wallet wallet = new Wallet();
-        wallet.setBalance(BigDecimal.valueOf(1000000));
-        wallet.setUsername(appUser.getUsername());
-        //Associate the wallet  with user
-        appUser.setWallet(wallet);
-        //Associate the wallet  with user
-        appUser.setWallet(wallet);
-        //Set the PorteMonnaie's utilisateur
-        wallet.setAppUser(appUser);
-
-    }
-
-    @Transactional
-    public AppUser createAppUser(AppUser appUser) {
-
-        //Encode the password
-        appUser.setPassword(passwordEncoder.encode(appUser.getPassword()));
-        //appUser.setRole(AppUser.Role.USER);
-
-        creatAndLinkWallet(appUser);
-
-        //cascade setting saves the wallet as well
-        return appUserRepository.save(appUser);
-    }
-
-    protected void creatAndLinkWallet(AppUser appUser){
-        // Create new wallet
-        Wallet wallet = new Wallet();
-        wallet.setBalance(BigDecimal.ZERO);
-        wallet.setUsername(appUser.getUsername());
-        //Associate the wallet  with user
-        appUser.setWallet(wallet);
-        //Associate the wallet  with user
-        appUser.setWallet(wallet);
-        //Set the PorteMonnaie's utilisateur
-        wallet.setAppUser(appUser);
-    }
 
     @Transactional(readOnly = true)
     public List<AppUser> getAllAppUsers() {
@@ -115,28 +43,62 @@ public class AppUserService {
         return appUserRepository.findByEmail(email);
     }
 
-    @Transactional(readOnly = true)
     public Optional<AppUser> getAppUserByUsername(String username) {
         return appUserRepository.findByUsername(username);
     }
 
-    @Transactional
-    public AppUser updateAppUser(AppUser appUser) {
-        return appUserRepository.save(appUser);
+    public void updateAppUser(AppUser appUser) {
+        appUserRepository.save(appUser);
     }
 
-    @Transactional
     public void deleteAppUser(int id) {
         appUserRepository.deleteById(id);
     }
+
+
+    //creat admin user for test, this  is called on startup
+    public void creatMainAdminAppUser() {
+
+        //check if first user (ADMIN) is created, if not in db creat it
+        Optional<AppUser> appUserCheck = appUserRepository.findById(1);
+        if (appUserCheck.isEmpty()) {
+            AppUser adminAppUser = new AppUser();
+            adminAppUser.setLastName("mister");
+            adminAppUser.setFirstName("tester");
+            adminAppUser.setUsername("mainadmin");
+            adminAppUser.setEmail("mistertester@testmail.com");
+            adminAppUser.setRole(AppUser.Role.ADMIN);
+            adminAppUser.setPassword(passwordEncoder.encode(System.getenv("PMB_MAINADMIN_PASSWORD")));
+
+            walletService.setAdminUserWalletBalance(adminAppUser);
+
+            //cascade setting saves the porteMonnaie as well
+            appUserRepository.save(adminAppUser);
+
+        }
+    }
+
+
+    public AppUser createAppUser(AppUser appUser) {
+
+        //Encode the password
+        appUser.setPassword(passwordEncoder.encode(appUser.getPassword()));
+
+        walletService.creatAndLinkWallet(appUser);
+
+        //cascade setting saves the wallet as well
+        return appUserRepository.save(appUser);
+    }
+
 
     public void addContact(String userUsername, String contactUsername) {
         Optional<AppUser> userOptional = appUserRepository.findByUsername(userUsername);
         Optional<AppUser> newContactOptional = appUserRepository.findByUsername(contactUsername);
 
-        if(newContactOptional.isEmpty()){
-            throw new NoSuchElementException();
-        }else if (userOptional.isPresent()) {
+        if (newContactOptional.isEmpty()) {
+            log.error("contact ContactNotFoundException when user attempted to add contact");
+            throw new ContactNotFoundException();
+        } else if (userOptional.isPresent()) {
             AppUser user = userOptional.get();
             AppUser newContact = newContactOptional.get();
 
@@ -149,31 +111,29 @@ public class AppUserService {
             appUserContact.setAppUser(user);
             appUserContact.setContact(newContact);
 
-             appUserContactRepository.save(appUserContact);
+            appUserContactRepository.save(appUserContact);
 
         }
 
     }
 
-    @Transactional(readOnly = true)
     public List<AppUser> getContactsForUser(AppUser user) {
         // Fetch the AppUserContact instances for the given user
         List<AppUserContact> userContacts = appUserContactRepository.findByAppUser(user);
 
         // Map the list of AppUserContact instances to a list of AppUser instances
-        List<AppUser> contacts = userContacts.stream()
-                .map(AppUserContact::getContact)
-                .collect(Collectors.toList());
 
-        return contacts;
+        return userContacts.stream()
+                .map(AppUserContact::getContact)
+                .toList();
     }
 
-    public void removeContact(String appUserUsername, Integer contactId){
+    public void removeContact(String appUserUsername, Integer contactId) {
         Optional<AppUser> appUser = appUserRepository.findByUsername(appUserUsername);
         Optional<AppUser> contactToRemove = appUserRepository.findById(contactId);
 
         //check if there is a row in AppUserContact with this AppUserid and contactId, if so remove it
-        if(appUser.isPresent() && contactToRemove.isPresent()) {
+        if (appUser.isPresent() && contactToRemove.isPresent()) {
             AppUserContact.AppUserContactId id = new AppUserContact.AppUserContactId();
             id.setAppUserId(appUser.get().getId());
             id.setContactId(contactToRemove.get().getId());
@@ -185,125 +145,18 @@ public class AppUserService {
 
     }
 
-    @Transactional
-    public void transferFunds (String appUserUsername, Integer contactId, BigDecimal amount, String description){
-        Optional<AppUser> appUserOptional = appUserRepository.findByUsername(appUserUsername);
-        Optional<AppUser> contactOptional = appUserRepository.findById(contactId);
+    public void checkIfAllUserInfoPresent(AppUser appUser) {
+        boolean allInfoArePresent;
 
-        if(appUserOptional.isPresent() && contactOptional.isPresent()) {
-            AppUser appUser = appUserOptional.get();
-            AppUser contactToTransferTo = contactOptional.get();
+        allInfoArePresent = appUser.getFirstName() != null && appUser.getLastName() != null && appUser
+                .getEmail() != null;
 
-            Optional<Wallet> appUserWalletOptional = walletRepository.findById(appUser.getId());
-            Optional<Wallet> contactWalletOptional = walletRepository.findById(contactToTransferTo.getId());
-            Optional<AccountPayMyBuddy> pmbAccountOptional = accountPayMyBuddyRepository.findById(1);
-
-            if(appUserWalletOptional.isPresent() && contactWalletOptional.isPresent() && pmbAccountOptional
-                    .isPresent()){
-                Wallet appUserWallet = appUserWalletOptional.get();
-                Wallet recepientAppUserWallet = contactWalletOptional.get();
-                AccountPayMyBuddy pmbAccount = pmbAccountOptional.get();
-
-                //calculate transaction fee
-                BigDecimal transactionFee = amount.multiply(BigDecimal.valueOf(pmbAccount.getTransactionFee()));
-                BigDecimal finalTransactionAmount = amount.add(transactionFee);
-
-                //check if sender balance is bigger or equal to amount plus transaction fee
-                int comparisonResult = appUserWallet.getBalance().compareTo(finalTransactionAmount);
-                if(comparisonResult >= 0){
-
-                    appUserWallet.setBalance(appUserWallet.getBalance().subtract(finalTransactionAmount));
-                    recepientAppUserWallet.setBalance(recepientAppUserWallet.getBalance().add(amount));
-                    pmbAccount.setBalance(pmbAccount.getBalance().add(transactionFee));
-
-                    walletRepository.save(appUserWallet);
-                    walletRepository.save(recepientAppUserWallet);
-                    accountPayMyBuddyRepository.save(pmbAccount);
-
-                    if(description.isEmpty()){
-                        appPmbService.persistTransaction(appUserWallet.getId(), recepientAppUserWallet.getId(),
-                                amount, transactionFee, Transaction.TransactionType.send, Optional.empty());
-                    }else{
-                        appPmbService.persistTransaction(appUserWallet.getId(), recepientAppUserWallet.getId(),
-                                amount, transactionFee, Transaction.TransactionType.send, description
-                                        .describeConstable());
-                    }
-
-
-                }else {
-                    throw new InsufficientFundsException("Insufficient funds for the transfer.");
-                }
-
-            }
+        if (!allInfoArePresent) {
+            throw new MissingUserInfoException("First name, last name and email must be registered");
         }
+
     }
 
-    @Transactional
-    public List<TransactionForAppUserHistory> getTransactionHistory(String username){
-        Optional<AppUser> appUserOptional = appUserRepository.findByUsername(username);
-        int appUserId;
-        if(appUserOptional.isPresent()){
-            appUserId = appUserOptional.get().getId();
-        }else {
-            appUserId = 0;
-            log.error("AppUser not found");
-            //TODO: figure out what to do it app user not found
-        }
-
-
-        List<Transaction> appUSertransactions = transactionRepository
-                .findBySenderIdOrRecepientId(appUserId,appUserId);
-
-        List<TransactionForAppUserHistory> transactionsHistory = new ArrayList<>();
-
-        if(!appUSertransactions.isEmpty()){
-            //creat one AppUserTransactionHistory for each transaction in db.
-            for(Transaction transaction : appUSertransactions){
-
-                //find contactId in transaction
-                int contactId;
-                if(appUserId == transaction.getSenderId()){
-                    contactId = transaction.getRecepientId();
-
-                    //find the contactAppUSer in db
-                    Optional<AppUser> contactAppUserOptionnal = appUserRepository
-                            .findById(contactId);
-
-                    //add each TransactionForAppUserHistory to transactionsHistory
-                    if (contactAppUserOptionnal.isPresent()){
-                        AppUser contact = contactAppUserOptionnal.get();
-
-                        TransactionForAppUserHistory simplifiedTransaction = new TransactionForAppUserHistory(contact
-                                .getUsername(), transaction.getDescription(), transaction.getAmount().negate(),
-                                Transaction.TransactionType.send);
-                        transactionsHistory.add(simplifiedTransaction);
-                    }
-
-                }else {
-                    contactId = transaction.getSenderId();
-
-                    //find the contactAppUSer in db
-                    Optional<AppUser> contactAppUserOptionnal = appUserRepository
-                            .findById(contactId);
-
-                    //add each TransactionForAppUserHistory to transactionsHistory
-                    if (contactAppUserOptionnal.isPresent()){
-                        AppUser contact = contactAppUserOptionnal.get();
-
-                        TransactionForAppUserHistory simplifiedTransaction = new TransactionForAppUserHistory(contact
-                                .getUsername(), transaction.getDescription(), transaction.getAmount(),
-                                Transaction.TransactionType.receive);
-                        transactionsHistory.add(simplifiedTransaction);
-                    }
-
-                }
-
-            }
-
-        }
-
-        return transactionsHistory;
-    }
 
 }
 

@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="https://www.thymeleaf.org"
+      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width; initial-scale=1">
+  <link rel="stylesheet" href="/styles.css">
+  <title>Pay my buddy Iban</title>
+</head>
+<body>
+  <section th:insert="fragments :: navbar"></section>
+
+  <section id="path-bar">
+    <nav>
+      Home / Iban
+    </nav>
+  </section>
+
+  <section id="deposit-information">
+
+    <h1>Send bank transfer to this iban and indicate your Pay my buddy Username as reason for transfer</h1>
+    <div>
+    <table id="pay-my-buddy-iban" >
+      <thead>
+      <tr>
+        <th>account owner</th>
+        <th>Reason visible to the beneficiary</th>
+        <th>Iban</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr>
+        <td>pmb</td>
+        <td th:text="${currentUser.getUsername()}"></td>
+        <td th:text="${iban}"></td>
+      </tr>
+      </tbody>
+    </table>
+    </div>
+
+    <div>
+    <a th:href="@{/transfer}" class="btn" id="close-iban-btn">close iban</a>
+    </div>
+
+  </section>
+
+</body>
+</html>

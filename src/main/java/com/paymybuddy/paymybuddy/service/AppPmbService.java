@@ -1,51 +1,50 @@
 package com.paymybuddy.paymybuddy.service;
 
 import com.paymybuddy.paymybuddy.model.AccountPayMyBuddy;
-import com.paymybuddy.paymybuddy.model.Transaction;
 import com.paymybuddy.paymybuddy.repository.AccountPayMyBuddyRepository;
-import com.paymybuddy.paymybuddy.repository.TransactionRepository;
 import lombok.AllArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.Optional;
 
+@Log4j2
 @Service
 @AllArgsConstructor(onConstructor = @__(@Autowired))
 public class AppPmbService {
     private final AccountPayMyBuddyRepository accountPayMyBuddyRepository;
-    private final TransactionRepository transactionRepository;
+    static final int PMB_ACCOUNT_ID = 1;
 
+    public AccountPayMyBuddy getAccountPmb() {
+        Optional<AccountPayMyBuddy> accountPayMyBuddyOptional = accountPayMyBuddyRepository.findById(PMB_ACCOUNT_ID);
+        return accountPayMyBuddyOptional.orElseThrow(() -> new RuntimeException("Account not found"));
+    }
+
+    public boolean checkIfPmbAccountIsPresent() {
+        Optional<AccountPayMyBuddy> pmbAccountOptional = accountPayMyBuddyRepository.findById(PMB_ACCOUNT_ID);
+
+        return pmbAccountOptional.isPresent();
+    }
+
+    //this is called on launch. I don't want to throw error if no AccountPmb is found, I just want it to be created
     @Transactional
-    public AccountPayMyBuddy creatPmbAccount(){
-        Optional<AccountPayMyBuddy> pmAccountOptional = accountPayMyBuddyRepository.findById(1);
-        if(pmAccountOptional.isPresent()){
-            return null;
-        }else {
+    public void creatPmbAccount() {
+        if (!checkIfPmbAccountIsPresent()) {
             AccountPayMyBuddy pmbAccount = new AccountPayMyBuddy();
             pmbAccount.setBalance(BigDecimal.ZERO);
-            return accountPayMyBuddyRepository.save(pmbAccount);
+            accountPayMyBuddyRepository.save(pmbAccount);
+
+        } else {
+            log.debug("pmb account already created");
         }
     }
 
-    public Transaction persistTransaction(int senderId, int recepientId,
-                                          BigDecimal amout, BigDecimal transactionFee,
-                                          Transaction.TransactionType transactionType,
-                                          Optional<String> description){
-        Transaction transaction = new Transaction();
-        transaction.setSenderId(senderId);
-        transaction.setRecepientId(recepientId);
-        transaction.setAmount(amout);
-        transaction.setTransactionFee(transactionFee);
-        transaction.setTransactionType(transactionType);
-        description.ifPresent(transaction::setDescription);
-
-        return transactionRepository.save(transaction);
+    public String getPmbIban() {
+        return getAccountPmb().getIban();
     }
-
 
 
 }

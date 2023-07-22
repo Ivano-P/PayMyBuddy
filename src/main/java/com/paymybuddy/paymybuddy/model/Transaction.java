@@ -2,6 +2,8 @@ package com.paymybuddy.paymybuddy.model;
 
 import jakarta.persistence.*;
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
+
 import lombok.Data;
 
 @Entity
@@ -25,18 +27,15 @@ public class Transaction {
     @Column(name = "amount", nullable = false)
     private BigDecimal amount;
 
+    @Column(name = "time_stamp")
+    private LocalDateTime timeStamp;
+
     @Column(name = "transaction_fee")
     private BigDecimal transactionFee;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "transaction_type", nullable = false)
     private TransactionType transactionType;
-
-    /*
-    @Column(name = "account_pmb_id", nullable = false)
-    private int accountPmbId;
-
-     */
 
     @ManyToOne
     @JoinColumn(name = "sender_id", insertable = false, updatable = false)
@@ -46,18 +45,11 @@ public class Transaction {
     @JoinColumn(name = "recepient_id", insertable = false, updatable = false)
     private Wallet recepient;
 
-    /*
-    @ManyToOne
-    @JoinColumn(name = "account_pmb_id", insertable = false, updatable = false)
-    private AccountPayMyBuddy accountPayMyBuddy;
-    
-     */
-
     public enum TransactionType {
-        send,
-        receive,
-        fund,
-        withdrawal
+        SEND,
+        RECEIVE,
+        DEPOSIT,
+        WITHDRAWAL
     }
 }
 
