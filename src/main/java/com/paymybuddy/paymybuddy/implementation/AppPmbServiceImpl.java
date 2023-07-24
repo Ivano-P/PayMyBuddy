@@ -21,11 +21,13 @@ public class AppPmbServiceImpl implements AppPmbService{
     private final AccountPayMyBuddyRepository accountPayMyBuddyRepository;
 
     public AccountPayMyBuddy getAccountPmb() {
+        log.info("getAccountPmb method called");
         Optional<AccountPayMyBuddy> accountPayMyBuddyOptional = accountPayMyBuddyRepository.findById(PMB_ACCOUNT_ID);
         return accountPayMyBuddyOptional.orElseThrow(() -> new RuntimeException("Account not found"));
     }
 
     public boolean checkIfPmbAccountIsPresent() {
+        log.info("checkIfPmbAccountIsPresent method called");
         Optional<AccountPayMyBuddy> pmbAccountOptional = accountPayMyBuddyRepository.findById(PMB_ACCOUNT_ID);
 
         return pmbAccountOptional.isPresent();
@@ -34,6 +36,7 @@ public class AppPmbServiceImpl implements AppPmbService{
     //this is called on launch. I don't want to throw error if no AccountPmb is found, I just want it to be created
     @Transactional
     public void creatPmbAccount() {
+        log.info("creatPmbAccount method called");
         if (!checkIfPmbAccountIsPresent()) {
             AccountPayMyBuddy pmbAccount = new AccountPayMyBuddy();
             pmbAccount.setBalance(BigDecimal.ZERO);
@@ -45,6 +48,7 @@ public class AppPmbServiceImpl implements AppPmbService{
     }
 
     public String getPmbIban() {
+        log.info("getPmbIban method called");
         return getAccountPmb().getIban();
     }
 

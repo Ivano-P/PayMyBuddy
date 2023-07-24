@@ -3,6 +3,7 @@ package com.paymybuddy.paymybuddy.implementation;
 import com.paymybuddy.paymybuddy.security.WebSecurityConfig;
 import com.paymybuddy.paymybuddy.service.OAuth2LoginSuccessHandler;
 import lombok.AllArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -12,6 +13,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
+@Log4j2
 @Configuration
 @EnableWebSecurity
 @AllArgsConstructor(onConstructor = @__(@Autowired))
@@ -24,6 +26,7 @@ public class WebSecurityConfigImpl implements WebSecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
+        log.info("securityFilterChain method called with: {}", httpSecurity );
         //set my customized login page for spring security and makes it accessible without being logged-in
         httpSecurity.formLogin().loginPage("/logIn").defaultSuccessUrl("/home", true )
                 .permitAll();
@@ -47,7 +50,7 @@ public class WebSecurityConfigImpl implements WebSecurityConfig {
 
         //to check user in db for login
         httpSecurity.userDetailsService(customUserDetailsService);
-
+        
         return httpSecurity.build();
     }
 

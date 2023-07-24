@@ -46,6 +46,8 @@ private static final String CURRENT_USER_NOT_FOUND = "current user not found";
                                 BigDecimal amout, BigDecimal transactionFee,
                                 Transaction.TransactionType transactionType,
                                 Optional<String> description){
+        log.info("saveTransaction method called with: {}, {}, {}, {} and {}", senderId, recepientId, amout,
+                transactionType, transactionFee );
         Transaction transaction = new Transaction();
         transaction.setSenderId(senderId);
         transaction.setRecepientId(recepientId);
@@ -60,6 +62,7 @@ private static final String CURRENT_USER_NOT_FOUND = "current user not found";
 
 
     public void transferFunds (String appUserUsername, Integer contactId, BigDecimal amount, String description){
+        log.info("transferFunds method called with: {}, {}, {}, {}", appUserUsername, contactId, amount, description);
         if(amount.compareTo(BigDecimal.ZERO) <=0 || amount.compareTo(BigDecimal.valueOf(10000)) > 0){
             throw new InvalidAmountException();
         }
@@ -113,6 +116,7 @@ private static final String CURRENT_USER_NOT_FOUND = "current user not found";
 
     // get the paged transaction history of a specific user
     public Page<TransactionForAppUserHistory> getTransactionHistory(String username, Pageable pageable){
+        log.info("getTransactionHistory method called with: {} and {}", username, pageable);
         int appUserId = appUserService.getAppUserByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("AppUser not found"))
                 .getId();
@@ -128,7 +132,7 @@ private static final String CURRENT_USER_NOT_FOUND = "current user not found";
 
     //convert a Transaction object to a TransactionForAppUserHistory object
     private TransactionForAppUserHistory convertToTransactionHistory(Transaction transaction, int appUserId) {
-
+        log.info("convertToTransactionHistory method called with: {} and {}", transaction, appUserId);
         TransactionForAppUserHistory simplifiedTransaction;
 
         // If the transaction type is send or receive,
@@ -146,6 +150,7 @@ private static final String CURRENT_USER_NOT_FOUND = "current user not found";
     }
 
     private TransactionForAppUserHistory handleSendReceiveTransactions(Transaction transaction, int appUserId) {
+        log.info("handleSendReceiveTransactions method called with: {} and {}", transaction, appUserId);
         //find contactId in transaction
         int contactId;
         if(appUserId == transaction.getSenderId()){
@@ -184,6 +189,7 @@ private static final String CURRENT_USER_NOT_FOUND = "current user not found";
     }
 
     private TransactionForAppUserHistory handleNonDepositWithdrawalTransactions(Transaction transaction) {
+        log.info("handleNonDepositWithdrawalTransactions method called with: {}", transaction);
         if (transaction.getTransactionType() == Transaction
                 .TransactionType.WITHDRAWAL){
 
@@ -202,6 +208,7 @@ private static final String CURRENT_USER_NOT_FOUND = "current user not found";
     }
 
     public void withdrawFunds(String username, BigDecimal amount){
+        log.info("withdrawFunds method called with: {} and {}", username, amount);
         //get id
         AppUser appUser = appUserService.getAppUserByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException(CURRENT_USER_NOT_FOUND));
@@ -229,7 +236,8 @@ private static final String CURRENT_USER_NOT_FOUND = "current user not found";
     }
 
     //TODO: remove in production
-    public void genarateTestDepostion(String username){
+    public void genarateTestDeposit(String username){
+        log.info("generateTestDeposit method called with: {}", username);
         //get id
         AppUser appUser = appUserService.getAppUserByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException(CURRENT_USER_NOT_FOUND));

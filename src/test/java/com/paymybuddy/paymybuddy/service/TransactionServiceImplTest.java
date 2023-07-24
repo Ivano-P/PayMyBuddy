@@ -254,7 +254,7 @@ class TransactionServiceImplTest {
         when(walletService.getWalletById(userWallet.getId())).thenReturn(Optional.of(userWallet));
 
         // Act
-        transactionService.genarateTestDepostion(username);
+        transactionService.genarateTestDeposit(username);
 
         // Assert
         assertThat(userWallet.getBalance()).isEqualTo(expectedBalance);
@@ -269,7 +269,7 @@ class TransactionServiceImplTest {
         when(appUserService.getAppUserByUsername(username)).thenReturn(Optional.empty());
 
         // Act and Assert
-        assertThrows(UsernameNotFoundException.class, () -> transactionService.genarateTestDepostion(username));
+        assertThrows(UsernameNotFoundException.class, () -> transactionService.genarateTestDeposit(username));
     }
 
     @Test
@@ -284,7 +284,7 @@ class TransactionServiceImplTest {
         when(walletService.getWalletById(appUser.getId())).thenReturn(Optional.empty());
 
         // Act and Assert
-        assertThrows(WalletNotFoundException.class, () -> transactionService.genarateTestDepostion(username));
+        assertThrows(WalletNotFoundException.class, () -> transactionService.genarateTestDeposit(username));
     }
 
 

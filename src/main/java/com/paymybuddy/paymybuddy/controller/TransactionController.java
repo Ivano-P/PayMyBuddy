@@ -96,7 +96,7 @@ public class TransactionController {
     @PostMapping("/testDepositFunds")
     public String testDepositFunds(Principal principal) {
         log.info("testDepositFunds method called");
-        transactionService.genarateTestDepostion(principal.getName());
+        transactionService.genarateTestDeposit(principal.getName());
         return REDIRECT_TRANSFER;
     }
 

@@ -24,21 +24,25 @@ public class WalletServiceImpl implements WalletService {
 
     @Transactional(readOnly = true)
     public Optional<Wallet> getWalletById(int walletId){
+        log.info("getWalletById method called with: {}", walletId);
         return walletRepository.findById(walletId);
     }
 
     @Transactional(readOnly = true)
     public List<Wallet> getAllWallet() {
+        log.info("getWalletById method called");
         return walletRepository.findAll();
     }
 
     public void updateWallet(Wallet wallet) {
+        log.info("updateWallet method called with: {}", wallet);
         walletRepository.save(wallet);
     }
 
 
     //set admin user balance for test. add 1 000 000 to admin wallet
     public void setAdminUserWalletBalance(AppUser appUser){
+        log.info("setAdminUserWalletBalance method called with: {}", appUser);
         // Create new wallet
         Wallet wallet = new Wallet();
         wallet.setBalance(BigDecimal.valueOf(10000));
@@ -52,6 +56,7 @@ public class WalletServiceImpl implements WalletService {
     }
 
     public void creatAndLinkWallet(AppUser appUser){
+        log.info("creatAndLinkWallet method called with: {}",appUser);
         // Create new wallet
         Wallet wallet = new Wallet();
         wallet.setBalance(BigDecimal.ZERO);

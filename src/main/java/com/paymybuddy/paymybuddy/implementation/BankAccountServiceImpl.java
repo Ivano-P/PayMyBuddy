@@ -27,11 +27,12 @@ public class BankAccountServiceImpl implements BankAccountService {
 
 
     public void removeBankAccount(int appUserId){
+        log.info("removeBankAccount method called with : {}", appUserId);
         bankAccountRepository.deleteById(appUserId);
     }
 
     public void updateBankAccount(BankAccount bankAccount){
-
+        log.info("updateBankAccount method called with : {}", bankAccount);
         Optional<BankAccount> bankAccountOptional = bankAccountRepository.findById(bankAccount.getId());
 
         if(bankAccountOptional.isEmpty()){
@@ -45,6 +46,7 @@ public class BankAccountServiceImpl implements BankAccountService {
 
     public BankAccount checkBankAccountValidity(String username, String lasName,
                                                 String firstName, String iban){
+        log.info("checkBankAccountValidity method called with : {}, {}, {} and {}", username, lasName, firstName, iban);
         BankAccount bankAccountToAdd = new BankAccount();
         Optional<AppUser> appUserOptional = appUserService.getAppUserByUsername(username);
         if(appUserOptional.isPresent()){
@@ -72,6 +74,7 @@ public class BankAccountServiceImpl implements BankAccountService {
 
 
     public boolean hasBankAccount(String username) {
+        log.info("hasBankAccount method called with : {}", username);
         Optional<AppUser> appUser = appUserService.getAppUserByUsername(username);
         boolean hasBankAccount = false;
         if (appUser.isPresent()) {
@@ -86,6 +89,7 @@ public class BankAccountServiceImpl implements BankAccountService {
     }
 
     public BankAccount getAppUserBankAccount(int currentAppUserId){
+        log.info("getAppUserBankAccount method called with : {}", currentAppUserId);
         Optional<BankAccount> bankAccountOptional = bankAccountRepository.findById(currentAppUserId);
         BankAccount currentBankAccount = new BankAccount();
 
@@ -99,6 +103,7 @@ public class BankAccountServiceImpl implements BankAccountService {
     }
 
     public void noBankAccountForWithdrawal(){
+        log.info("noBankAccountForWithdrawal method called");
         throw new NoBankAccountException("Withdrawal not possible, no bank account added");
     }
 

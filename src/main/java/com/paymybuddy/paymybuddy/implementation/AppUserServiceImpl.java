@@ -32,35 +32,41 @@ public class AppUserServiceImpl implements AppUserService {
 
     @Transactional(readOnly = true)
     public List<AppUser> getAllAppUsers() {
+        log.info("getAllAppUsers method called");
         return appUserRepository.findAll();
     }
 
     @Transactional(readOnly = true)
     public Optional<AppUser> getAppUserById(int id) {
+        log.info("getAppUserById method called with : {}", id);
         return appUserRepository.findById(id);
     }
 
     @Transactional(readOnly = true)
     public Optional<AppUser> getAppUserByEmail(String email) {
+        log.info("getAppUserByEmail method called with : {}", email);
         return appUserRepository.findByEmail(email);
     }
 
     public Optional<AppUser> getAppUserByUsername(String username) {
+        log.info("getAppUserByUsername method called with : {}", username);
         return appUserRepository.findByUsername(username);
     }
 
     public void updateAppUser(AppUser appUser) {
+        log.info("updateAppUser method called with : {}", appUser);
         appUserRepository.save(appUser);
     }
 
     public void deleteAppUser(int id) {
+        log.info("deleteAppUser method called with : {}", id);
         appUserRepository.deleteById(id);
     }
 
 
     //creat admin user for test, this  is called on startup
     public void creatMainAdminAppUser() {
-
+        log.info("creatMainAdminAppUser method called");
         //check if first user (ADMIN) is created, if not in db creat it
         Optional<AppUser> appUserCheck = appUserRepository.findById(1);
         if (appUserCheck.isEmpty()) {
@@ -82,7 +88,7 @@ public class AppUserServiceImpl implements AppUserService {
 
 
     public AppUser createAppUser(AppUser appUser) {
-
+        log.info("createAppUser method called with : {}", appUser);
         //Encode the password
         appUser.setPassword(passwordEncoder.encode(appUser.getPassword()));
 
@@ -94,11 +100,11 @@ public class AppUserServiceImpl implements AppUserService {
 
 
     public void addContact(String userUsername, String contactUsername) {
+        log.info("addContact method called with : {} and {}", userUsername, contactUsername);
         Optional<AppUser> userOptional = appUserRepository.findByUsername(userUsername);
         Optional<AppUser> newContactOptional = appUserRepository.findByUsername(contactUsername);
 
         if (newContactOptional.isEmpty()) {
-            log.error("contact ContactNotFoundException when user attempted to add contact");
             throw new ContactNotFoundException();
         } else if (userOptional.isPresent()) {
             AppUser user = userOptional.get();
@@ -114,12 +120,15 @@ public class AppUserServiceImpl implements AppUserService {
             appUserContact.setContact(newContact);
 
             appUserContactRepository.save(appUserContact);
-
+            log.info("Successfully added contact {} for user {}", contactUsername, userUsername);
+        }else{
+            log.warn("User {} not found when trying to add contact {}", userUsername, contactUsername);
         }
 
     }
 
     public List<AppUser> getContactsForUser(AppUser user) {
+        log.info("addContact method called with : {}", user);
         // Fetch the AppUserContact instances for the given user
         List<AppUserContact> userContacts = appUserContactRepository.findByAppUser(user);
 
@@ -131,6 +140,7 @@ public class AppUserServiceImpl implements AppUserService {
     }
 
     public void removeContact(String appUserUsername, Integer contactId) {
+        log.info("removeContact method called with : {} and {}", appUserUsername, contactId);
         Optional<AppUser> appUser = appUserRepository.findByUsername(appUserUsername);
         Optional<AppUser> contactToRemove = appUserRepository.findById(contactId);
 
@@ -148,6 +158,7 @@ public class AppUserServiceImpl implements AppUserService {
     }
 
     public void checkIfAllUserInfoPresent(AppUser appUser) {
+        log.info("checkIfAllUserInfoPresent method called with : {}", appUser);
         boolean allInfoArePresent;
 
         allInfoArePresent = appUser.getFirstName() != null && appUser.getLastName() != null && appUser

@@ -19,6 +19,6 @@ public interface TransactionService {
 
     void withdrawFunds(String username, BigDecimal amount);
 
-    void genarateTestDepostion(String username);
+    void genarateTestDeposit(String username);
 
 }
