@@ -6,6 +6,7 @@ import com.paymybuddy.paymybuddy.service.AppPmbService;
 import com.paymybuddy.paymybuddy.service.AppUserService;
 import com.paymybuddy.paymybuddy.service.BankAccountService;
 import lombok.AllArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Controller;
@@ -18,6 +19,7 @@ import java.security.Principal;
 import java.util.Optional;
 
 @AllArgsConstructor(onConstructor = @__(@Autowired))
+@Log4j2
 @Controller
 public class BankAccountController {
     private final AppUserService appUserService;
@@ -29,12 +31,14 @@ public class BankAccountController {
     private static final String CURRENT_USER = "currentUser";
 
     private AppUser getAppUserService(String username){
+        log.info("getAppUserService method called");
         Optional<AppUser> currentUserOptional = appUserService.getAppUserByUsername(username);
         return currentUserOptional.orElseThrow(() -> new UsernameNotFoundException("User not found"));
     }
 
     @GetMapping("/iban")
     public String goToIban(Model model, Principal principal) {
+        log.info("goToIban method called");
         AppUser currentAppUser = getAppUserService(principal.getName());
         model.addAttribute(CURRENT_USER, currentAppUser);
 
@@ -49,7 +53,7 @@ public class BankAccountController {
                                  @RequestParam("lastName") String lastName,
                                  @RequestParam("firstName") String firstName,
                                  @RequestParam("iban") String iban) {
-
+        log.info("addBankAccount method called");
         //check bank account validity
         BankAccount bankAccountToAdd = bankAccountService
                 .checkBankAccountValidity(principal
@@ -62,6 +66,7 @@ public class BankAccountController {
 
     @PostMapping("/removeBankAccount")
     public String removeBankAccount(@RequestParam("appUserId") Integer appUserId) {
+        log.info("removeBankAccount method called");
         bankAccountService.removeBankAccount(appUserId);
 
         return REDIRECT_PROFILE;
@@ -69,6 +74,7 @@ public class BankAccountController {
 
     @PostMapping("/noAccountForWithdrawal")
     public String indicateAddBankAccount() {
+        log.info("indicatedAddBankAccount method called");
         bankAccountService.noBankAccountForWithdrawal();
         return REDIRECT_TRANSFER;
     }

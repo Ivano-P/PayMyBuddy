@@ -12,6 +12,7 @@ import com.paymybuddy.paymybuddy.service.AppUserService;
 import com.paymybuddy.paymybuddy.service.BankAccountService;
 import com.paymybuddy.paymybuddy.service.TransactionService;
 import lombok.AllArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -31,6 +32,7 @@ import java.util.Optional;
 
 @Controller
 @AllArgsConstructor(onConstructor = @__(@Autowired))
+@Log4j2
 public class UserController {
 
     private final AppUserService appUserService;
@@ -40,6 +42,7 @@ public class UserController {
     private static final String CURRENT_USER = "currentUser";
 
     private AppUser getAppUserService(String username){
+        log.info("getAppUserService method called");
         Optional<AppUser> currentUserOptional = appUserService.getAppUserByUsername(username);
         return currentUserOptional.orElseThrow(() -> new UsernameNotFoundException("User not found"));
     }
@@ -47,17 +50,20 @@ public class UserController {
     //go to log in page
     @GetMapping("/logIn")
     public String goToLogIn() {
+        log.info("goToLogIn method called");
         return "logIn";
     }
 
     @GetMapping("/register")
     public String showRegistrationForm(Model model) {
+        log.info("showRegistrationForm method called");
         model.addAttribute("appUser", new AppUser());
         return "register";
     }
 
     @GetMapping("/home")
     public String goToHomePage(Model model, Principal principal) {
+        log.info("goToHomePage method called");
         AppUser currentAppUser = getAppUserService(principal.getName());
         model.addAttribute(CURRENT_USER, currentAppUser);
         this.appUserService.checkIfAllUserInfoPresent(currentAppUser);
@@ -66,6 +72,7 @@ public class UserController {
 
     @GetMapping("/profile")
     public String goToProfilePage(Model model, Principal principal) {
+        log.info("goToProfilePage method called");
         AppUser currentAppUser = getAppUserService(principal.getName());
 
         model.addAttribute(CURRENT_USER, currentAppUser);
@@ -85,7 +92,7 @@ public class UserController {
 
     @GetMapping("/contact")
     public String goToContactPage(Model model, Principal principal) {
-
+        log.info("goToContactPage method called");
         AppUser currentAppUser = getAppUserService(principal.getName());
 
         model.addAttribute(CURRENT_USER, currentAppUser);
@@ -100,6 +107,7 @@ public class UserController {
 
     @GetMapping("update_profile")
     public String goToUpdateProfileInfoPage(Model model, Principal principal) {
+        log.info("goToUpdateProfileInfoPage method called");
         AppUser currentAppUser = getAppUserService(principal.getName());
 
         model.addAttribute(CURRENT_USER, currentAppUser);
@@ -110,7 +118,7 @@ public class UserController {
 
     @PostMapping("/register")
     public String registerAppUser(@ModelAttribute AppUser appUser, BindingResult bindingResult) {
-
+        log.info("registerAppUser method called");
         if (appUserService.createAppUser(appUser) != null) {
             return "registrationSuccessful";
         } else {
@@ -120,12 +128,14 @@ public class UserController {
 
     @PostMapping("/addContact")
     public String addContact(Principal principal, @RequestParam("contactUsername") String contactUsername) {
+        log.info("addContact method called");
         appUserService.addContact(principal.getName(), contactUsername);
         return "redirect:/contact"; // redirect to same page
     }
 
     @PostMapping("/removeContact")
     public String removeContact(Principal principal, @RequestParam("contactId") Integer contactId) {
+        log.info("removeContact method called");
         appUserService.removeContact(principal.getName(), contactId);
         return "redirect:/contact"; // redirect to same page
     }
@@ -133,6 +143,7 @@ public class UserController {
 
     @PostMapping("/updateProfileInfo")
     public String updateProfileInfo(@ModelAttribute AppUser updatedUser, Principal principal) {
+        log.info("updateProfileInfo method called");
         AppUser currentAppUser = getAppUserService(principal.getName());
 
         currentAppUser.setFirstName(updatedUser.getFirstName());

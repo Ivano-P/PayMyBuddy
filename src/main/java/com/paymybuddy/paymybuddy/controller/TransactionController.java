@@ -6,6 +6,7 @@ import com.paymybuddy.paymybuddy.service.AppUserService;
 import com.paymybuddy.paymybuddy.service.BankAccountService;
 import com.paymybuddy.paymybuddy.service.TransactionService;
 import lombok.AllArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -22,6 +23,7 @@ import java.util.List;
 import java.util.Optional;
 
 @AllArgsConstructor(onConstructor = @__(@Autowired))
+@Log4j2
 @Controller
 public class TransactionController {
     private final TransactionService transactionService;
@@ -32,11 +34,13 @@ public class TransactionController {
     private static final String CURRENT_USER = "currentUser";
 
     private AppUser getAppUserService(String username){
+        log.info("getAppUserService method called");
         Optional<AppUser> currentUserOptional = appUserService.getAppUserByUsername(username);
         return currentUserOptional.orElseThrow(() -> new UsernameNotFoundException("User not found"));
     }
     @GetMapping("/transfer")
     public String goToTransferPage(Model model, Principal principal, @RequestParam(defaultValue = "0") int page) {
+        log.info("goToTransferPage method called");
         AppUser currentAppUser = getAppUserService(principal.getName());
         PageRequest pageRequest = PageRequest.of(page, 5);
 
@@ -65,6 +69,7 @@ public class TransactionController {
 
     @PostMapping("/deposit")
     public String depositFunds() {
+        log.info("depositFunds method called");
         return "redirect:/iban";
     }
 
@@ -73,7 +78,7 @@ public class TransactionController {
                                 @RequestParam("contactId") Integer contactId,
                                 @RequestParam("amount") BigDecimal amount,
                                 @RequestParam(value = "description", required = false) String description) {
-
+        log.info("transferFunds method called");
         transactionService.transferFunds(principal.getName(), contactId, amount, description);
         return REDIRECT_TRANSFER; // redirect back to the transfer page
     }
@@ -82,6 +87,7 @@ public class TransactionController {
 
     @PostMapping("/withdrawFunds")
     public String withdrawFunds(Principal principal, @RequestParam("amount") BigDecimal amount) {
+        log.info("withdrawFunds method called");
         transactionService.withdrawFunds(principal.getName(), amount);
         return REDIRECT_TRANSFER;
     }
@@ -89,6 +95,7 @@ public class TransactionController {
     //TODO: remove in production
     @PostMapping("/testDepositFunds")
     public String testDepositFunds(Principal principal) {
+        log.info("testDepositFunds method called");
         transactionService.genarateTestDepostion(principal.getName());
         return REDIRECT_TRANSFER;
     }
