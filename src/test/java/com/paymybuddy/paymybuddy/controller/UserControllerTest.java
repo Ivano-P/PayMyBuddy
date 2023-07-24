@@ -3,10 +3,10 @@ package com.paymybuddy.paymybuddy.controller;
 import com.paymybuddy.paymybuddy.dto.TransactionForAppUserHistory;
 import com.paymybuddy.paymybuddy.model.AppUser;
 import com.paymybuddy.paymybuddy.model.BankAccount;
-import com.paymybuddy.paymybuddy.service.AppPmbService;
-import com.paymybuddy.paymybuddy.service.AppUserService;
-import com.paymybuddy.paymybuddy.service.BankAccountService;
-import com.paymybuddy.paymybuddy.service.TransactionService;
+import com.paymybuddy.paymybuddy.implementation.AppPmbServiceImpl;
+import com.paymybuddy.paymybuddy.implementation.AppUserServiceImpl;
+import com.paymybuddy.paymybuddy.implementation.BankAccountServiceImpl;
+import com.paymybuddy.paymybuddy.implementation.TransactionServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -34,18 +34,18 @@ class UserControllerTest {
     @InjectMocks
     private UserController userController;
     @Mock
-    private AppUserService appUserService;
+    private AppUserServiceImpl appUserService;
     @Mock
     private BindingResult bindingResult;
 
     @Mock
-    private BankAccountService bankAccountService;
+    private BankAccountServiceImpl bankAccountService;
 
     @Mock
-    private TransactionService transactionService;
+    private TransactionServiceImpl transactionService;
 
     @Mock
-    private AppPmbService appPmbService;
+    private AppPmbServiceImpl appPmbService;
 
 
     private AppUser appUser;

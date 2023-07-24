@@ -2,6 +2,7 @@ package com.paymybuddy.paymybuddy.service;
 
 import com.paymybuddy.paymybuddy.model.AccountPayMyBuddy;
 import com.paymybuddy.paymybuddy.repository.AccountPayMyBuddyRepository;
+import com.paymybuddy.paymybuddy.implementation.AppPmbServiceImpl;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -16,20 +17,18 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
-class AppPmbServiceTest {
-
-    @Mock
-    private AccountPayMyBuddyRepository accountPayMyBuddyRepository;
+class AppPmbServiceImplTest {
 
     @InjectMocks
-    private AppPmbService appPmbService;
-
-
+    private AppPmbServiceImpl appPmbService;
+    @Mock
+    private AccountPayMyBuddyRepository accountPayMyBuddyRepository;
+    
     @Test
     void testGetAccountPmb_AccountExists() {
         AccountPayMyBuddy mockAccount = new AccountPayMyBuddy();
         mockAccount.setBalance(BigDecimal.ZERO);
-        when(accountPayMyBuddyRepository.findById(AppPmbService.PMB_ACCOUNT_ID)).thenReturn(Optional.of(mockAccount));
+        when(accountPayMyBuddyRepository.findById(AppPmbServiceImpl.PMB_ACCOUNT_ID)).thenReturn(Optional.of(mockAccount));
 
         AccountPayMyBuddy result = appPmbService.getAccountPmb();
 
@@ -38,7 +37,7 @@ class AppPmbServiceTest {
 
     @Test
     void testGetAccountPmb_AccountDoesNotExist() {
-        when(accountPayMyBuddyRepository.findById(AppPmbService.PMB_ACCOUNT_ID)).thenReturn(Optional.empty());
+        when(accountPayMyBuddyRepository.findById(AppPmbServiceImpl.PMB_ACCOUNT_ID)).thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> appPmbService.getAccountPmb()).isInstanceOf(RuntimeException.class);
     }
@@ -47,7 +46,7 @@ class AppPmbServiceTest {
     void testCheckIfPmbAccountIsPresent_AccountExists() {
         AccountPayMyBuddy mockAccount = new AccountPayMyBuddy();
         mockAccount.setBalance(BigDecimal.ZERO);
-        when(accountPayMyBuddyRepository.findById(AppPmbService.PMB_ACCOUNT_ID)).thenReturn(Optional.of(mockAccount));
+        when(accountPayMyBuddyRepository.findById(AppPmbServiceImpl.PMB_ACCOUNT_ID)).thenReturn(Optional.of(mockAccount));
 
         boolean result = appPmbService.checkIfPmbAccountIsPresent();
 
@@ -56,7 +55,7 @@ class AppPmbServiceTest {
 
     @Test
     void testCheckIfPmbAccountIsPresent_AccountDoesNotExist() {
-        when(accountPayMyBuddyRepository.findById(AppPmbService.PMB_ACCOUNT_ID)).thenReturn(Optional.empty());
+        when(accountPayMyBuddyRepository.findById(AppPmbServiceImpl.PMB_ACCOUNT_ID)).thenReturn(Optional.empty());
 
         boolean result = appPmbService.checkIfPmbAccountIsPresent();
 
@@ -65,7 +64,7 @@ class AppPmbServiceTest {
 
     @Test
     void testCreatPmbAccount_AccountDoesNotExist() {
-        when(accountPayMyBuddyRepository.findById(AppPmbService.PMB_ACCOUNT_ID)).thenReturn(Optional.empty());
+        when(accountPayMyBuddyRepository.findById(AppPmbServiceImpl.PMB_ACCOUNT_ID)).thenReturn(Optional.empty());
 
         appPmbService.creatPmbAccount();
 
@@ -76,7 +75,7 @@ class AppPmbServiceTest {
     void testCreatPmbAccount_AccountExists() {
         AccountPayMyBuddy mockAccount = new AccountPayMyBuddy();
         mockAccount.setBalance(BigDecimal.ZERO);
-        when(accountPayMyBuddyRepository.findById(AppPmbService.PMB_ACCOUNT_ID)).thenReturn(Optional.of(mockAccount));
+        when(accountPayMyBuddyRepository.findById(AppPmbServiceImpl.PMB_ACCOUNT_ID)).thenReturn(Optional.of(mockAccount));
 
         appPmbService.creatPmbAccount();
 
@@ -88,7 +87,7 @@ class AppPmbServiceTest {
         AccountPayMyBuddy mockAccount = new AccountPayMyBuddy();
         mockAccount.setBalance(BigDecimal.ZERO);
         mockAccount.setIban("DE89 3704 0044 0532 0130 00");
-        when(accountPayMyBuddyRepository.findById(AppPmbService.PMB_ACCOUNT_ID)).thenReturn(Optional.of(mockAccount));
+        when(accountPayMyBuddyRepository.findById(AppPmbServiceImpl.PMB_ACCOUNT_ID)).thenReturn(Optional.of(mockAccount));
 
         String result = appPmbService.getPmbIban();
 

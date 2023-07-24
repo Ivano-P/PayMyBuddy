@@ -2,11 +2,12 @@ package com.paymybuddy.paymybuddy.service;
 
 import com.paymybuddy.paymybuddy.exceptions.AccountMustBeToUsersNameException;
 import com.paymybuddy.paymybuddy.exceptions.InvalidIbanException;
+import com.paymybuddy.paymybuddy.implementation.AppUserServiceImpl;
+import com.paymybuddy.paymybuddy.implementation.BankAccountServiceImpl;
 import com.paymybuddy.paymybuddy.model.AppUser;
 import com.paymybuddy.paymybuddy.model.BankAccount;
 import com.paymybuddy.paymybuddy.repository.BankAccountRepository;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -15,20 +16,19 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Optional;
 
-import static org.assertj.core.api.FactoryBasedNavigableListAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 
 @ExtendWith(MockitoExtension.class)
-class BankAccountServiceTest {
+class BankAccountServiceImplTest {
 
     @InjectMocks
-    private BankAccountService bankAccountService;
+    private BankAccountServiceImpl bankAccountService;
     @Mock
     private BankAccountRepository bankAccountRepository;
     @Mock
-    private AppUserService appUserService;
+    private AppUserServiceImpl appUserService;
 
 
     @AfterEach

@@ -1,5 +1,6 @@
 package com.paymybuddy.paymybuddy.service;
 
+import com.paymybuddy.paymybuddy.implementation.CustomUserDetailsService;
 import com.paymybuddy.paymybuddy.model.AppUser;
 import com.paymybuddy.paymybuddy.repository.AppUserRepository;
 import org.junit.jupiter.api.Test;
@@ -17,7 +18,7 @@ import static org.mockito.Mockito.anyString;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class CustomUserDetailsServiceTest {
+class CustomUserDetailsServiceImplTest {
 
     @InjectMocks
     private CustomUserDetailsService userDetailsService;

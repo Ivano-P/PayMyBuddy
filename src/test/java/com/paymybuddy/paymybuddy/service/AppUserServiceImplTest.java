@@ -2,11 +2,12 @@ package com.paymybuddy.paymybuddy.service;
 
 import com.paymybuddy.paymybuddy.exceptions.ContactNotFoundException;
 import com.paymybuddy.paymybuddy.exceptions.MissingUserInfoException;
+import com.paymybuddy.paymybuddy.implementation.AppUserServiceImpl;
+import com.paymybuddy.paymybuddy.implementation.WalletServiceImpl;
 import com.paymybuddy.paymybuddy.model.AppUser;
 import com.paymybuddy.paymybuddy.model.AppUserContact;
 import com.paymybuddy.paymybuddy.repository.AppUserContactRepository;
 import com.paymybuddy.paymybuddy.repository.AppUserRepository;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
@@ -23,19 +24,19 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-class AppUserServiceTest {
+class AppUserServiceImplTest {
 
     @Mock
     private AppUserRepository appUserRepository;
     @Mock
     private AppUserContactRepository appUserContactRepository;
     @Mock
-    private WalletService walletService;
+    private WalletServiceImpl walletService;
     @Mock
     private PasswordEncoder passwordEncoder;
 
     @InjectMocks
-    private AppUserService appUserService;
+    private AppUserServiceImpl appUserService;
 
     @Test
     void testCreateAppUser() {

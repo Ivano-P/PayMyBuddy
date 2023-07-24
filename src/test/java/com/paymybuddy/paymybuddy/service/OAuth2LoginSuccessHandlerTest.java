@@ -1,5 +1,6 @@
 package com.paymybuddy.paymybuddy.service;
 
+import com.paymybuddy.paymybuddy.implementation.WalletServiceImpl;
 import com.paymybuddy.paymybuddy.model.AppUser;
 import com.paymybuddy.paymybuddy.repository.AppUserRepository;
 import jakarta.servlet.http.HttpServletRequest;
@@ -28,7 +29,7 @@ class OAuth2LoginSuccessHandlerTest {
     private AppUserRepository appUserRepository;
 
     @Mock
-    private WalletService walletService;
+    private WalletServiceImpl walletService;
 
     @Mock
     private HttpServletRequest request;

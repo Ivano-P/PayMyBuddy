@@ -1,5 +1,6 @@
 package com.paymybuddy.paymybuddy.service;
 
+import com.paymybuddy.paymybuddy.implementation.WalletServiceImpl;
 import com.paymybuddy.paymybuddy.model.AppUser;
 import com.paymybuddy.paymybuddy.model.Wallet;
 import com.paymybuddy.paymybuddy.repository.WalletRepository;
@@ -19,10 +20,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
-class WalletServiceTest {
+class WalletServiceImplTest {
 
     @InjectMocks
-    WalletService walletService;
+    WalletServiceImpl walletService;
     @Mock
     private WalletRepository walletRepository;
 

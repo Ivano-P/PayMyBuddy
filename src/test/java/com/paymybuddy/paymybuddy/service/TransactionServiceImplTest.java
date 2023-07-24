@@ -3,6 +3,10 @@ package com.paymybuddy.paymybuddy.service;
 import com.paymybuddy.paymybuddy.dto.TransactionForAppUserHistory;
 import com.paymybuddy.paymybuddy.exceptions.InsufficientFundsException;
 import com.paymybuddy.paymybuddy.exceptions.WalletNotFoundException;
+import com.paymybuddy.paymybuddy.implementation.AppPmbServiceImpl;
+import com.paymybuddy.paymybuddy.implementation.AppUserServiceImpl;
+import com.paymybuddy.paymybuddy.implementation.TransactionServiceImpl;
+import com.paymybuddy.paymybuddy.implementation.WalletServiceImpl;
 import com.paymybuddy.paymybuddy.model.AccountPayMyBuddy;
 import com.paymybuddy.paymybuddy.model.AppUser;
 import com.paymybuddy.paymybuddy.model.Transaction;
@@ -31,20 +35,20 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-class TransactionServiceTest {
+class TransactionServiceImplTest {
 
     @InjectMocks
-    private TransactionService transactionService;
+    private TransactionServiceImpl transactionService;
     @Mock
     private TransactionRepository transactionRepository;
     @Mock
-    private WalletService walletService;
+    private WalletServiceImpl walletService;
     @Mock
     private AccountPayMyBuddyRepository accountPayMyBuddyRepository;
     @Mock
-    private AppUserService appUserService;
+    private AppUserServiceImpl appUserService;
     @Mock
-    private AppPmbService appPmbService;
+    private AppPmbServiceImpl appPmbService;
 
 
     @Test
