@@ -6,6 +6,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.AllArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -21,16 +22,15 @@ import java.io.IOException;
 import java.util.List;
 
 @AllArgsConstructor(onConstructor = @__(@Autowired))
+@Log4j2
 @Component
 public class OAuth2LoginSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
     private final AppUserRepository appUserRepository;
     private final WalletService walletService;
-
-
-
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
                                         Authentication authentication) throws IOException, ServletException {
+        log.info("onAuthenticationSuccess method called with: {}, {} and {}", request, request, authentication);
 
         if (authentication instanceof OAuth2AuthenticationToken token) {
             DefaultOAuth2User user = (DefaultOAuth2User) token.getPrincipal();
@@ -61,11 +61,7 @@ public class OAuth2LoginSuccessHandler extends SimpleUrlAuthenticationSuccessHan
             }
 
             response.sendRedirect("/home");
-
-
         }
-
-
-
+        log.info("onAuthenticationSuccess method called successfully");
     }
 }

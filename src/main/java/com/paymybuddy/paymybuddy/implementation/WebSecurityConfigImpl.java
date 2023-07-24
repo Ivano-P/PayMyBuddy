@@ -50,7 +50,7 @@ public class WebSecurityConfigImpl implements WebSecurityConfig {
 
         //to check user in db for login
         httpSecurity.userDetailsService(customUserDetailsService);
-        
+
         return httpSecurity.build();
     }
 

@@ -40,7 +40,7 @@ public class TransactionController {
     }
     @GetMapping("/transfer")
     public String goToTransferPage(Model model, Principal principal, @RequestParam(defaultValue = "0") int page) {
-        log.info("goToTransferPage method called");
+        log.info("goToTransferPage method called for user {} ", principal.getName());
         AppUser currentAppUser = getAppUserService(principal.getName());
         PageRequest pageRequest = PageRequest.of(page, 5);
 
@@ -78,7 +78,7 @@ public class TransactionController {
                                 @RequestParam("contactId") Integer contactId,
                                 @RequestParam("amount") BigDecimal amount,
                                 @RequestParam(value = "description", required = false) String description) {
-        log.info("transferFunds method called");
+        log.info("transferFunds method called for user {} ", principal.getName());
         transactionService.transferFunds(principal.getName(), contactId, amount, description);
         return REDIRECT_TRANSFER; // redirect back to the transfer page
     }
@@ -87,7 +87,7 @@ public class TransactionController {
 
     @PostMapping("/withdrawFunds")
     public String withdrawFunds(Principal principal, @RequestParam("amount") BigDecimal amount) {
-        log.info("withdrawFunds method called");
+        log.info("withdrawFunds method called for user {} ", principal.getName());
         transactionService.withdrawFunds(principal.getName(), amount);
         return REDIRECT_TRANSFER;
     }
@@ -95,7 +95,7 @@ public class TransactionController {
     //TODO: remove in production
     @PostMapping("/testDepositFunds")
     public String testDepositFunds(Principal principal) {
-        log.info("testDepositFunds method called");
+        log.info("testDepositFunds method called for user {}", principal.getName());
         transactionService.genarateTestDeposit(principal.getName());
         return REDIRECT_TRANSFER;
     }

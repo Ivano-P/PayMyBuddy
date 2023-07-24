@@ -38,7 +38,7 @@ public class BankAccountController {
 
     @GetMapping("/iban")
     public String goToIban(Model model, Principal principal) {
-        log.info("goToIban method called + ");
+        log.info("goToIban method called for user {} ", principal.getName());
         AppUser currentAppUser = getAppUserService(principal.getName());
         model.addAttribute(CURRENT_USER, currentAppUser);
 
@@ -53,7 +53,7 @@ public class BankAccountController {
                                  @RequestParam("lastName") String lastName,
                                  @RequestParam("firstName") String firstName,
                                  @RequestParam("iban") String iban) {
-        log.info("addBankAccount method called");
+        log.info("addBankAccount method called for user {} ", principal.getName());
         //check bank account validity
         BankAccount bankAccountToAdd = bankAccountService
                 .checkBankAccountValidity(principal

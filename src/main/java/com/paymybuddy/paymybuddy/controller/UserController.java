@@ -63,7 +63,7 @@ public class UserController {
 
     @GetMapping("/home")
     public String goToHomePage(Model model, Principal principal) {
-        log.info("goToHomePage method called");
+        log.info("goToHomePage method called for user {} ", principal.getName());
         AppUser currentAppUser = getAppUserService(principal.getName());
         model.addAttribute(CURRENT_USER, currentAppUser);
         this.appUserService.checkIfAllUserInfoPresent(currentAppUser);
@@ -72,7 +72,7 @@ public class UserController {
 
     @GetMapping("/profile")
     public String goToProfilePage(Model model, Principal principal) {
-        log.info("goToProfilePage method called");
+        log.info("goToProfilePage method called for user {} ", principal.getName());
         AppUser currentAppUser = getAppUserService(principal.getName());
 
         model.addAttribute(CURRENT_USER, currentAppUser);
@@ -92,7 +92,7 @@ public class UserController {
 
     @GetMapping("/contact")
     public String goToContactPage(Model model, Principal principal) {
-        log.info("goToContactPage method called");
+        log.info("goToContactPage method called for user {} ", principal.getName());
         AppUser currentAppUser = getAppUserService(principal.getName());
 
         model.addAttribute(CURRENT_USER, currentAppUser);
@@ -107,7 +107,7 @@ public class UserController {
 
     @GetMapping("update_profile")
     public String goToUpdateProfileInfoPage(Model model, Principal principal) {
-        log.info("goToUpdateProfileInfoPage method called");
+        log.info("goToUpdateProfileInfoPage method called for user {} ", principal.getName());
         AppUser currentAppUser = getAppUserService(principal.getName());
 
         model.addAttribute(CURRENT_USER, currentAppUser);
@@ -128,14 +128,14 @@ public class UserController {
 
     @PostMapping("/addContact")
     public String addContact(Principal principal, @RequestParam("contactUsername") String contactUsername) {
-        log.info("addContact method called");
+        log.info("addContact method called for user {} ", principal.getName());
         appUserService.addContact(principal.getName(), contactUsername);
         return "redirect:/contact"; // redirect to same page
     }
 
     @PostMapping("/removeContact")
     public String removeContact(Principal principal, @RequestParam("contactId") Integer contactId) {
-        log.info("removeContact method called");
+        log.info("removeContact method called for user {} ", principal.getName());
         appUserService.removeContact(principal.getName(), contactId);
         return "redirect:/contact"; // redirect to same page
     }
@@ -143,7 +143,7 @@ public class UserController {
 
     @PostMapping("/updateProfileInfo")
     public String updateProfileInfo(@ModelAttribute AppUser updatedUser, Principal principal) {
-        log.info("updateProfileInfo method called");
+        log.info("updateProfileInfo method called for user {} ", principal.getName());
         AppUser currentAppUser = getAppUserService(principal.getName());
 
         currentAppUser.setFirstName(updatedUser.getFirstName());
