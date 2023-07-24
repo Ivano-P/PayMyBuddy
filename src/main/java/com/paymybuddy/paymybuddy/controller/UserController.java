@@ -11,6 +11,7 @@ import com.paymybuddy.paymybuddy.service.AppPmbService;
 import com.paymybuddy.paymybuddy.service.AppUserService;
 import com.paymybuddy.paymybuddy.service.BankAccountService;
 import com.paymybuddy.paymybuddy.service.TransactionService;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -117,7 +118,7 @@ public class UserController {
     }
 
     @PostMapping("/register")
-    public String registerAppUser(@ModelAttribute AppUser appUser, BindingResult bindingResult) {
+    public String registerAppUser(@Valid @ModelAttribute AppUser appUser, BindingResult bindingResult) {
         log.info("registerAppUser method called");
         if (appUserService.createAppUser(appUser) != null) {
             return "registrationSuccessful";

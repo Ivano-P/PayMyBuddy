@@ -1,11 +1,17 @@
 package com.paymybuddy.paymybuddy.exceptions;
 
 import lombok.extern.log4j.Log4j2;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.NoSuchElementException;
 
 @Log4j2
@@ -97,4 +103,11 @@ public class GlobalExceptionHandler {
         return REDIRECT_TRANSFER;
     }
 
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public String handleMethodArgumentNotValidException(MethodArgumentNotValidException manve,
+                                                         RedirectAttributes redirectAttributes){
+        log.error("MethodArgumentNotValidException thrown: {} " , manve.getMessage(), manve);
+        redirectAttributes.addFlashAttribute(ERROR_MESSAGE, manve.getMessage());
+        return "redirect:/home";
+    }
 }

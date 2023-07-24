@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
 @Entity
@@ -16,18 +17,22 @@ public class Transaction {
     private int id;
 
     @Column(name = "sender_id", nullable = false)
+    @NotNull(message = "Sender id should not be empty")
     private int senderId;
 
     @Column(name = "recepient_id", nullable = false)
+    @NotNull(message = "recipient id should not be empty")
     private int recepientId;
 
     @Column(name = "description", length = 50)
     private String description;
 
     @Column(name = "amount", nullable = false)
+    @NotNull(message = "amount should not be empty")
     private BigDecimal amount;
 
     @Column(name = "time_stamp")
+    @NotNull(message = "time stamp should not be empty")
     private LocalDateTime timeStamp;
 
     @Column(name = "transaction_fee")
@@ -35,6 +40,7 @@ public class Transaction {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "transaction_type", nullable = false)
+    @NotNull(message = "transaction type should not be empty")
     private TransactionType transactionType;
 
     @ManyToOne
