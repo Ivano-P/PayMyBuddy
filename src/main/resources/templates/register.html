@@ -58,9 +58,10 @@
            title="Please enter a valid email"  required>
 
     <label for="password"><b>password</b></label>
-    <input type="password" placeholder="Enter Password" th:field="*{password}" required>
+    <input type="password" placeholder="Enter Password" th:field="*{password}" th:minlength="5" required>
 
     <button type="submit">Register</button>
   </form>
+
 </body>
 </html>

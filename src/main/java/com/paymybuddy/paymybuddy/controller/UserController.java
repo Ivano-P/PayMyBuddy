@@ -1,22 +1,13 @@
 package com.paymybuddy.paymybuddy.controller;
 
-import com.paymybuddy.paymybuddy.dto.TransactionForAppUserHistory;
 import com.paymybuddy.paymybuddy.model.AppUser;
 import com.paymybuddy.paymybuddy.model.BankAccount;
-import com.paymybuddy.paymybuddy.implementation.AppPmbServiceImpl;
-import com.paymybuddy.paymybuddy.implementation.AppUserServiceImpl;
-import com.paymybuddy.paymybuddy.implementation.BankAccountServiceImpl;
-import com.paymybuddy.paymybuddy.implementation.TransactionServiceImpl;
-import com.paymybuddy.paymybuddy.service.AppPmbService;
 import com.paymybuddy.paymybuddy.service.AppUserService;
 import com.paymybuddy.paymybuddy.service.BankAccountService;
-import com.paymybuddy.paymybuddy.service.TransactionService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -26,7 +17,6 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import java.math.BigDecimal;
 import java.security.Principal;
 import java.util.List;
 import java.util.Optional;
@@ -120,6 +110,11 @@ public class UserController {
     @PostMapping("/register")
     public String registerAppUser(@Valid @ModelAttribute AppUser appUser, BindingResult bindingResult) {
         log.info("registerAppUser method called");
+
+        if (bindingResult.hasErrors()) {
+            return "registrationFailure";
+        }
+
         if (appUserService.createAppUser(appUser) != null) {
             return "registrationSuccessful";
         } else {

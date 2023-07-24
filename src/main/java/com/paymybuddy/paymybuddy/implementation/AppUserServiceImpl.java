@@ -89,6 +89,7 @@ public class AppUserServiceImpl implements AppUserService {
 
     public AppUser createAppUser(AppUser appUser) {
         log.info("createAppUser method called with : {}", appUser);
+
         //Encode the password
         appUser.setPassword(passwordEncoder.encode(appUser.getPassword()));
 
