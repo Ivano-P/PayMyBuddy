@@ -1,26 +1,19 @@
 package com.paymybuddy.paymybuddy.controller;
 
-import com.paymybuddy.paymybuddy.dto.TransactionForAppUserHistory;
 import com.paymybuddy.paymybuddy.model.AppUser;
 import com.paymybuddy.paymybuddy.model.BankAccount;
-import com.paymybuddy.paymybuddy.implementation.AppPmbServiceImpl;
-import com.paymybuddy.paymybuddy.implementation.AppUserServiceImpl;
-import com.paymybuddy.paymybuddy.implementation.BankAccountServiceImpl;
-import com.paymybuddy.paymybuddy.implementation.TransactionServiceImpl;
+import com.paymybuddy.paymybuddy.service.AppUserService;
+import com.paymybuddy.paymybuddy.service.BankAccountService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.ui.ExtendedModelMap;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 
-import java.math.BigDecimal;
 import java.security.Principal;
 import java.util.Collections;
 import java.util.Optional;
@@ -34,19 +27,11 @@ class UserControllerTest {
     @InjectMocks
     private UserController userController;
     @Mock
-    private AppUserServiceImpl appUserService;
+    private AppUserService appUserService;
     @Mock
     private BindingResult bindingResult;
-
     @Mock
-    private BankAccountServiceImpl bankAccountService;
-
-    @Mock
-    private TransactionServiceImpl transactionService;
-
-    @Mock
-    private AppPmbServiceImpl appPmbService;
-
+    private BankAccountService bankAccountService;
 
     private AppUser appUser;
     private Principal principal;
@@ -59,6 +44,14 @@ class UserControllerTest {
         appUser.setEmail("john.doe@example.com");
 
         principal = mock(Principal.class);
+    }
+
+    @Test
+    void testGoToLogIn(){
+        //Act
+        String viewName = userController.goToLogIn();
+        //Assert
+        assertThat(viewName).isEqualTo("logIn");
     }
 
     @Test
@@ -100,60 +93,6 @@ class UserControllerTest {
         assertThat(viewName).isEqualTo("home");
         assertThat(model.containsAttribute("currentUser")).isTrue();
         assertThat(model.getAttribute("currentUser")).isEqualTo(appUser);
-    }
-
-    @Test
-    void testGoToTransferPage() {
-        // Arrange
-        when(principal.getName()).thenReturn("username");
-        when(appUserService.getAppUserByUsername(any(String.class))).thenReturn(Optional.ofNullable(appUser));
-        doNothing().when(appUserService).checkIfAllUserInfoPresent(any(AppUser.class));
-        when(appUserService.getContactsForUser(any(AppUser.class))).thenReturn(Collections.emptyList());
-        when(bankAccountService.hasBankAccount(any(String.class))).thenReturn(true);
-        Page<TransactionForAppUserHistory> transactions = new PageImpl<>(Collections.emptyList());
-        when(transactionService.getTransactionHistory(any(String.class), any(PageRequest.class))).thenReturn(transactions);
-        Model model = new ExtendedModelMap();
-
-        // Act
-        String viewName = userController.goToTransferPage(model, principal, 0);
-
-        // Assert
-        assertThat(viewName).isEqualTo("transfer");
-        assertThat(model.containsAttribute("currentUser")).isTrue();
-        assertThat(model.getAttribute("currentUser")).isEqualTo(appUser);
-        assertThat(model.containsAttribute("contacts")).isTrue();
-        assertThat(model.containsAttribute("hasBankAccount")).isTrue();
-        assertThat(model.containsAttribute("transactions")).isTrue();
-        assertThat(model.containsAttribute("totalPages")).isTrue();
-        assertThat(model.containsAttribute("currentPage")).isTrue();
-    }
-
-    @Test
-    void testGoToIban() {
-        // Arrange
-        when(principal.getName()).thenReturn("username");
-        when(appUserService.getAppUserByUsername(any(String.class))).thenReturn(Optional.ofNullable(appUser));
-        when(appPmbService.getPmbIban()).thenReturn("iban");
-        Model model = new ExtendedModelMap();
-
-        // Act
-        String viewName = userController.goToIban(model, principal);
-
-        // Assert
-        assertThat(viewName).isEqualTo("iban");
-        assertThat(model.containsAttribute("currentUser")).isTrue();
-        assertThat(model.getAttribute("currentUser")).isEqualTo(appUser);
-        assertThat(model.containsAttribute("iban")).isTrue();
-        assertThat(model.getAttribute("iban")).isEqualTo("iban");
-    }
-
-    @Test
-    void testDepositFunds() {
-        // Act
-        String viewName = userController.depositFunds();
-
-        // Assert
-        assertThat(viewName).isEqualTo("redirect:/iban");
     }
 
     @Test
@@ -225,20 +164,7 @@ class UserControllerTest {
         assertThat(viewName).isEqualTo("redirect:/contact");
     }
 
-    @Test
-    void testTransferFunds() {
-        // Arrange
-        Principal principal = mock(Principal.class);
-        when(principal.getName()).thenReturn("username");
-        doNothing().when(transactionService).transferFunds(any(String.class), anyInt(), any(BigDecimal.class), any(String.class));
 
-        // Act
-        String viewName = userController.transferFunds(principal, 1, BigDecimal.TEN, "description");
-
-        // Assert
-        assertThat(viewName).isEqualTo("redirect:/transfer");
-        verify(transactionService, times(1)).transferFunds(any(String.class), anyInt(), any(BigDecimal.class), any(String.class));
-    }
 
 // Do similar for other methods
 

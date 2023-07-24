@@ -5,19 +5,11 @@ import org.springframework.web.bind.annotation.GetMapping;
 
 //non authenticated navigation controller
 @Controller
-public class NotLoggedInNavigationController {
+public class HomeController {
 
     //go to home page
     @GetMapping("/")
     public String home() {
         return "index";
     }
-
-    //go to log in page
-    @GetMapping("/logIn")
-    public String goToLogIn() {
-        return "logIn";
-    }
-
-
 }
