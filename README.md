@@ -6,7 +6,7 @@ leur nom d'utilisateur.
 
 ## UML
 
-![ModelLogiqueDonnee-UML](https://github.com/Ivano-P/PayMyBuddy/assets/96083465/6a1f08d3-e18c-4f6e-b072-4db9f3a824a3
+![ModelLogiqueDonnee-UML](https://github.com/Ivano-P/PayMyBuddy/assets/96083465/6a1f08d3-e18c-4f6e-b072-4db9f3a824a3)
 
 
 ## Modèle relationnel
