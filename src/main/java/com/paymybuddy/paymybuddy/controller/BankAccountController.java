@@ -38,7 +38,7 @@ public class BankAccountController {
 
     @GetMapping("/iban")
     public String goToIban(Model model, Principal principal) {
-        log.info("goToIban method called");
+        log.info("goToIban method called + ");
         AppUser currentAppUser = getAppUserService(principal.getName());
         model.addAttribute(CURRENT_USER, currentAppUser);
 
