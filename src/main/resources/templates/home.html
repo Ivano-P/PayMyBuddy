@@ -1,6 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="https://www.thymeleaf.org"
-      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<html lang="en" xmlns:th="https://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width; initial-scale=1">
@@ -16,9 +15,8 @@
     </nav>
 </section>
 <section id="profile-info">
-    <p id="welcome-msg">Hello, <span th:text ="${currentUser.username}"></span>
-        , your current balance is <span th:text ="${currentUser.wallet.balance}"></span> €</p>
-
+    <p id="welcome-msg">Hello, <span th:text ="${currentUser.username}"></span>. <br>
+        Your current balance is <span th:text ="${currentUser.wallet.balance}"></span> €</p>
 </section>
 </body>
 </html>

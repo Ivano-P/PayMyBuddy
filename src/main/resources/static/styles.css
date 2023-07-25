@@ -2,6 +2,30 @@ body {
     font-family: Arial, sans-serif;
 }
 
+a, a:visited, a:focus {
+    color: inherit; /* This will inherit the color property of the parent element */
+    text-decoration: none; /* Removes the underline from links */
+}
+
+.navbar-options, #pmb-index{
+    transition: box-shadow 0.3s ease;
+}
+
+.navbar-options:active , #pmb-index:active {
+    box-shadow: 0 2px 5px rgba(0,0,0,0.19), 0 1px 3px rgba(0,0,0,0.23);
+    transform: translateY(3px);
+}
+
+.navbar-options:hover, #pmb-index:hover {
+    box-shadow: 0 10px 20px rgba(0,0,1,0.25), 0 6px 6px rgba(0,0,1,0.30);
+}
+
+#pmb-index {
+    background-color: rgb(138, 195, 73);
+    border-radius: 5px;
+    color: white;
+}
+
 #navbar ul {
     list-style-type: none;
     margin: 0;
@@ -32,19 +56,13 @@ body {
     float: left;
 }
 
-
-#pmb-index {
-    background-color: rgb(138, 195, 73);
-    border-radius: 10px;
-    color: white;
-}
-
 #path-bar, #welcome-msg {
     background-color: rgb(245, 245, 245);
     padding: 10px;
 }
 
 #welcome-msg {
+    text-align: center;
     margin: auto;
 }
 
@@ -58,6 +76,7 @@ body {
 
 .navbar-pages form {
     display: inline;
+    text-decoration: none;
 }
 
 .navbar-pages button {

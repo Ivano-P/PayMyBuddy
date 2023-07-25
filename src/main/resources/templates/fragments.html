@@ -4,21 +4,21 @@
 <section id="navbar" th:fragment="navbar">
   <div id="home-button-div">
     <ul>
-      <li id="home-li"><a id="pmb-index" th:href="@{/home}"> Pay My Buddy</a></li>
+      <li id="home-li" class="navbar-options"><a id="pmb-index" th:href="@{/}"> Pay My Buddy</a></li>
     </ul>
   </div>
 
   <div class = navbar-pages>
     <ul>
-      <li>
+      <li class="navbar-options">
         <form th:action="@{/logout}" method="post" >
-          <button type="submit">Log off</button>
+          <button id="log-off_button" type="submit">Log off</button>
         </form>
       </li>
-      <li><a th:href="@{/contact}">Contact</a></li>
-      <li><a th:href="@{/profile}">Profile</a></li>
-      <li><a th:href="@{/transfer}">Transfer</a></li>
-      <li><a th:href="@{/home}">Home</a></li>
+      <li class="navbar-options"><a th:href="@{/contact}">Contact</a></li>
+      <li class="navbar-options"><a th:href="@{/profile}">Profile</a></li>
+      <li class="navbar-options"><a th:href="@{/transfer}">Transfer</a></li>
+      <li class="navbar-options"><a th:href="@{/home}">Home</a></li>
     </ul>
   </div>
 </section>
