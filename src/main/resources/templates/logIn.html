@@ -4,19 +4,37 @@
     <meta charset="UTF-8">
     <title>LogIn</title>
     <style>
-        .container {
-            width: 300px;
+        body {
+            font-family: Arial, sans-serif;
+        }
+
+        .main-container {
+            width: 30em;
             padding: 16px;
             background-color: white;
-            border: 1px solid black;
-            margin: 0 auto;
-            margin-top: 50px;
+            margin: 200px auto 0;
             border-radius: 4px;
-            text-align: left;
+            box-shadow: 10px 10px 10px 10px rgba(0,0,0,0.10), 6px 6px 6px 6px rgba(0,0,0,0.15);
+        }
+
+        .pmb-index {
+            background-color: rgb(138, 195, 73);
+            text-decoration: none;
+            border-radius: 5px;
+            color: white;
+            padding: 10px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
+            transition: box-shadow 0.3s ease;
         }
 
         h1 {
             text-align: center;
+            margin: 1em 1em 2em 1em;
+        }
+
+        p{
+            font-size: 1em;
+            margin-top: 40px;
         }
 
         input[type=text], input[type=password] {
@@ -28,38 +46,59 @@
             box-sizing: border-box;
         }
 
-        .button-container {
+        .page-options {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+
             text-align: center;
-            margin-top: 20px;
+            margin-top: 10px;
+            margin-bottom: 50px;
         }
 
-        button {
+        .index-options {
+            width: 200px; /* or whatever pixel width you find appropriate */
+            text-align: center; /* to center the text inside */
+
+            text-decoration: none;
             background-color: #4CAF50;
             color: white;
             padding: 14px 20px;
-            margin: 8px 0;
             border: none;
             cursor: pointer;
-            width: 100%;
+            border-radius: 10px;
+            margin: 25px 0 8px;
+            box-shadow: 0 5px 10px rgba(0,0,0,0.19), 0 3px 6px rgba(0,0,0,0.23);
+            transition: box-shadow 0.3s ease;
+            font-size: 1em;
+        }
+
+        .index-options:hover, .pmb-index:hover {
+            box-shadow: 0 10px 20px rgba(0,0,1,0.25), 0 6px 6px rgba(0,0,1,0.30);
+        }
+
+        .index-options:active, .pmb-index:active {
+            box-shadow: 0 2px 5px rgba(0,0,0,0.19), 0 1px 3px rgba(0,0,0,0.23);
+            transform: translateY(3px);
         }
     </style>
 </head>
 <body>
-<h1><a th:href="@{/}">Pay My Buddy</a></h1>
-<div class="container">
+<div class="main-container">
+    <h1><a class="pmb-index" th:href="@{/}">Pay My Buddy</a></h1>
     <form th:action="@{/logIn}" method="post">
         <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
-        <label for="username"><b>Username Or Email</b></label>
+        <label for="username"><b>Username or email</b></label>
         <input type="text" id="username" placeholder="Enter Username or Email" name="username" required>
 
         <label for="password"><b>Password</b></label>
         <input type="password" id="password" placeholder="Enter Password" name="password" required>
 
-        <div class="button-container">
-            <button type="submit">Se connecter</button>
-        </div>
+        <div class="page-options">
+            <button class="index-options" type="submit">Login</button>
         <p>or</p>
-        <a id="github_login_link" href="/oauth2/authorization/github">Login with git hub</a>
+        <a class="index-options" href="/oauth2/authorization/github">Login with Github</a>
+        </div>
     </form>
 </div>
 </body>

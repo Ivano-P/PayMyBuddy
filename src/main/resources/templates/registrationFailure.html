@@ -4,41 +4,82 @@
   <meta charset="UTF-8">
   <title>Registration Failed</title>
   <style>
-    .container {
-      width: 300px;
+    #main-container {
+      width: 30em;
       padding: 16px;
       background-color: white;
-      border: 1px solid black;
-      margin: 0 auto;
-      margin-top: 50px;
+      margin: 200px auto 0;
       border-radius: 4px;
-      text-align: center;
+      box-shadow: 10px 10px 10px 10px rgba(0,0,0,0.10), 6px 6px 6px 6px rgba(0,0,0,0.15);
     }
 
     h1 {
       text-align: center;
+      margin: 1em 1em 2em 1em;
     }
 
-    button {
+    h2{
+      text-align: center;
+      font-size: 2em;
+      padding-top: 20px;
+    }
+
+    p{
+      text-align: center;
+    }
+    #pmb-index {
+      background-color: rgb(138, 195, 73);
+      text-decoration: none;
+      border-radius: 5px;
+      color: white;
+      padding: 10px;
+      box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
+      transition: box-shadow 0.3s ease;
+    }
+
+    .index-options {
+      display: inline-block;
+      text-decoration: none;
       background-color: #4CAF50;
       color: white;
       padding: 14px 20px;
-      margin: 8px 0;
       border: none;
       cursor: pointer;
-      width: 100%;
+      width: 80%;
+      border-radius: 10px;
+      margin: 25px 0 8px;
+      box-shadow: 0 5px 10px rgba(0,0,0,0.19), 0 3px 6px rgba(0,0,0,0.23);
+      transition: box-shadow 0.3s ease;
+      font-size: 1.5em;
+    }
+
+    .index-options:hover, #pmb-index:hover {
+      box-shadow: 0 10px 20px rgba(0,0,1,0.25), 0 6px 6px rgba(0,0,1,0.30);
+    }
+
+    .index-options:active, #pmb-index:active {
+      box-shadow: 0 2px 5px rgba(0,0,0,0.19), 0 1px 3px rgba(0,0,0,0.23);
+      transform: translateY(3px);
+    }
+
+    .page-options {
+
+      text-align: center;
+      margin-top: 50px;
+      margin-bottom: 50px;
     }
   </style>
 </head>
 <body>
-<h1><a href="/" th:href="@{/home}">Pay My Buddy</a></h1>
-<div class="container">
-  <h2>Registration Failed</h2>
-  <p th:text="${errorMessage}"></p>
+<div id="main-container">
+  <h1><a id="pmb-index" href="/" th:href="@{/home}">Pay My Buddy</a></h1>
+  <h2>Registration Failed!</h2>
   <P>Please make sure the information you've entered is correct. All fields must be filled out appropriately and
     according to the given instructions. For instance, password field requires at least 5 characters.
     Check the information provided and try again. Thank you."</P>
-  <button onclick="location.href='/register'" type="button">Try Again</button>
+  <div class="page-options">
+    <a class="index-options" th:href="@{/register}">Try Again</a>
+  </div>
 </div>
 
 </body>

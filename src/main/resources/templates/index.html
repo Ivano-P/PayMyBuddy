@@ -1,45 +1,83 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-  <meta charset="UTF-8">
-  <title>Home</title>
-  <style>
-    .container {
-      width: 300px;
-      padding: 16px;
-      background-color: white;
-      border: 1px solid black;
-      margin: 0 auto;
-      margin-top: 50px;
-      border-radius: 4px;
-    }
+    <meta charset="UTF-8">
+    <title>Home</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
 
-    h1 {
-      text-align: center;
-    }
+        .main-container {
+            width: 30em;
+            padding: 16px;
+            background-color: white;
+            margin: 200px auto 0;
+            border-radius: 4px;
+            box-shadow: 10px 10px 10px 10px rgba(0,0,0,0.10), 6px 6px 6px 6px rgba(0,0,0,0.15);
+        }
 
-    .link {
-      text-align: center;
-      margin-top: 20px;
-    }
+        h1 {
+            text-align: center;
+            margin: 1em 1em 2em 1em;
+        }
 
-    button {
-      background-color: #4CAF50;
-      color: white;
-      padding: 14px 20px;
-      margin: 8px 0;
-      border: none;
-      cursor: pointer;
-      width: 100%;
-    }
-  </style>
+        h2{
+            text-align: center;
+            text-decoration-style: solid;
+        }
+
+        .pmb-index {
+            background-color: rgb(138, 195, 73);
+            text-decoration: none;
+            border-radius: 5px;
+            color: white;
+            padding: 10px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
+            transition: box-shadow 0.3s ease;
+        }
+
+        .page-options {
+
+            text-align: center;
+            margin-top: 50px;
+            margin-bottom: 50px;
+        }
+
+        .index-options {
+            display: inline-block;
+            text-decoration: none;
+            background-color: #4CAF50;
+            color: white;
+            padding: 14px 20px;
+            border: none;
+            cursor: pointer;
+            width: 80%;
+            border-radius: 10px;
+            margin: 25px 0 8px;
+            box-shadow: 0 5px 10px rgba(0,0,0,0.19), 0 3px 6px rgba(0,0,0,0.23);
+            transition: box-shadow 0.3s ease;
+        }
+
+        .index-options:hover, #pmb-index:hover {
+            box-shadow: 0 10px 20px rgba(0,0,1,0.25), 0 6px 6px rgba(0,0,1,0.30);
+        }
+
+        .index-options:active, #pmb-index:active {
+            box-shadow: 0 2px 5px rgba(0,0,0,0.19), 0 1px 3px rgba(0,0,0,0.23);
+            transform: translateY(3px);
+        }
+
+
+    </style>
 </head>
 <body>
-<h1><a id="home-button" th:href="@{/}">Pay My Buddy</a></h1>
-<div class="container">
-    <div class="link">
-        <a th:href="@{/register}"><button type="button">Creer un compte</button></a>
-        <a th:href="@{/logIn}"><button type="button">Se connecter</button></a>
+<div class="main-container">
+    <h1><a class="pmb-index" th:href="@{/}">Pay My Buddy</a></h1>
+    <h2>Welcome to Pay My Buddy, the simplest way to transfer funds between friends.</h2>
+    <div class="page-options">
+        <a class="index-options" th:href="@{/register}">Register</a>
+        <a class="index-options" th:href="@{/logIn}">Login</a>
     </div>
 </div>
 </body>
