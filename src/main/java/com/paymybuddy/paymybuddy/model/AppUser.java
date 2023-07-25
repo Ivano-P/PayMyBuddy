@@ -18,11 +18,9 @@ public class AppUser {
     private int id;
 
     @Column(name = "last_name")
-    @NotEmpty(message = "Last name should not be empty")
     private String lastName;
 
     @Column(name = "first_name")
-    @NotEmpty(message = "first name should not be empty")
     private String firstName;
 
 
@@ -31,12 +29,10 @@ public class AppUser {
     private String username;
 
     @Column(name = "email", unique = true)
-    @NotEmpty(message = "Email should not be empty")
     @Email(message = "Email should be valid")
     private String email;
 
     @Column(name = "password")
-    @NotEmpty(message = "Password should not be empty")
     @Size(min = 5, message = "Password should have at least 5 characters")
     private String password;
 
