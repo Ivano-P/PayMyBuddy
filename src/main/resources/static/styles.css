@@ -56,21 +56,22 @@ a, a:visited, a:focus {
     float: left;
 }
 
-#path-bar, #welcome-msg {
+#path-bar, .welcome-msg {
     background-color: rgb(245, 245, 245);
     padding: 10px;
 }
 
-#welcome-msg {
+.welcome-msg {
     text-align: center;
     margin: auto;
 }
 
-#profile-info, #transfer-setup, #transaction_history, #bank-account, #deposit-information, #withdrawal-div,
-#deposit-div, #balance-and-deposit {
+.first-info{
     width: 75%;
     margin: auto;
     padding: 10px;
+    background-color: rgb(138, 195, 73);
+    border-radius: 5px;
 }
 
 
@@ -92,8 +93,21 @@ a, a:visited, a:focus {
 
 .field {
     background-color: rgb(245, 245, 245);
-    padding: 10px;
+    padding: 20px;
+    margin: 15px 10px 15px 10px;
+    border-radius: 5px;
+    transition: box-shadow 0.3s ease;
 }
+
+.field:hover {
+    box-shadow: 0 10px 20px rgba(0,0,1,0.25), 0 6px 6px rgba(0,0,1,0.30);
+}
+
+.field:active {
+    box-shadow: 0 2px 5px rgba(0,0,0,0.19), 0 1px 3px rgba(0,0,0,0.23);
+    transform: translateY(3px);
+}
+
 
 #withdrawal-form {
     width: 50%;
@@ -101,14 +115,24 @@ a, a:visited, a:focus {
 }
 
 
-.submit-amount-btn , .btn, #remove-btn {
+.submit-btn, #remove-btn {
     background-color: rgb(92, 185, 92);
     color: white;
     padding: 10px 24px;
     border: none;
+    border-radius: 10px;
     cursor: pointer;
-    margin: 20px;
+    margin: 15px;
+    transition: box-shadow 0.3s ease;
+}
 
+.submit-btn:hover {
+    box-shadow: 0 20px 30px rgba(0,0,1,0.25), 0 10px 6px rgba(0,0,1,0.30);
+}
+
+.submit-btn:active {
+    box-shadow: 0 4px 10px rgba(0,0,0,0.19), 0 2px 6px rgba(0,0,0,0.23);
+    transform: translateY(3px);
 }
 
 #close-iban-btn{
@@ -140,15 +164,9 @@ a, a:visited, a:focus {
 
 }
 
-#transaction_history, #pay-my-buddy-iban {
-    width: 75%;
-    margin: auto;
-}
-
 #pay-my-buddy-iban{
     margin-bottom: 1em;
 }
-
 
 .transaction-tables, #bank-account-table , #pay-my-buddy-iban{
     width: 100%;
@@ -174,7 +192,57 @@ a, a:visited, a:focus {
     width: 16em;
 }
 
-#transfer-setup{
-    display: flex;
+#transfer-transaction, #withdrawal-transaction, #deposit-transaction, #withdrawal-ko-transaction, #transaction_history{
+    text-align: center;
 }
 
+#transfer-transaction div {
+    margin: 10px;
+}
+
+#test-deposit{
+    background-color: red;
+    color: white;
+    padding: 10px 24px;
+    border: none;
+    cursor: pointer;
+    margin: 15px;
+}
+
+#table-container{
+    width: fit-content;  /* adjust the container width to fit the content */
+    margin: auto;  /* center the container horizontally */
+}
+
+#transfer-history-table{
+    width: auto;
+    max-width: 950px;
+}
+
+/* General button styling */
+#pagination button {
+    background-color: #4CAF50; /* Green background */
+    border: none; /* No borders */
+    color: white; /* White text */
+    padding: 3px 3px; /* Some padding */
+    text-align: center; /* Centered text */
+    text-decoration: none; /* No underline */
+    display: inline-block; /* Arrange them in a row */
+    font-size: 16px; /* Increase font size */
+    margin: 4px 2px; /* Add some margin between buttons */
+    cursor: pointer; /* Add a hand cursor on hover */
+    transition: background-color 0.3s; /* Add transition effect */
+}
+
+/* Change the background color on hover */
+#pagination button:hover {
+    background-color: #34B301;
+    box-shadow: 0 5px 10px rgba(0,0,1,0.25), 0 3px 3px rgba(0,0,1,0.30);
+}
+
+/* Style for the active/current button */
+#pagination button.active {
+    font-weight: bold; /* Make text bold */
+    background-color: #3e8e41; /* Add a darker background */
+    box-shadow: 0 2px 5px rgba(0,0,0,0.19), 0 1px 3px rgba(0,0,0,0.23);
+}

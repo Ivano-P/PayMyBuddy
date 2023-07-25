@@ -15,22 +15,19 @@
         Home / Transfer
     </nav>
 </section>
-
+<div class="first-info">
 <div th:insert="fragments :: errorPanel"></div> <!-- hidden div to display error message-->
-<section id="balance-and-deposit">
-    <div class="field">
-        Balance: <span th:text="${currentUser.wallet.balance} + '€'"></span>
-
-        <a th:href="@{/iban}" class="btn">deposit</a>
-
+<section class="field">
+    <div>
+        <p class="welcome-msg">Your current balance is : <span th:text="${currentUser.wallet.balance} + '€'"></span> </p>
     </div>
 
 </section>
 
-<section id="transfer-setup">
+<section id="do-transaction" >
 
-    <div id="contact_list">
-        <h2>Select Contact For transfer</h2>
+    <div id="transfer-transaction" class="field">
+        <h2>Transfer funds to contact</h2>
         <form th:action="@{/transfer}" method="post">
             <div>
                 <label for="contactSelect"></label>
@@ -51,30 +48,44 @@
                        placeholder="transaction description">
             </div>
 
-            <button type="submit" class="submit-amount-btn">Transfer</button>
+            <button type="submit" class="submit-btn">Transfer</button>
         </form>
     </div>
 
-    <div id="withdrawal-div" th:if="${hasBankAccount}">
+    <div id="withdrawal-transaction" class="field" th:if="${hasBankAccount}">
         <h2>Withdraw funds to bank account</h2>
         <form action="#" th:action="@{/withdrawFunds}" method="post" id="withdrawal-form">
             <label for="amount">Enter amount</label>
             <input type="text" name="amount" id="amount" th:placeholder="0">
-            <button type="submit" class="btn">withdrawal</button>
+            <button type="submit" class="submit-btn">withdrawal</button>
         </form>
     </div>
 
     <!-- this button appears if user doesnt have bank account linked and indicates to add bank account for withdrawal -->
-    <div id="withdrawal-ko-div" th:if="${!hasBankAccount}">
+    <div id="withdrawal-ko-transaction" class="field" th:if="${!hasBankAccount}">
+        <h2>Withdraw funds to bank account</h2>
         <form action="#" th:action="@{/noAccountForWithdrawal}" method="post" id="withdrawal-ko-form">
-            <button type="submit" class="btn">withdrawal</button>
+            <button type="submit" class="submit-btn">withdrawal</button>
         </form>
+    </div>
+
+    <div id="deposit-transaction" class="field">
+        <h2>Fund your account</h2>
+     <a th:href="@{/iban}" class="submit-btn">deposit</a>
+
+    <!-- //TODO: remove in production -->
+    <form action="#" th:action="@{/testDepositFunds}" method="post" id="deposit-form">
+        <label for="null"></label>
+        <input type="hidden" name="null" id="null">
+        <button type="submit" id="test-deposit">test deposit</button>
+    </form>
     </div>
 </section>
 
-<section id="transaction_history">
+<section id="transaction_history" class="field">
     <h2>Transaction history</h2>
-    <table>
+    <div id="table-container">
+    <table id="transfer-history-table">
         <thead>
         <tr>
             <th>Contact</th>
@@ -95,9 +106,9 @@
         </tr>
         </tbody>
     </table>
-
+    </div>
     <!-- Pagination -->
-    <div th:with="start=${totalPages > 5 ? (currentPage < 3 ? 0 : (currentPage > totalPages - 3 ? totalPages - 5 : currentPage - 2)) : 0},
+    <div id="pagination" th:with="start=${totalPages > 5 ? (currentPage < 3 ? 0 : (currentPage > totalPages - 3 ? totalPages - 5 : currentPage - 2)) : 0},
               end=${totalPages > 5 ? (currentPage < 3 ? 5 : (currentPage > totalPages - 3 ? totalPages : currentPage + 3)) : totalPages}">
         <button th:onclick="'window.location.href=\'/transfer?page=0\''">First page</button>
         <button th:if="${transactions.hasPrevious()}"
@@ -114,15 +125,7 @@
         <button th:onclick="'window.location.href=\'/transfer?page=' + (${totalPages}) + '\''">Last page</button>
     </div>
 
-
-     <!-- //TODO: remove in production -->
-    <form action="#" th:action="@{/testDepositFunds}" method="post" id="deposit-form">
-        <label for="null"></label>
-        <input type="hidden" name="null" id="null">
-        <button type="submit" class="btn">test deposit</button>
-    </form>
-
 </section>
-
+</div>
 </body>
 </html>

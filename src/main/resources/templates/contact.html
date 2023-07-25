@@ -14,10 +14,11 @@
         Home / Contact
     </nav>
 </section>
-<section id="contact_manager">
+<div class="first-info">
+<section id="add-contact" >
     <div th:insert="fragments :: errorPanel"></div> <!-- hidden div to display error message-->
 
-    <div id="add_contact">
+    <div id="add_contact" class="field">
         <h2>Add Contact</h2>
         <form th:action="@{/addContact}" method="post">
             <label for="contactUsername">Contact username:</label>
@@ -25,7 +26,8 @@
             <button type="submit">Add Contact</button>
         </form>
     </div>
-
+</section>
+<section id="list_contact" class="field" >
     <div id="contact_list">
         <h2>My Contacts</h2>
         <table>
@@ -54,7 +56,7 @@
     </div>
 
 </section>
-
+</div>
 
 
 </body>

@@ -14,7 +14,8 @@
     Home / Profile
   </nav>
 </section>
-<section id="profile-info">
+<div class="first-info">
+<section>
   <div class="field">User name: <span th:text ="${currentUser.username}"></span></div>
   <div class="field">First name: <span th:text ="${currentUser.firstName}"></span></div>
   <div class="field">Last name: <span th:text ="${currentUser.lastName}"></span></div>
@@ -72,7 +73,7 @@
   <!-- removed deposit and withdrawal section from here-->
 
 </section>
-
+</div>
 </body>
 </html>
 
