@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <title>Registration Failed</title>
   <style>
-    #main-container {
+    .main-container {
       width: 30em;
       padding: 16px;
       background-color: white;
@@ -27,7 +27,7 @@
     p{
       text-align: center;
     }
-    #pmb-index {
+    .pmb-index {
       background-color: rgb(138, 195, 73);
       text-decoration: none;
       border-radius: 5px;
@@ -53,11 +53,11 @@
       font-size: 1.5em;
     }
 
-    .index-options:hover, #pmb-index:hover {
+    .index-options:hover, .pmb-index:hover {
       box-shadow: 0 10px 20px rgba(0,0,1,0.25), 0 6px 6px rgba(0,0,1,0.30);
     }
 
-    .index-options:active, #pmb-index:active {
+    .index-options:active, .pmb-index:active {
       box-shadow: 0 2px 5px rgba(0,0,0,0.19), 0 1px 3px rgba(0,0,0,0.23);
       transform: translateY(3px);
     }
@@ -71,8 +71,8 @@
   </style>
 </head>
 <body>
-<div id="main-container">
-  <h1><a id="pmb-index" href="/" th:href="@{/home}">Pay My Buddy</a></h1>
+<div class="main-container">
+  <h1><a class="pmb-index" href="/" th:href="@{/home}">Pay My Buddy</a></h1>
   <h2>Registration Failed!</h2>
   <P>Please make sure the information you've entered is correct. All fields must be filled out appropriately and
     according to the given instructions. For instance, password field requires at least 5 characters.
