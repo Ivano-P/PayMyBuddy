@@ -15,23 +15,23 @@
   </nav>
 </section>
 <div class="first-info">
-<section>
-  <div class="field">User name: <span th:text ="${currentUser.username}"></span></div>
-  <div class="field">First name: <span th:text ="${currentUser.firstName}"></span></div>
-  <div class="field">Last name: <span th:text ="${currentUser.lastName}"></span></div>
-  <div class="field">Email: <span th:text ="${currentUser.email}"></span></div>
-
-  <a th:href="@{/update_profile}" class="btn">update</a>
-
+<section class="field">
+  <div class="profile-info">User name: <span th:text ="${currentUser.username}"></span></div>
+  <div class="profile-info">First name: <span th:text ="${currentUser.firstName}"></span></div>
+  <div class="profile-info">Last name: <span th:text ="${currentUser.lastName}"></span></div>
+  <div class="profile-info">Email: <span th:text ="${currentUser.email}"></span></div>
+  <a th:href="@{/update_profile}" class="submit-btn">Update</a>
 </section>
 
 <section id="bank-account">
 
   <div th:insert="fragments :: errorPanel"></div> <!-- hidden div to display error message-->
 
-  <div class="field">Balance: <span th:text ="${currentUser.wallet.balance} + '€'"></span></div>
+  <div class="field">
+    <p id="profile-balance">Your current balance is : <span th:text ="${currentUser.wallet.balance} + '€'"></span></p>
+  </div>
 
-  <div th:if="${hasBankAccount}" id="saved-bank-Account">
+  <div th:if="${hasBankAccount}" id="saved-bank-Account" class="field">
     <table id="bank-account-table" >
       <thead>
       <tr>
@@ -49,13 +49,14 @@
 
     <form th:action="@{/removeBankAccount}" method="post">
       <input type="hidden" th:value="${currentUser.getId()}" name="appUserId">
-      <button type="submit" id="remove-btn">Remove bank account</button>
+      <button type="submit" class="submit-btn">Remove bank account</button>
     </form>
   </div>
 
 
-  <div th:if="${!hasBankAccount}" id="add-bank-account">
-    <form th:action="@{/addBankAccount}"  method="post">
+  <div th:if="${!hasBankAccount}" id="add-bank-account" class="field">
+    <h2>Add bank account for withdrawal</h2>
+    <form th:action="@{/addBankAccount}"  method="post" id="input-bank-account">
 
       <label for="lastName"><b>Last name</b></label>
       <input type="text" id="lastName" name="lastName" placeholder="Enter last name ">
@@ -66,7 +67,7 @@
       <label for="Iban"><b>Iban</b></label>
       <input type="text" id="iban" name="iban" placeholder="FR1212341234123412341234567">
 
-      <button type="submit" id="update-btn">Add bank account</button>
+      <button type="submit" class="submit-btn">Add bank account</button>
     </form>
   </div>
 

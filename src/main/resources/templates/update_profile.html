@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="https://www.thymeleaf.org"
-      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+>
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width; initial-scale=1">
@@ -16,19 +16,23 @@
         Home / profile info
     </nav>
 </section>
+<section class="first-info">
+    <div class="field" id="update-profile-info">
+        <h2>Update profile info</h2>
+        <form action="#" th:action="@{/updateProfileInfo}" th:object="${appUser}" method="post" id="profile-info-form">
+            <label for="firstName">First Name</label>
+            <input type="text" name="firstName" id="firstName" th:value="${currentUser.lastName}">
 
-  <form action="#" th:action="@{/updateProfileInfo}" th:object="${appUser}" method="post" id="profile-info-form">
-      <label for="firstName">First Name</label>
-      <input type="text" name="firstName" id="firstName" th:value="${currentUser.lastName}">
+            <label for="lastName">Last Name</label>
+            <input type="text" name="lastName" id="lastName" th:value="${currentUser.lastName}">
 
-      <label for="lastName">Last Name</label>
-      <input type="text" name="lastName" id="lastName" th:value="${currentUser.lastName}">
-
-      <label for="email">Email</label>
-      <input type="text" name="email" id="email" th:value="${currentUser.email}">
-
-      <button type="submit" class="btn">Save</button>
-  </form>
-
+            <label for="email">Email</label>
+            <input type="text" name="email" id="email" th:value="${currentUser.email}">
+            <div>
+                <button type="submit" class="submit-btn">Save</button>
+            </div>
+        </form>
+    </div>
+</section>
 </body>
 </html>

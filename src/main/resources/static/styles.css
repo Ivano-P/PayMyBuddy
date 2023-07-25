@@ -61,7 +61,7 @@ a, a:visited, a:focus {
     padding: 10px;
 }
 
-.welcome-msg {
+.welcome-msg, #update-profile-info, #iban-content {
     text-align: center;
     margin: auto;
 }
@@ -115,7 +115,7 @@ a, a:visited, a:focus {
 }
 
 
-.submit-btn, #remove-btn {
+.submit-btn{
     background-color: rgb(92, 185, 92);
     color: white;
     padding: 10px 24px;
@@ -134,11 +134,6 @@ a, a:visited, a:focus {
     box-shadow: 0 4px 10px rgba(0,0,0,0.19), 0 2px 6px rgba(0,0,0,0.23);
     transform: translateY(3px);
 }
-
-#close-iban-btn{
-    margin: auto;
-}
-
 
 #remove-btn{
     margin-top : 1em;
@@ -175,12 +170,12 @@ a, a:visited, a:focus {
 }
 
 #transaction_history table th, #transaction_history table td, #bank-account-table td, #bank-account-table th,
-#pay-my-buddy-iban th, #pay-my-buddy-iban td{
+#pay-my-buddy-iban th, #pay-my-buddy-iban td, #contact_list table th, #contact_list table td {
     border: 1px solid #ddd;
     padding: 8px;
 }
 
-#transaction_history table th , #bank-account-table th, #pay-my-buddy-iban th{
+#transaction_history table th , #bank-account-table th, #pay-my-buddy-iban th, #contact_list th {
     padding-top: 12px;
     padding-bottom: 12px;
     text-align: left;
@@ -192,11 +187,12 @@ a, a:visited, a:focus {
     width: 16em;
 }
 
-#transfer-transaction, #withdrawal-transaction, #deposit-transaction, #withdrawal-ko-transaction, #transaction_history{
+#transfer-transaction, #withdrawal-transaction, #deposit-transaction, #withdrawal-ko-transaction, #transaction_history
+#contact_list, #add-contact, #contact_list h2, #deposit-instructions, #pagination {
     text-align: center;
 }
 
-#transfer-transaction div {
+#transfer-transaction div{
     margin: 10px;
 }
 
@@ -209,12 +205,12 @@ a, a:visited, a:focus {
     margin: 15px;
 }
 
-#table-container{
+#table-container, #contact_list{
     width: fit-content;  /* adjust the container width to fit the content */
     margin: auto;  /* center the container horizontally */
 }
 
-#transfer-history-table{
+#transfer-history-table, #my_contact {
     width: auto;
     max-width: 950px;
 }
@@ -245,4 +241,21 @@ a, a:visited, a:focus {
     font-weight: bold; /* Make text bold */
     background-color: #3e8e41; /* Add a darker background */
     box-shadow: 0 2px 5px rgba(0,0,0,0.19), 0 1px 3px rgba(0,0,0,0.23);
+}
+
+.profile-info{
+    background-color: rgb(197, 197, 197);
+    padding: 10px;
+    margin: 15px 10px 15px 10px;
+    border-radius: 10px;
+}
+
+#profile-balance{
+    margin: 1px 0 1px 0;
+}
+
+#remove-contact{
+    margin: 1px 0 1px 0;
+    padding: 2px 2px 2px 2px ;
+    border-radius: 2px;
 }

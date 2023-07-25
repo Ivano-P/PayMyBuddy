@@ -23,14 +23,14 @@
         <form th:action="@{/addContact}" method="post">
             <label for="contactUsername">Contact username:</label>
             <input type="text" id="contactUsername" name="contactUsername">
-            <button type="submit">Add Contact</button>
+            <button class="submit-btn" type="submit">Add Contact</button>
         </form>
     </div>
 </section>
 <section id="list_contact" class="field" >
     <div id="contact_list">
         <h2>My Contacts</h2>
-        <table>
+        <table id="my_contact">
             <thead>
             <tr>
                 <th>Username</th>
@@ -47,7 +47,7 @@
                 <td>
                     <form th:action="@{/removeContact}" method="post">
                         <input type="hidden" th:value="${contact.id}" name="contactId" />
-                        <button type="submit">Remove</button>
+                        <button class="submit-btn" id="remove-contact" type="submit">Remove</button>
                     </form>
                 </td>
             </tr>
