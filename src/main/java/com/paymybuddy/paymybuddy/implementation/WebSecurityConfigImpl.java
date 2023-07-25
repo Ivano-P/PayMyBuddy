@@ -27,13 +27,14 @@ public class WebSecurityConfigImpl implements WebSecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
         log.info("securityFilterChain method called with: {}", httpSecurity );
-        //set my customized login page for spring security and makes it accessible without being logged-in
-        httpSecurity.formLogin().loginPage("/logIn").defaultSuccessUrl("/home", true )
-                .permitAll();
+
         //set pages that are accessible without being logged in
         httpSecurity.authorizeHttpRequests()
-                .requestMatchers("/", "/register", "/registrationSuccessful", "registrationFailure")
+                .requestMatchers("/", "/register", "/logIn", "/registrationSuccessful", "registrationFailure")
                 .permitAll();
+
+        //set my customized login page for spring security and makes it accessible without being logged-in
+        httpSecurity.formLogin().loginPage("/logIn").defaultSuccessUrl("/home", true );
         //to make admin pages accessible only to admin users.
         httpSecurity.authorizeHttpRequests().requestMatchers("/admin/**").hasRole("ADMIN");
 
