@@ -52,23 +52,6 @@
         </form>
     </div>
 
-    <div id="withdrawal-transaction" class="field" th:if="${hasBankAccount}">
-        <h2>Withdraw funds to bank account</h2>
-        <form action="#" th:action="@{/withdrawFunds}" method="post" id="withdrawal-form">
-            <label for="amount">Enter amount</label>
-            <input type="text" name="amount" id="amount" th:placeholder="0">
-            <button type="submit" class="submit-btn">withdrawal</button>
-        </form>
-    </div>
-
-    <!-- this button appears if user doesnt have bank account linked and indicates to add bank account for withdrawal -->
-    <div id="withdrawal-ko-transaction" class="field" th:if="${!hasBankAccount}">
-        <h2>Withdraw funds to bank account</h2>
-        <form action="#" th:action="@{/noAccountForWithdrawal}" method="post" id="withdrawal-ko-form">
-            <button type="submit" class="submit-btn">withdrawal</button>
-        </form>
-    </div>
-
     <div id="deposit-transaction" class="field">
         <h2>Fund your account</h2>
      <a th:href="@{/iban}" class="submit-btn">deposit</a>
@@ -124,8 +107,25 @@
                 th:onclick="'window.location.href=\'/transfer?page=' + (${transactions.number + 1}) + '\''"> next </button>
         <button th:onclick="'window.location.href=\'/transfer?page=' + (${totalPages}) + '\''">Last page</button>
     </div>
-
 </section>
+    <section id="withdrawal" class="field">
+        <div id="withdrawal-transaction" class="field" th:if="${hasBankAccount}">
+            <h2>Withdraw funds to bank account</h2>
+            <form action="#" th:action="@{/withdrawFunds}" method="post" id="withdrawal-form">
+                <label for="amount">Enter amount</label>
+                <input type="text" name="amount" id="amount" th:placeholder="0">
+                <button type="submit" class="submit-btn">withdrawal</button>
+            </form>
+        </div>
+
+        <!-- this button appears if user doesn't have bank account linked and indicates to add bank account for withdrawal -->
+        <div id="withdrawal-ko-transaction" class="field" th:if="${!hasBankAccount}">
+            <h2>Withdraw funds to bank account</h2>
+            <form action="#" th:action="@{/noAccountForWithdrawal}" method="post" id="withdrawal-ko-form">
+                <button type="submit" class="submit-btn">withdrawal</button>
+            </form>
+        </div>
+    </section>
 </div>
 </body>
 </html>

@@ -28,6 +28,45 @@ a, a:visited, a:focus, .submit-btn:visited, .submit-btn:focus {
     box-shadow: 0 10px 20px rgba(0,0,1,0.25), 0 6px 6px rgba(0,0,1,0.30);
 }
 
+#path-bar, .welcome-msg {
+    background-color: rgb(245, 245, 245);
+    padding: 10px;
+}
+
+.welcome-msg, #update-profile-info, #iban-content {
+    text-align: center;
+    margin: auto;
+}
+
+.transaction-tables, #bank-account-table , #pay-my-buddy-iban{
+    width: 100%;
+    margin-top: 20px;
+    border-collapse: collapse;
+}
+
+#transaction_history table th, #transaction_history table td, #bank-account-table td, #bank-account-table th,
+#pay-my-buddy-iban th, #pay-my-buddy-iban td, #contact_list table th, #contact_list table td {
+    border: 1px solid #ddd;
+    padding: 8px;
+}
+
+#transaction_history table th , #bank-account-table th, #pay-my-buddy-iban th, #contact_list th {
+    padding-top: 12px;
+    padding-bottom: 12px;
+    text-align: left;
+    background-color: #4CAF50;
+    color: white;
+}
+
+#iban{
+    width: 16em;
+}
+
+#transfer-transaction, #withdrawal-transaction, #deposit-transaction, #withdrawal-ko-transaction, #transaction_history
+#contact_list, #add-contact, #contact_list h2, #deposit-instructions, #pagination {
+    text-align: center;
+}
+
 #pmb-index {
     background-color: rgb(138, 195, 73);
     border-radius: 5px;
@@ -64,15 +103,7 @@ a, a:visited, a:focus, .submit-btn:visited, .submit-btn:focus {
     float: left;
 }
 
-#path-bar, .welcome-msg {
-    background-color: rgb(245, 245, 245);
-    padding: 10px;
-}
 
-.welcome-msg, #update-profile-info, #iban-content {
-    text-align: center;
-    margin: auto;
-}
 
 .first-info{
     width: 75%;
@@ -171,34 +202,7 @@ a, a:visited, a:focus, .submit-btn:visited, .submit-btn:focus {
     margin-bottom: 1em;
 }
 
-.transaction-tables, #bank-account-table , #pay-my-buddy-iban{
-    width: 100%;
-    margin-top: 20px;
-    border-collapse: collapse;
-}
 
-#transaction_history table th, #transaction_history table td, #bank-account-table td, #bank-account-table th,
-#pay-my-buddy-iban th, #pay-my-buddy-iban td, #contact_list table th, #contact_list table td {
-    border: 1px solid #ddd;
-    padding: 8px;
-}
-
-#transaction_history table th , #bank-account-table th, #pay-my-buddy-iban th, #contact_list th {
-    padding-top: 12px;
-    padding-bottom: 12px;
-    text-align: left;
-    background-color: #4CAF50;
-    color: white;
-}
-
-#iban{
-    width: 16em;
-}
-
-#transfer-transaction, #withdrawal-transaction, #deposit-transaction, #withdrawal-ko-transaction, #transaction_history
-#contact_list, #add-contact, #contact_list h2, #deposit-instructions, #pagination {
-    text-align: center;
-}
 
 #transfer-transaction div{
     margin: 10px;
