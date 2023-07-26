@@ -19,7 +19,7 @@
 <div th:insert="fragments :: errorPanel"></div> <!-- hidden div to display error message-->
 <section class="field">
     <div>
-        <p class="welcome-msg">Your current balance is : <span th:text="${currentUser.wallet.balance} + '€'"></span> </p>
+        <p id="balance-information">Your current balance is : <span th:text="${currentUser.wallet.balance} + '€'"></span> </p>
     </div>
 
 </section>

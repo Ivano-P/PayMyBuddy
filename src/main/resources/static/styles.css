@@ -33,7 +33,7 @@ a, a:visited, a:focus, .submit-btn:visited, .submit-btn:focus {
     padding: 10px;
 }
 
-#welcome-msg, #update-profile-info, #iban-content, #first-steps {
+#welcome-msg, #update-profile-info, #iban-content, #first-steps, #balance-information {
     text-align: center;
     margin: auto;
 }
