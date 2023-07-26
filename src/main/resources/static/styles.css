@@ -2,9 +2,17 @@ body {
     font-family: Arial, sans-serif;
 }
 
-a, a:visited, a:focus {
-    color: inherit; /* This will inherit the color property of the parent element */
-    text-decoration: none; /* Removes the underline from links */
+a, a:visited, a:focus, .submit-btn:visited, .submit-btn:focus {
+    text-decoration: none;
+
+}
+
+.submit-btn:active{
+    color: white;
+}
+
+.navbar-options a:visited, .navbar-options a:focus{
+    color: inherit;
 }
 
 .navbar-options, #pmb-index{
