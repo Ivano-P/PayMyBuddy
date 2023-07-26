@@ -28,12 +28,12 @@ a, a:visited, a:focus, .submit-btn:visited, .submit-btn:focus {
     box-shadow: 0 10px 20px rgba(0,0,1,0.25), 0 6px 6px rgba(0,0,1,0.30);
 }
 
-#path-bar, .welcome-msg {
+#path-bar, #welcome-msg {
     background-color: rgb(245, 245, 245);
     padding: 10px;
 }
 
-.welcome-msg, #update-profile-info, #iban-content {
+#welcome-msg, #update-profile-info, #iban-content, #first-steps {
     text-align: center;
     margin: auto;
 }
@@ -270,4 +270,14 @@ a, a:visited, a:focus, .submit-btn:visited, .submit-btn:focus {
     margin: 1px 0 1px 0;
     padding: 2px 2px 2px 2px ;
     border-radius: 2px;
+}
+
+#home-image-container{
+    display: flex;
+}
+
+#home-image{
+    margin:auto;
+    width: 500px;
+    height: auto;
 }

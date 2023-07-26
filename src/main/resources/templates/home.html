@@ -15,8 +15,19 @@
     </nav>
 </section>
 <section class="first-info">
-    <p class="welcome-msg">Hello, <span th:text ="${currentUser.username}"></span>. <br>
+    <p class="field" id="welcome-msg">Hello, <span th:text ="${currentUser.username}"></span>. <br>
         Your current balance is <span th:text ="${currentUser.wallet.balance}"></span> €</p>
+    <div class="field" id="home-image-container">
+    <img src="/money_sharing_illustration.png" alt="sharing funds through mobile app illustration" id="home-image">
+    </div>
+    <div class="field" id="first-steps">
+        <p>Transfer funds in two easy steps. First add contact then send funds.
+            It's that simple!</p>
+        <div id="home-options-buttons" >
+            <a th:href="@{/contact}" class="submit-btn">step 1: Add contact</a>
+            <a th:href="@{/transfer}" class="submit-btn">step 2: send funds</a>
+        </div>
+    </div>
 </section>
 </body>
 </html>
