@@ -281,3 +281,11 @@ a, a:visited, a:focus, .submit-btn:visited, .submit-btn:focus {
     width: 500px;
     height: auto;
 }
+
+#fee-info{
+    font-size: 10px;
+    color: #ff0000;
+    padding: 0;
+    margin: 0;
+
+}
