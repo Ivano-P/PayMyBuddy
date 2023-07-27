@@ -16,7 +16,7 @@
     </nav>
 </section>
 <div class="first-info">
-<div th:insert="fragments :: errorPanel"></div> <!-- hidden div to display error message-->
+<div th:insert="fragments :: errorPanel" id="error-message"></div> <!-- hidden div to display error message-->
 <section class="field">
     <div>
         <p id="balance-information">Your current balance is : <span th:text="${currentUser.wallet.balance} + '€'"></span> </p>
@@ -128,5 +128,11 @@
         </div>
     </section>
 </div>
+<script>
+    setTimeout(function() {
+        var element = document.getElementById('error-message');
+        element.style.display = 'none';
+    }, 3000); // in milliseconds = 3 seconds
+</script>
 </body>
 </html>

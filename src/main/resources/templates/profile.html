@@ -15,6 +15,11 @@
   </nav>
 </section>
 <div class="first-info">
+
+  <div class="field">
+    <p id="profile-balance">Your current balance is : <span th:text ="${currentUser.wallet.balance} + '€'"></span></p>
+  </div>
+
 <section class="field">
   <div class="profile-info">
     <p class="profile-info-line">Last name: <span th:text ="${currentUser.lastName}"></span></p>
@@ -40,10 +45,6 @@
 <section id="bank-account">
 
   <div th:insert="fragments :: errorPanel"></div> <!-- hidden div to display error message-->
-
-  <div class="field">
-    <p id="profile-balance">Your current balance is : <span th:text ="${currentUser.wallet.balance} + '€'"></span></p>
-  </div>
 
   <div th:if="${hasBankAccount}" id="saved-bank-Account" class="field">
     <table id="bank-account-table" >

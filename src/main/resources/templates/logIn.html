@@ -81,9 +81,32 @@
             box-shadow: 0 2px 5px rgba(0,0,0,0.19), 0 1px 3px rgba(0,0,0,0.23);
             transform: translateY(3px);
         }
+
+        #login-alert{
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            margin: auto;
+            padding: 15px;
+            background-color: rgba(248, 215, 218, 0.75);
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+            border-radius: 5px;
+            width: 80%;
+            max-width: 600px;
+            text-align: center;
+            font-weight: bold;
+            z-index: 999;
+        }
     </style>
 </head>
 <body>
+<!-- to inform users of credentials error on log in-->
+<div id="login-alert" role="alert" th:if="${param.error}">
+    <p>Error! Invalid username and password.</p>
+</div>
+
 <div class="main-container">
     <h1><a class="pmb-index" th:href="@{/}">Pay My Buddy</a></h1>
     <form th:action="@{/logIn}" method="post">
@@ -101,5 +124,12 @@
         </div>
     </form>
 </div>
+
+<script>
+    setTimeout(function() {
+        var element = document.getElementById('login-alert');
+        element.style.display = 'none';
+    }, 3000); // in milliseconds = 3 seconds
+</script>
 </body>
 </html>

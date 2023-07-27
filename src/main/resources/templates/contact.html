@@ -16,7 +16,7 @@
 </section>
 <div class="first-info">
 <section id="add-contact" >
-    <div th:insert="fragments :: errorPanel"></div> <!-- hidden div to display error message-->
+    <div th:insert="fragments :: errorPanel" id="error-message"></div> <!-- hidden div to display error message-->
 
     <div id="add_contact" class="field">
         <h2>Add Contact</h2>
@@ -57,7 +57,12 @@
 
 </section>
 </div>
-
+<script>
+    setTimeout(function() {
+        var element = document.getElementById('error-message');
+        element.style.display = 'none';
+    }, 3000); // in milliseconds = 3 seconds
+</script>
 
 </body>
 </html>
