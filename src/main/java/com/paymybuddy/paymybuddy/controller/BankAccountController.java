@@ -61,7 +61,7 @@ public class BankAccountController {
 
         //add/update the appUsers bank account.
         bankAccountService.updateBankAccount(bankAccountToAdd);
-        return REDIRECT_PROFILE;
+        return "redirect:/profile?updateSuccess=true";
     }
 
     @PostMapping("/removeBankAccount")
@@ -69,7 +69,7 @@ public class BankAccountController {
         log.info("removeBankAccount method called");
         bankAccountService.removeBankAccount(appUserId);
 
-        return REDIRECT_PROFILE;
+        return "redirect:/profile?updateSuccess=true";
     }
 
     @PostMapping("/noAccountForWithdrawal")
