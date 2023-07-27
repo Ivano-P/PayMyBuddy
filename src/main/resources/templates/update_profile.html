@@ -16,23 +16,72 @@
         Home / profile info
     </nav>
 </section>
-<section class="first-info">
-    <div class="field" id="update-profile-info">
-        <h2>Update profile info</h2>
-        <form action="#" th:action="@{/updateProfileInfo}" th:object="${appUser}" method="post" id="profile-info-form">
-            <label for="firstName">First Name</label>
-            <input type="text" name="firstName" id="firstName" th:value="${currentUser.lastName}">
+<div class="first-info">
+    <section class="field">
+        <div id="update-profile-info">
+            <h2>Update profile info</h2>
+            <form action="#" th:action="@{/updateProfileInfo}" th:object="${appUser}" method="post"
+                  id="profile-info-form">
+                <label for="firstName">First Name</label>
+                <input type="text" name="firstName" id="firstName" th:value="${currentUser.lastName}">
 
-            <label for="lastName">Last Name</label>
-            <input type="text" name="lastName" id="lastName" th:value="${currentUser.lastName}">
+                <label for="lastName">Last Name</label>
+                <input type="text" name="lastName" id="lastName" th:value="${currentUser.lastName}">
 
-            <label for="email">Email</label>
-            <input type="text" name="email" id="email" th:value="${currentUser.email}">
-            <div>
-                <button type="submit" class="submit-btn">Save</button>
-            </div>
-        </form>
-    </div>
-</section>
+                <label for="email">Email</label>
+                <input type="text" name="email" id="email" th:value="${currentUser.email}">
+
+                <div>
+                    <button type="submit" class="submit-btn">Save</button>
+                </div>
+            </form>
+        </div>
+    </section>
+    <section class="field" th:if="${currentUser.password != null && currentUser.password != ''}">
+        <!-- will not appear for user who log in with external services like GitHub -->
+        <div id="update-password">
+            <h2>Change Password</h2>
+            <form action="#" th:action="@{/updatePassword}" method="post" id="update-password-form">
+                <div class="change_password-field">
+                    <label for="currentPassword">Old password</label>
+                    <input type="password" name="currentPassword" id="currentPassword" placeholder="enter old password"
+                           th:minlength="5" required>
+                </div>
+                <div class="change_password-field">
+                    <label for="newPassword">New password</label>
+                    <input type="password" name="newPassword" id="newPassword" placeholder="enter new password"
+                           th:minlength="5" required>
+                </div>
+                <div><span id="passwordError" style="color:red"></span></div>
+                <div class="change_password-field">
+                    <label for="ConfirmNewPassword">Confirm password</label>
+                    <input type="password" name="confirmPassword" id="ConfirmNewPassword"
+                           placeholder="confirm new password" th:minlength="5" required>
+                </div>
+                <div>
+                    <button type="submit" class="submit-btn" onclick="return validatePassword()">Update</button>
+                </div>
+            </form>
+        </div>
+    </section>
+
+</div>
+
+<script>
+    function validatePassword() {
+        var newPassword = document.getElementById("newPassword").value;
+        var confirmPassword = document.getElementById("ConfirmNewPassword").value;
+
+        // Check if newPassword and confirmPassword are the same
+        if (newPassword !== confirmPassword) {
+            document.getElementById("passwordError").textContent = "Passwords do not match.";
+            return false;
+        } else {
+            // Passwords match, clear any previous error message and submit the form
+            document.getElementById("passwordError").textContent = "";
+            return true;
+        }
+    }
+</script>
 </body>
 </html>

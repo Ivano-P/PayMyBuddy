@@ -33,9 +33,10 @@ a, a:visited, a:focus, .submit-btn:visited, .submit-btn:focus {
     padding: 10px;
 }
 
-#welcome-msg, #update-profile-info, #iban-content, #first-steps, #balance-information {
+#welcome-msg, #update-profile-info, #iban-content, #first-steps, #balance-information, #update-password {
     text-align: center;
     margin: auto;
+
 }
 
 .transaction-tables, #bank-account-table , #pay-my-buddy-iban{
@@ -204,7 +205,7 @@ a, a:visited, a:focus, .submit-btn:visited, .submit-btn:focus {
 
 
 
-#transfer-transaction div{
+#transfer-transaction div, .change_password-field{
     margin: 10px;
 }
 
@@ -262,7 +263,7 @@ a, a:visited, a:focus, .submit-btn:visited, .submit-btn:focus {
     border-radius: 10px;
 }
 
-#profile-balance{
+#profile-balance, .profile-info-line{
     margin: 1px 0 1px 0;
 }
 
@@ -287,5 +288,4 @@ a, a:visited, a:focus, .submit-btn:visited, .submit-btn:focus {
     color: #ff0000;
     padding: 0;
     margin: 0;
-
 }

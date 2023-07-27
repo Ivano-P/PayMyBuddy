@@ -16,10 +16,24 @@
 </section>
 <div class="first-info">
 <section class="field">
-  <div class="profile-info">User name: <span th:text ="${currentUser.username}"></span></div>
-  <div class="profile-info">First name: <span th:text ="${currentUser.firstName}"></span></div>
-  <div class="profile-info">Last name: <span th:text ="${currentUser.lastName}"></span></div>
-  <div class="profile-info">Email: <span th:text ="${currentUser.email}"></span></div>
+  <div class="profile-info">
+    <p class="profile-info-line">Last name: <span th:text ="${currentUser.lastName}"></span></p>
+  </div>
+  <div class="profile-info">
+    <p class="profile-info-line">First name: <span th:text ="${currentUser.firstName}"></span></p>
+  </div>
+  <div class="profile-info">
+    <p class="profile-info-line">Email: <span th:text ="${currentUser.email}"></span></p>
+  </div>
+  <div class="profile-info">
+    <p class="profile-info-line">User name: <span th:text ="${currentUser.username}"></span></p>
+  </div>
+  <div class="profile-info" th:if="${currentUser.password != null && currentUser.password != ''}">
+    <p class="profile-info-line">
+      Password: **********
+    </p>
+  </div>
+
   <a th:href="@{/update_profile}" class="submit-btn">Update</a>
 </section>
 

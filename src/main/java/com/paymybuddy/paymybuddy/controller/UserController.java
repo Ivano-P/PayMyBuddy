@@ -150,4 +150,19 @@ public class UserController {
 
         return REDIRECT_PROFILE;
     }
+
+    //TODO: UT
+    @PostMapping("/updatePassword")
+    public String updatePassword(Principal principal,
+                                 @RequestParam("currentPassword") String currentPassword,
+                                 @RequestParam("newPassword") String newPassword,
+                                 @RequestParam("confirmPassword") String confirmPassword){
+
+        log.info("updatePassword method called for user {} ", principal.getName());
+        AppUser currentAppUser = getAppUserService(principal.getName());
+
+        appUserService.updateUserPassword(currentAppUser, currentPassword, newPassword, confirmPassword);
+        appUserService.updateAppUser(currentAppUser);
+        return REDIRECT_PROFILE;
+    }
 }

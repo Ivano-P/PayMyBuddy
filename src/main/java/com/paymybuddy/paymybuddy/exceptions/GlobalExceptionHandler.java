@@ -121,4 +121,13 @@ public class GlobalExceptionHandler {
 
         return "redirect:/registrationFailure";
     }
+
+    //TODO UT
+    @ExceptionHandler(InvalidPasswordException.class)
+    public String handleInvalidAmountException(InvalidPasswordException ipe,
+                                               RedirectAttributes redirectAttributes) {
+        log.error("InvalidPasswordException thrown: {} " , ipe.getMessage(), ipe);
+        redirectAttributes.addFlashAttribute(ERROR_MESSAGE, ipe.getMessage());
+        return "redirect:/update_profile";
+    }
 }

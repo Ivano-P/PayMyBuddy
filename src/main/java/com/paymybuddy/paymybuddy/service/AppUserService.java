@@ -19,4 +19,6 @@ public interface AppUserService {
     List<AppUser> getContactsForUser(AppUser user);
     void removeContact(String appUserUsername, Integer contactId);
     void checkIfAllUserInfoPresent(AppUser appUser);
+    void updateUserPassword(AppUser appUser, String currentPassword,
+                            String newPassword, String confirmedPassword);
 }

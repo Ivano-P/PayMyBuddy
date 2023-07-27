@@ -1,6 +1,7 @@
 package com.paymybuddy.paymybuddy.implementation;
 
 import com.paymybuddy.paymybuddy.exceptions.ContactNotFoundException;
+import com.paymybuddy.paymybuddy.exceptions.InvalidPasswordException;
 import com.paymybuddy.paymybuddy.exceptions.MissingUserInfoException;
 import com.paymybuddy.paymybuddy.model.AppUser;
 import com.paymybuddy.paymybuddy.model.AppUserContact;
@@ -11,6 +12,7 @@ import com.paymybuddy.paymybuddy.service.WalletService;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -80,7 +82,7 @@ public class AppUserServiceImpl implements AppUserService {
 
             walletService.setAdminUserWalletBalance(adminAppUser);
 
-            //cascade setting saves the porteMonnaie as well
+            //cascade setting saves the wallet as well
             appUserRepository.save(adminAppUser);
 
         }
@@ -122,7 +124,7 @@ public class AppUserServiceImpl implements AppUserService {
 
             appUserContactRepository.save(appUserContact);
             log.info("Successfully added contact {} for user {}", contactUsername, userUsername);
-        }else{
+        } else {
             log.warn("User {} not found when trying to add contact {}", userUsername, contactUsername);
         }
 
@@ -171,6 +173,30 @@ public class AppUserServiceImpl implements AppUserService {
 
     }
 
+    //TODO: UT
+    public void updateUserPassword(AppUser appUser, String currentPassword,
+                                   String newPassword, String confirmedPassword) {
+        log.info("updateUserPassword method called for : {}", appUser.getUsername());
+
+        if (checkOldPassword(appUser, currentPassword)) {
+            if (newPassword.equals(confirmedPassword)) {
+                appUser.setPassword(passwordEncoder.encode(newPassword));
+
+            } else {
+                throw new InvalidPasswordException("Passwords do not match");
+            }
+
+        } else {
+            throw new InvalidPasswordException("Old password is incorrect");
+        }
+
+    }
+
+    //returns true if current password and password user imputed are the same
+    private boolean checkOldPassword(AppUser currentUser, String oldPassword) {
+        log.info("checkOldPassword method called with : {}", currentUser);
+        return BCrypt.checkpw(oldPassword, currentUser.getPassword());
+    }
 
 }
 
