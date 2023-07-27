@@ -23,9 +23,16 @@
   </div>
 </section>
 
-<div  th:if="${errorMsg}" th:fragment="errorPanel" class="error-message" role="alert">
+<div  th:if="${errorMsg}" th:fragment="errorPanel" id="error-message" role="alert">
   <p th:text="${errorMsg}"></p>
 </div>
+
+<script th:fragment="errorPanelTimer">
+  setTimeout(function() {
+    var element = document.getElementById('error-message');
+    element.style.display = 'none';
+  }, 3000); // in milliseconds = 3 seconds
+</script>
 
 </body>
 </html>

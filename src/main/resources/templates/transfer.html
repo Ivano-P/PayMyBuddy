@@ -16,7 +16,7 @@
     </nav>
 </section>
 <div class="first-info">
-<div th:insert="fragments :: errorPanel" id="error-message"></div> <!-- hidden div to display error message-->
+<div th:insert="fragments :: errorPanel"></div> <!-- hidden div to display error message-->
 <section class="field">
     <div>
         <p id="balance-information">Your current balance is : <span th:text="${currentUser.wallet.balance} + '€'"></span> </p>
@@ -110,7 +110,7 @@
     </div>
 </section>
     <section id="withdrawal" class="field">
-        <div id="withdrawal-transaction" class="field" th:if="${hasBankAccount}">
+        <div id="withdrawal-transaction" th:if="${hasBankAccount}">
             <h2>Withdraw funds to bank account</h2>
             <form action="#" th:action="@{/withdrawFunds}" method="post" id="withdrawal-form">
                 <label for="amount">Enter amount</label>
@@ -120,7 +120,7 @@
         </div>
 
         <!-- this button appears if user doesn't have bank account linked and indicates to add bank account for withdrawal -->
-        <div id="withdrawal-ko-transaction" class="field" th:if="${!hasBankAccount}">
+        <div id="withdrawal-ko-transaction" th:if="${!hasBankAccount}">
             <h2>Withdraw funds to bank account</h2>
             <form action="#" th:action="@{/noAccountForWithdrawal}" method="post" id="withdrawal-ko-form">
                 <button type="submit" class="submit-btn">withdrawal</button>
@@ -128,11 +128,9 @@
         </div>
     </section>
 </div>
-<script>
-    setTimeout(function() {
-        var element = document.getElementById('error-message');
-        element.style.display = 'none';
-    }, 3000); // in milliseconds = 3 seconds
-</script>
+
+<!-- for error message timer-->
+<div th:insert="~{fragments :: errorPanelTimer}"></div>
+
 </body>
 </html>
