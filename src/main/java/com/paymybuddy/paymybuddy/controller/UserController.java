@@ -148,7 +148,7 @@ public class UserController {
 
         appUserService.updateAppUser(currentAppUser);
 
-        return REDIRECT_PROFILE;
+        return "redirect:/profile?updateSuccess=true";
     }
 
     //TODO: UT
@@ -163,6 +163,6 @@ public class UserController {
 
         appUserService.updateUserPassword(currentAppUser, currentPassword, newPassword, confirmPassword);
         appUserService.updateAppUser(currentAppUser);
-        return REDIRECT_PROFILE;
+        return "redirect:/profile?updateSuccess=true";
     }
 }

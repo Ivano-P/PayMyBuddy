@@ -27,11 +27,22 @@
   <p th:text="${errorMsg}"></p>
 </div>
 
+
 <script th:fragment="errorPanelTimer">
   setTimeout(function() {
     var element = document.getElementById('error-message');
     element.style.display = 'none';
   }, 3000); // in milliseconds = 3 seconds
+</script>
+
+<script th:fragment="successPanelTimer">
+  var successElement = document.getElementById('success-message');
+  if (successElement) {
+    successElement.style.display = 'block';
+    setTimeout(function() {
+      successElement.style.display = 'none';
+    }, 3000); // hide the message after 3 seconds
+  }
 </script>
 
 </body>

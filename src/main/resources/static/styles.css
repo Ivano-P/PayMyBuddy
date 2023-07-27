@@ -64,7 +64,7 @@ a, a:visited, a:focus, .submit-btn:visited, .submit-btn:focus {
 }
 
 #transfer-transaction, #withdrawal-transaction, #deposit-transaction, #withdrawal-ko-transaction, #transaction_history
-#contact_list, #add-contact, #contact_list h2, #deposit-instructions, #pagination {
+#contact_list, #add-contact, #contact_list h2, #deposit-instructions, #pagination, #transaction_history {
     text-align: center;
 }
 
@@ -180,14 +180,13 @@ a, a:visited, a:focus, .submit-btn:visited, .submit-btn:focus {
 }
 
 
-#error-message{
+#error-message, #success-message{
     position: fixed;
-    top: 50%;
+    top: 40%;
     left: 50%;
     transform: translate(-50%, -50%);
     margin: auto;
     padding: 15px;
-    background-color: rgba(248, 215, 218, 0.75);
     color: #721c24;
     border: 1px solid #f5c6cb;
     border-radius: 5px;
@@ -197,6 +196,14 @@ a, a:visited, a:focus, .submit-btn:visited, .submit-btn:focus {
     font-weight: bold;
     z-index: 999;
 
+}
+
+#success-message{
+    background-color: rgba(141, 234, 160, 0.75);
+}
+
+#error-message{
+    background-color: rgba(248, 215, 218, 0.75);
 }
 
 #pay-my-buddy-iban{

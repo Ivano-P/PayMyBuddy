@@ -9,7 +9,7 @@
 </head>
 <body>
 <section th:insert="fragments :: navbar"></section>
-<div th:insert="fragments :: errorPanel" id="error-message"></div> <!-- hidden div to display error message-->
+<div th:insert="fragments :: errorPanel"></div> <!-- hidden div to display error message-->
 
 <section id="path-bar">
     <nav>
@@ -23,7 +23,7 @@
             <form action="#" th:action="@{/updateProfileInfo}" th:object="${appUser}" method="post"
                   id="profile-info-form">
                 <label for="firstName">First Name</label>
-                <input type="text" name="firstName" id="firstName" th:value="${currentUser.lastName}">
+                <input type="text" name="firstName" id="firstName" th:value="${currentUser.firstName}">
 
                 <label for="lastName">Last Name</label>
                 <input type="text" name="lastName" id="lastName" th:value="${currentUser.lastName}">
@@ -82,13 +82,10 @@
             return true;
         }
     }
-    <!-- for error message timer-->
-    setTimeout(function () {
-        var element = document.getElementById('error-message');
-        element.style.display = 'none';
-    }, 3000); // in milliseconds = 3 seconds
-
 </script>
+
+<!-- for error message timer-->
+<div th:insert="~{fragments :: errorPanelTimer}"></div>
 
 </body>
 </html>

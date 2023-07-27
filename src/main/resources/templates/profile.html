@@ -13,6 +13,11 @@
   <nav>
     Home / Profile
   </nav>
+  <div th:insert="fragments :: errorPanel" ></div> <!-- hidden div to display error message-->
+  <!-- successful update pop up message-->
+  <div th:if="${param.updateSuccess}" id="success-message" style="display:none;">
+    <p>update successful!</p>
+  </div>
 </section>
 <div class="first-info">
 
@@ -43,8 +48,6 @@
 </section>
 
 <section id="bank-account">
-
-  <div th:insert="fragments :: errorPanel" ></div> <!-- hidden div to display error message-->
 
   <div th:if="${hasBankAccount}" id="saved-bank-Account" class="field">
     <table id="bank-account-table" >
@@ -85,11 +88,11 @@
       <button type="submit" class="submit-btn">Add bank account</button>
     </form>
   </div>
-
-  <!-- removed deposit and withdrawal section from here-->
-
 </section>
 </div>
+<!-- for success message timer-->
+<div th:insert="~{fragments :: successPanelTimer}"></div>
 </body>
+
 </html>
 

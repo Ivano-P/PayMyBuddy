@@ -16,99 +16,110 @@
     </nav>
 </section>
 <div class="first-info">
-<div th:insert="fragments :: errorPanel"></div> <!-- hidden div to display error message-->
-<section class="field">
-    <div>
-        <p id="balance-information">Your current balance is : <span th:text="${currentUser.wallet.balance} + '€'"></span> </p>
+    <div th:insert="fragments :: errorPanel"></div> <!-- hidden div to display error message-->
+
+    <div th:if="${param.transferSuccess}" id="success-message" style="display:none;">
+        <p>transfer successful!</p>
     </div>
 
-</section>
+    <section class="field">
+        <div>
+            <p id="balance-information">Your current balance is : <span
+                    th:text="${currentUser.wallet.balance} + '€'"></span></p>
+        </div>
 
-<section id="do-transaction" >
+    </section>
 
-    <div id="transfer-transaction" class="field">
-        <h2>Transfer funds to contact</h2>
-        <form th:action="@{/transfer}" method="post">
-            <div>
-                <label for="contactSelect"></label>
-                <select id="contactSelect" name="contactId" required>
-                    <option value="" disabled selected>Select Contact</option>
-                    <option th:each="contact : ${contacts}" th:value="${contact.id}"
-                            th:text="${contact.username + ' (' +contact.firstName + ' ' + contact.lastName + ')'}">
-                    </option>
-                </select>
+    <section id="do-transaction">
 
-                <label for="balance">Add amount :</label>
-                <input type="text" name="amount" id="balance" placeholder="0" th:min="1" required>
+        <div id="transfer-transaction" class="field">
+            <h2>Transfer funds to contact</h2>
+            <form th:action="@{/transfer}" method="post">
+                <div>
+                    <label for="contactSelect"></label>
+                    <select id="contactSelect" name="contactId" required>
+                        <option value="" disabled selected>Select Contact</option>
+                        <option th:each="contact : ${contacts}" th:value="${contact.id}"
+                                th:text="${contact.username + ' (' +contact.firstName + ' ' + contact.lastName + ')'}">
+                        </option>
+                    </select>
+
+                    <label for="balance">Add amount :</label>
+                    <input type="text" name="amount" id="balance" placeholder="0" th:min="1" required>
+                </div>
+
+                <div>
+                    <label for="description">Enter transaction description</label>
+                    <input type="text" name="description" id="description"
+                           placeholder="transaction description">
+                </div>
+                <p id="fee-info"> A 0.5% will be applied to transaction, so account must be funded with transaction
+                    amount plus transaction fee</p>
+                <button type="submit" class="submit-btn">SEND</button>
+            </form>
+        </div>
+
+        <div id="deposit-transaction" class="field">
+            <h2>Fund your account</h2>
+            <a th:href="@{/iban}" class="submit-btn">deposit</a>
+
+            <!-- //TODO: remove in production -->
+            <div th:if="${isAdmin}">
+                <form action="#" th:action="@{/testDepositFunds}" method="post" id="deposit-form">
+                    <label for="null"></label>
+                    <input type="hidden" name="null" id="null">
+                    <button type="submit" id="test-deposit">test deposit</button>
+                </form>
             </div>
+        </div>
+    </section>
 
-            <div>
-                <label for="description">Enter transaction description</label>
-                <input type="text" name="description" id="description"
-                       placeholder="transaction description">
-            </div>
-            <p id="fee-info" > A 0.5% will be applied to transaction, so account must be funded with transaction
-                amount plus transaction fee</p>
-            <button type="submit" class="submit-btn">SEND</button>
-        </form>
-    </div>
+    <section id="transaction_history" class="field">
+        <h2>Transaction history</h2>
+        <div id="table-container">
+            <table id="transfer-history-table">
+                <thead>
+                <tr>
+                    <th>Contact</th>
+                    <th>Description</th>
+                    <th>Transaction type</th>
+                    <th>Amount</th>
+                </tr>
+                </thead>
 
-    <div id="deposit-transaction" class="field">
-        <h2>Fund your account</h2>
-     <a th:href="@{/iban}" class="submit-btn">deposit</a>
+                <tbody>
+                <tr th:each="transaction : ${transactions.content}">
+                    <td th:text="${transaction.contactUsername}"></td>
+                    <td th:text="${transaction.description}"></td>
+                    <td th:text="${transaction.transactionType}"></td>
+                    <td th:text="${transaction.amount + '€'}">
 
-    <!-- //TODO: remove in production -->
-    <form action="#" th:action="@{/testDepositFunds}" method="post" id="deposit-form">
-        <label for="null"></label>
-        <input type="hidden" name="null" id="null">
-        <button type="submit" id="test-deposit">test deposit</button>
-    </form>
-    </div>
-</section>
-
-<section id="transaction_history" class="field">
-    <h2>Transaction history</h2>
-    <div id="table-container">
-    <table id="transfer-history-table">
-        <thead>
-        <tr>
-            <th>Contact</th>
-            <th>Description</th>
-            <th>Transaction type</th>
-            <th>Amount</th>
-        </tr>
-        </thead>
-
-        <tbody>
-        <tr th:each="transaction : ${transactions.content}">
-            <td th:text="${transaction.contactUsername}"></td>
-            <td th:text="${transaction.description}"></td>
-            <td th:text="${transaction.transactionType}"></td>
-            <td th:text="${transaction.amount + '€'}">
-
-            </td>
-        </tr>
-        </tbody>
-    </table>
-    </div>
-    <!-- Pagination -->
-    <div id="pagination" th:with="start=${totalPages > 5 ? (currentPage < 3 ? 0 : (currentPage > totalPages - 3 ? totalPages - 5 : currentPage - 2)) : 0},
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <!-- Pagination -->
+        <div id="pagination" th:with="start=${totalPages > 5 ? (currentPage < 3 ? 0 : (currentPage > totalPages - 3 ? totalPages - 5 : currentPage - 2)) : 0},
               end=${totalPages > 5 ? (currentPage < 3 ? 5 : (currentPage > totalPages - 3 ? totalPages : currentPage + 3)) : totalPages}">
-        <button th:onclick="'window.location.href=\'/transfer?page=0\''">First page</button>
-        <button th:if="${transactions.hasPrevious()}"
-                th:onclick="'window.location.href=\'/transfer?page=' + (${transactions.number - 1}) + '\''"> previous </button>
+            <button th:onclick="'window.location.href=\'/transfer?page=0\''">First page</button>
+            <button th:if="${transactions.hasPrevious()}"
+                    th:onclick="'window.location.href=\'/transfer?page=' + (${transactions.number - 1}) + '\''">
+                previous
+            </button>
 
-        <span th:each="pageNumber : ${#numbers.sequence(start, end)}">
+            <span th:each="pageNumber : ${#numbers.sequence(start, end)}">
         <button th:onclick="'window.location.href=\'/transfer?page=' + (${pageNumber}) + '\''"
                 th:text="${pageNumber + 1}"
                 th:style="${pageNumber == currentPage} ? 'font-weight: bold;' : ''"></button>
     </span>
 
-        <button th:if="${transactions.hasNext()}"
-                th:onclick="'window.location.href=\'/transfer?page=' + (${transactions.number + 1}) + '\''"> next </button>
-        <button th:onclick="'window.location.href=\'/transfer?page=' + (${totalPages}) + '\''">Last page</button>
-    </div>
-</section>
+            <button th:if="${transactions.hasNext()}"
+                    th:onclick="'window.location.href=\'/transfer?page=' + (${transactions.number + 1}) + '\''"> next
+            </button>
+            <button th:onclick="'window.location.href=\'/transfer?page=' + (${totalPages}) + '\''">Last page</button>
+        </div>
+    </section>
     <section id="withdrawal" class="field">
         <div id="withdrawal-transaction" th:if="${hasBankAccount}">
             <h2>Withdraw funds to bank account</h2>
@@ -128,9 +139,11 @@
         </div>
     </section>
 </div>
-
 <!-- for error message timer-->
 <div th:insert="~{fragments :: errorPanelTimer}"></div>
+
+<!-- for success message timer-->
+<div th:insert="~{fragments :: successPanelTimer}"></div>
 
 </body>
 </html>

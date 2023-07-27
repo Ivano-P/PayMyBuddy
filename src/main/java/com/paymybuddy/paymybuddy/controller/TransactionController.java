@@ -64,6 +64,10 @@ public class TransactionController {
         model.addAttribute("totalPages", totalPages);
         model.addAttribute("currentPage", page);
 
+        log.info("current user role is : {}", currentAppUser.getRole());
+
+        model.addAttribute("isAdmin", currentAppUser.getRole().equals(AppUser.Role.ADMIN));
+
         return "transfer";
     }
 
@@ -80,7 +84,7 @@ public class TransactionController {
                                 @RequestParam(value = "description", required = false) String description) {
         log.info("transferFunds method called for user {} ", principal.getName());
         transactionService.transferFunds(principal.getName(), contactId, amount, description);
-        return REDIRECT_TRANSFER; // redirect back to the transfer page
+        return "redirect:/transfer?transferSuccess=true"; // redirect back to the transfer page
     }
 
 
