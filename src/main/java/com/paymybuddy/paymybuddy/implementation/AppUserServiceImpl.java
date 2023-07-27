@@ -173,7 +173,6 @@ public class AppUserServiceImpl implements AppUserService {
 
     }
 
-    //TODO: UT
     public void updateUserPassword(AppUser appUser, String currentPassword,
                                    String newPassword, String confirmedPassword) {
         log.info("updateUserPassword method called for : {}", appUser.getUsername());

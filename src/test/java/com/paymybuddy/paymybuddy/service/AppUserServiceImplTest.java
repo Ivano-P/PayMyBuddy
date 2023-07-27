@@ -1,6 +1,7 @@
 package com.paymybuddy.paymybuddy.service;
 
 import com.paymybuddy.paymybuddy.exceptions.ContactNotFoundException;
+import com.paymybuddy.paymybuddy.exceptions.InvalidPasswordException;
 import com.paymybuddy.paymybuddy.exceptions.MissingUserInfoException;
 import com.paymybuddy.paymybuddy.implementation.AppUserServiceImpl;
 import com.paymybuddy.paymybuddy.implementation.WalletServiceImpl;
@@ -8,13 +9,16 @@ import com.paymybuddy.paymybuddy.model.AppUser;
 import com.paymybuddy.paymybuddy.model.AppUserContact;
 import com.paymybuddy.paymybuddy.repository.AppUserContactRepository;
 import com.paymybuddy.paymybuddy.repository.AppUserRepository;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.List;
 import java.util.Optional;
@@ -26,6 +30,8 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 class AppUserServiceImplTest {
 
+    @InjectMocks
+    private AppUserServiceImpl appUserService;
     @Mock
     private AppUserRepository appUserRepository;
     @Mock
@@ -35,8 +41,10 @@ class AppUserServiceImplTest {
     @Mock
     private PasswordEncoder passwordEncoder;
 
-    @InjectMocks
-    private AppUserServiceImpl appUserService;
+    @BeforeEach
+    void setUp() {
+        ReflectionTestUtils.setField(appUserService, "passwordEncoder", passwordEncoder);
+    }
 
     @Test
     void testCreateAppUser() {
@@ -267,6 +275,92 @@ class AppUserServiceImplTest {
 
     }
 
+    @Test
+    void testUpdateUserPassword() {
+        // Arrange
+        AppUser appUser = new AppUser();
+        String currentPassword = "currentPassword";
+        String newPassword = "newPassword";
+        String confirmPassword = "newPassword";
+        appUser.setPassword(new BCryptPasswordEncoder().encode(currentPassword));
+
+        String oldPasswordHash = appUser.getPassword();
+
+        // Act
+        appUserService.updateUserPassword(appUser, currentPassword, newPassword, confirmPassword);
+
+        // Assert
+        assertNotEquals(oldPasswordHash, appUser.getPassword());
+    }
+
+    @Test
+    void testUpdateUserPassword_WhenOldPasswordIsIncorrect_ShouldThrowException() {
+        // Arrange
+        AppUser appUser = new AppUser();
+        String currentPassword = "currentPassword";
+        String incorrectCurrentPassword = "incorrectCurrentPassword";
+        String newPassword = "newPassword";
+        String confirmPassword = "newPassword";
+        appUser.setPassword(new BCryptPasswordEncoder().encode(currentPassword));
+
+        // Act & Assert
+        Exception exception = assertThrows(InvalidPasswordException.class, () -> {
+            appUserService.updateUserPassword(appUser, incorrectCurrentPassword, newPassword, confirmPassword);
+        });
+
+        assertEquals("Old password is incorrect", exception.getMessage());
+    }
+
+    @Test
+    void testUpdateUserPassword_WhenPasswordsDoNotMatch_ShouldThrowException() {
+        // Arrange
+        AppUser appUser = new AppUser();
+        String currentPassword = "currentPassword";
+        String newPassword = "newPassword";
+        String confirmPassword = "differentNewPassword";
+        appUser.setPassword(new BCryptPasswordEncoder().encode(currentPassword));
+
+        // Act & Assert
+        Exception exception = assertThrows(InvalidPasswordException.class, () -> {
+            appUserService.updateUserPassword(appUser, currentPassword, newPassword, confirmPassword);
+        });
+
+        assertEquals("Passwords do not match", exception.getMessage());
+    }
+    @Test
+    void testUpdateUserPassword_WhenOldPasswordIsIncorrect() {
+        // Arrange
+        AppUser appUser = new AppUser();
+        String currentPassword = "currentPassword";
+        String incorrectCurrentPassword = "incorrectCurrentPassword";
+        String newPassword = "newPassword";
+        String confirmPassword = "newPassword";
+        appUser.setPassword(new BCryptPasswordEncoder().encode(currentPassword));
+
+        // Act & Assert
+        Exception exception = assertThrows(InvalidPasswordException.class, () -> {
+            appUserService.updateUserPassword(appUser, incorrectCurrentPassword, newPassword, confirmPassword);
+        });
+
+        assertEquals("Old password is incorrect", exception.getMessage());
+    }
+
+    @Test
+    void testUpdateUserPassword_WhenPasswordsDoNotMatch() {
+        // Arrange
+        AppUser appUser = new AppUser();
+        String currentPassword = "currentPassword";
+        String newPassword = "newPassword";
+        String confirmPassword = "differentNewPassword";
+        appUser.setPassword(new BCryptPasswordEncoder().encode(currentPassword));
+
+        // Act & Assert
+        Exception exception = assertThrows(InvalidPasswordException.class, () -> {
+            appUserService.updateUserPassword(appUser, currentPassword, newPassword, confirmPassword);
+        });
+
+        assertEquals("Passwords do not match", exception.getMessage());
+    }
 
 
 }

@@ -201,11 +201,31 @@ class UserControllerTest {
         String viewName = userController.updateProfileInfo(updatedUser, principal);
 
         // Assert
-        assertThat(viewName).isEqualTo("redirect:/profile");
+        assertThat(viewName).isEqualTo("redirect:/profile?updateSuccess=true");
         verify(appUserService, times(1)).updateAppUser(any(AppUser.class));
         assertThat(appUser.getFirstName()).isEqualTo(updatedUser.getFirstName());
         assertThat(appUser.getLastName()).isEqualTo(updatedUser.getLastName());
         assertThat(appUser.getEmail()).isEqualTo(updatedUser.getEmail());
     }
+
+    @Test
+    void testUpdatePassword() {
+        //Arrange
+        String currentPassword = "currentPassword";
+        String newPassword = "newPassword";
+        String confirmPassword = "confirmPassword";
+
+        when(principal.getName()).thenReturn("userName");
+        when(appUserService.getAppUserByUsername(any(String.class))).thenReturn(Optional.ofNullable(appUser));
+
+        //act
+        String viewName = userController.updatePassword(principal, currentPassword, newPassword, confirmPassword);
+
+        //Assert
+        verify(appUserService).updateUserPassword(appUser, currentPassword, newPassword, confirmPassword);
+        verify(appUserService).updateAppUser(appUser);
+        assertThat(viewName).isEqualTo("redirect:/profile?updateSuccess=true");
+    }
+
 
 }

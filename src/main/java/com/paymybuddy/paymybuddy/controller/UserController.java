@@ -151,7 +151,6 @@ public class UserController {
         return "redirect:/profile?updateSuccess=true";
     }
 
-    //TODO: UT
     @PostMapping("/updatePassword")
     public String updatePassword(Principal principal,
                                  @RequestParam("currentPassword") String currentPassword,

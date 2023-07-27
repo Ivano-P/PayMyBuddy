@@ -98,7 +98,7 @@ class TransactionControllerTest {
         String viewName = transactionController.transferFunds(principal, 1, BigDecimal.TEN, "description");
 
         // Assert
-        assertThat(viewName).isEqualTo("redirect:/transfer");
+        assertThat(viewName).isEqualTo("redirect:/transfer?transferSuccess=true");
         verify(transactionService, times(1)).transferFunds(any(String.class), anyInt(), any(BigDecimal.class), any(String.class));
     }
 
