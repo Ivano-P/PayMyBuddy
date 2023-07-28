@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="https://www.thymeleaf.org"
+      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width; initial-scale=1">
+  <link rel="stylesheet" href="/styles.css">
+  <title>Confirm transfer</title>
+</head>
+<body>
+<section th:insert="fragments :: navbar"></section>
+
+<section id="path-bar">
+  <nav>
+    Home / Transfer
+  </nav>
+</section>
+
+<section id="deposit-information" class="first-info">
+  <div class="field">
+    <p id="profile-balance">
+      Your current balance is : <span th:text ="${currentUser.wallet.balance} + '€'"></span>, your balance after
+      transfer will be : <span th:text="${transferConfirmationInfo.balanceAfterTransfer + '€'}" > </span>
+    </p>
+  </div>
+
+  <div class="field" >
+      <table id="transaction-to-confirm" >
+        <thead>
+        <tr>
+          <th>From</th>
+          <th>Type</th>
+          <th>to</th>
+          <th>description</th>
+          <th>Transfer amount</th>
+          <th>Transfer fee</th>
+          <th>total amount</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+          <td th:text ="${transferConfirmationInfo.sender}"></td>
+          <td th:text="${transferConfirmationInfo.type}"></td>
+          <td th:text="${transferConfirmationInfo.recipient.username}"></td>
+          <td th:text="${transferConfirmationInfo.description}"></td>
+          <td th:text="${transferConfirmationInfo.transferAmount + '€'}"></td>
+          <td th:text="${#numbers.formatDecimal(transferConfirmationInfo.transferFee, 1, 2) + '€'}"></td>
+          <td th:text="${#numbers.formatDecimal(transferConfirmationInfo.amountPlusFee, 1, 2) + '€'}"></td>
+
+        </tr>
+        </tbody>
+      </table>
+
+      <form th:action="@{/confirmTransfer}" method="post">
+        <input type="hidden" th:value="${principal}" name="principal"/>
+        <input type="hidden" th:value="${transferConfirmationInfo.recipient.id}" name="contactId"/>
+        <input type="hidden" th:value="${transferConfirmationInfo.transferAmount}" name="amount"/>
+        <input type="hidden" th:value="${transferConfirmationInfo.description}" name="description"/>
+        <div id="confirm-transaction_options">
+          <a th:href="@{/transfer}" class="submit-btn">Cancel</a>
+          <button type="submit" class="submit-btn">Confirm</button>
+        </div>
+
+      </form>
+  </div>
+
+</section>
+
+</body>
+</html>

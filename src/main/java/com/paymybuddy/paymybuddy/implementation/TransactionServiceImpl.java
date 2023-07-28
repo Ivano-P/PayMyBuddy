@@ -1,9 +1,11 @@
 package com.paymybuddy.paymybuddy.implementation;
 
 import com.paymybuddy.paymybuddy.dto.TransactionForAppUserHistory;
-
-import com.paymybuddy.paymybuddy.exceptions.*;
-
+import com.paymybuddy.paymybuddy.dto.TransferConfirmation;
+import com.paymybuddy.paymybuddy.exceptions.InsufficientFundsException;
+import com.paymybuddy.paymybuddy.exceptions.InvalidAmountException;
+import com.paymybuddy.paymybuddy.exceptions.NoContactSelectedException;
+import com.paymybuddy.paymybuddy.exceptions.WalletNotFoundException;
 import com.paymybuddy.paymybuddy.model.AccountPayMyBuddy;
 import com.paymybuddy.paymybuddy.model.AppUser;
 import com.paymybuddy.paymybuddy.model.Transaction;
@@ -25,8 +27,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-
-import java.util.*;
+import java.util.Optional;
 
 @Transactional
 @Log4j2
@@ -42,16 +43,16 @@ public class TransactionServiceImpl implements TransactionService {
 
 private static final String CURRENT_USER_NOT_FOUND = "current user not found";
 
-    public void saveTransaction(int senderId, int recepientId,
-                                BigDecimal amout, BigDecimal transactionFee,
+    public void saveTransaction(int senderId, int recipientId,
+                                BigDecimal amount, BigDecimal transactionFee,
                                 Transaction.TransactionType transactionType,
                                 Optional<String> description){
-        log.info("saveTransaction method called with: {}, {}, {}, {} and {}", senderId, recepientId, amout,
+        log.info("saveTransaction method called with: {}, {}, {}, {} and {}", senderId, recipientId, amount,
                 transactionType, transactionFee );
         Transaction transaction = new Transaction();
         transaction.setSenderId(senderId);
-        transaction.setRecepientId(recepientId);
-        transaction.setAmount(amout);
+        transaction.setRecepientId(recipientId);
+        transaction.setAmount(amount);
         transaction.setTimeStamp(LocalDateTime.now());
         transaction.setTransactionFee(transactionFee);
         transaction.setTransactionType(transactionType);
@@ -114,6 +115,58 @@ private static final String CURRENT_USER_NOT_FOUND = "current user not found";
     }
 
 
+
+
+
+    //TODO: UT
+    public TransferConfirmation creatTransferConfirmation(String appUserUsername,
+                                                          Integer contactId,
+                                                          BigDecimal amount,
+                                                          Optional<String> description
+                                                          ){
+        log.info("creatTransferConfirmation method called with: {}, {}, {}, {}", appUserUsername, contactId,
+                amount, description);
+
+        Optional<AppUser> appUserOptional = appUserService.getAppUserByUsername(appUserUsername);
+        Optional<AppUser> contactOptional = appUserService.getAppUserById(contactId);
+
+        AppUser contactAppUser = contactOptional.orElseThrow(NoContactSelectedException::new);
+        AppUser appUser = appUserOptional.orElseThrow(() -> new UsernameNotFoundException(CURRENT_USER_NOT_FOUND));
+
+
+        Optional<Wallet> appUserWalletOptional = walletService.getWalletById(appUser.getId());
+
+        Wallet appUserWallet = appUserWalletOptional
+                .orElseThrow(() -> new WalletNotFoundException("User wallet nor found"));
+
+        AccountPayMyBuddy pmbAccount = appPmbService.getAccountPmb();
+
+        //calculate transaction fee and total transaction amount
+        BigDecimal transactionFee = amount.multiply(BigDecimal.valueOf(pmbAccount.getTransactionFee()));
+        BigDecimal finalTransactionAmount = amount.add(transactionFee);
+
+        //check if sender balance is bigger or equal to amount plus transaction fee
+        int comparisonResult = appUserWallet.getBalance().compareTo(finalTransactionAmount);
+
+        //throw exception if there isn't enough funds for total transaction value
+        if(comparisonResult < 0){
+            throw new InsufficientFundsException("Insufficient funds for the transfer.");
+        }
+
+        return new TransferConfirmation(appUserUsername,
+                Transaction.TransactionType.SEND , contactAppUser, description.orElse(null), amount, transactionFee,
+                finalTransactionAmount, appUserWallet.getBalance().subtract(finalTransactionAmount)
+        );
+    }
+
+
+
+
+
+
+
+
+
     // get the paged transaction history of a specific user
     public Page<TransactionForAppUserHistory> getTransactionHistory(String username, Pageable pageable){
         log.info("getTransactionHistory method called with: {} and {}", username, pageable);
@@ -173,12 +226,12 @@ private static final String CURRENT_USER_NOT_FOUND = "current user not found";
             contactId = transaction.getSenderId();
 
             //find the contactAppUSer in db
-            Optional<AppUser> contactAppUserOptionnal = appUserService
+            Optional<AppUser> contactAppUserOptional = appUserService
                     .getAppUserById(contactId);
 
             //add each TransactionForAppUserHistory to transactionsHistory
-            if (contactAppUserOptionnal.isPresent()){
-                AppUser contact = contactAppUserOptionnal.get();
+            if (contactAppUserOptional.isPresent()){
+                AppUser contact = contactAppUserOptional.get();
 
                 return new TransactionForAppUserHistory(contact
                         .getUsername(), transaction.getDescription(), transaction.getAmount(),
@@ -242,9 +295,8 @@ private static final String CURRENT_USER_NOT_FOUND = "current user not found";
         AppUser appUser = appUserService.getAppUserByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException(CURRENT_USER_NOT_FOUND));
 
-        Wallet appUserWallet = null;
         Optional<Wallet> walletOptional =  walletService.getWalletById(appUser.getId());
-        appUserWallet = walletOptional.orElseThrow(() -> new WalletNotFoundException("wallet not found exception"));
+        Wallet appUserWallet = walletOptional.orElseThrow(() -> new WalletNotFoundException("wallet not found exception"));
 
         BigDecimal amount = BigDecimal.valueOf(1000);
         appUserWallet.setBalance(appUserWallet.getBalance().add(amount));

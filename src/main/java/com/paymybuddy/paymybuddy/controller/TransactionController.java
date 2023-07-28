@@ -1,6 +1,7 @@
 package com.paymybuddy.paymybuddy.controller;
 
 import com.paymybuddy.paymybuddy.dto.TransactionForAppUserHistory;
+import com.paymybuddy.paymybuddy.dto.TransferConfirmation;
 import com.paymybuddy.paymybuddy.model.AppUser;
 import com.paymybuddy.paymybuddy.service.AppUserService;
 import com.paymybuddy.paymybuddy.service.BankAccountService;
@@ -16,6 +17,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.math.BigDecimal;
 import java.security.Principal;
@@ -29,7 +31,6 @@ public class TransactionController {
     private final TransactionService transactionService;
     private final AppUserService appUserService;
     private final BankAccountService bankAccountService;
-
     private static final String REDIRECT_TRANSFER = "redirect:/transfer";
     private static final String CURRENT_USER = "currentUser";
 
@@ -77,17 +78,49 @@ public class TransactionController {
         return "redirect:/iban";
     }
 
+    //TODO: update UT since no longer call transferFunds
     @PostMapping("/transfer")
     public String transferFunds(Principal principal,
                                 @RequestParam("contactId") Integer contactId,
                                 @RequestParam("amount") BigDecimal amount,
-                                @RequestParam(value = "description", required = false) String description) {
+                                @RequestParam(value = "description", required = false) String description,
+                                RedirectAttributes redirectAttributes) {
         log.info("transferFunds method called for user {} ", principal.getName());
-        transactionService.transferFunds(principal.getName(), contactId, amount, description);
-        return "redirect:/transfer?transferSuccess=true"; // redirect back to the transfer page
+
+        //creat transferConfirmation object for confirmation page
+        TransferConfirmation transferConfirmation = transactionService.creatTransferConfirmation(principal.getName(), contactId, amount,
+                Optional.of(description));
+
+        redirectAttributes.addFlashAttribute("transferConfirmationInfo", transferConfirmation);
+
+        return "redirect:/confirm_transfer";
     }
 
+    //TODO: UT
+    @GetMapping("/confirm_transfer")
+    public String goToConfirmTransferPage(Model model, Principal principal){
+        log.info("goToConfirmTransferPage method called for user {} ", principal.getName());
 
+        AppUser currentAppUser = getAppUserService(principal.getName());
+        model.addAttribute(CURRENT_USER, currentAppUser);
+
+        //transferConfirmationInfo added to model by transferFunds method
+
+        return "confirm_transfer";
+    }
+
+    //TODO: UT
+    @PostMapping("/confirmTransfer")
+    public String confirmTransfer(Principal principal,
+                                @RequestParam("contactId") Integer contactId,
+                                @RequestParam("amount") BigDecimal amount,
+                                @RequestParam(value = "description", required = false) String description) {
+        log.info("confirmTransfer method called for user {} ", principal.getName());
+
+        transactionService.transferFunds(principal.getName(), contactId, amount, description);
+
+        return "redirect:/transfer?transferSuccess=true"; // redirect back to the transfer page
+    }
 
     @PostMapping("/withdrawFunds")
     public String withdrawFunds(Principal principal, @RequestParam("amount") BigDecimal amount) {

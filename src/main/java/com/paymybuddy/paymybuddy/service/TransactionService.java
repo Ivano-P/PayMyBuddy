@@ -1,6 +1,7 @@
 package com.paymybuddy.paymybuddy.service;
 
 import com.paymybuddy.paymybuddy.dto.TransactionForAppUserHistory;
+import com.paymybuddy.paymybuddy.dto.TransferConfirmation;
 import com.paymybuddy.paymybuddy.model.Transaction;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -20,5 +21,8 @@ public interface TransactionService {
     void withdrawFunds(String username, BigDecimal amount);
 
     void genarateTestDeposit(String username);
+
+    TransferConfirmation creatTransferConfirmation(String appUserUsername, Integer contactId, BigDecimal amount,
+                                                   Optional<String> description);
 
 }
