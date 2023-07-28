@@ -33,7 +33,8 @@ a, a:visited, a:focus, .submit-btn:visited, .submit-btn:focus {
     padding: 10px;
 }
 
-#welcome-msg, #update-profile-info, #iban-content, #first-steps, #balance-information, #update-password {
+#welcome-msg, #update-profile-info, #iban-content, #first-steps, #balance-information, #update-password,
+#profile-balance , #confirm-transaction-div{
     text-align: center;
     margin: auto;
 
@@ -46,12 +47,14 @@ a, a:visited, a:focus, .submit-btn:visited, .submit-btn:focus {
 }
 
 #transaction_history table th, #transaction_history table td, #bank-account-table td, #bank-account-table th,
-#pay-my-buddy-iban th, #pay-my-buddy-iban td, #contact_list table th, #contact_list table td {
+#pay-my-buddy-iban th, #pay-my-buddy-iban td, #contact_list table th, #contact_list table td,
+#transaction-to-confirm th, #transaction-to-confirm td {
     border: 1px solid #ddd;
     padding: 8px;
 }
 
-#transaction_history table th , #bank-account-table th, #pay-my-buddy-iban th, #contact_list th {
+#transaction_history table th , #bank-account-table th, #pay-my-buddy-iban th, #contact_list th,
+#transaction-to-confirm th {
     padding-top: 12px;
     padding-bottom: 12px;
     text-align: left;
@@ -63,8 +66,8 @@ a, a:visited, a:focus, .submit-btn:visited, .submit-btn:focus {
     width: 16em;
 }
 
-#transfer-transaction, #withdrawal-transaction, #deposit-transaction, #withdrawal-ko-transaction, #transaction_history
-#contact_list, #add-contact, #contact_list h2, #deposit-instructions, #pagination, #transaction_history {
+#transfer-transaction, #withdrawal-transaction, #deposit-transaction, #withdrawal-ko-transaction, #transaction_history,
+#contact_list, #add-contact, #contact_list h2, #deposit-instructions, #pagination, #transaction_history{
     text-align: center;
 }
 
@@ -225,12 +228,12 @@ a, a:visited, a:focus, .submit-btn:visited, .submit-btn:focus {
     margin: 15px;
 }
 
-#table-container, #contact_list{
+#table-container, #contact_list, #transaction-to-confirm {
     width: fit-content;  /* adjust the container width to fit the content */
     margin: auto;  /* center the container horizontally */
 }
 
-#transfer-history-table, #my_contact {
+#transfer-history-table, #my_contact , #transaction-to-confirm{
     width: auto;
     max-width: 950px;
 }
