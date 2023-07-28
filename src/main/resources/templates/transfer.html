@@ -63,7 +63,7 @@
             <h2>Fund your account</h2>
             <a th:href="@{/iban}" class="submit-btn">deposit</a>
 
-            <!-- //TODO: remove in production -->
+            <!--  remove in production -->
             <div th:if="${isAdmin}">
                 <form action="#" th:action="@{/testDepositFunds}" method="post" id="deposit-form">
                     <label for="null"></label>
@@ -71,6 +71,7 @@
                     <button type="submit" id="test-deposit">test deposit</button>
                 </form>
             </div>
+            <!-- END remove in production -->
         </div>
     </section>
 

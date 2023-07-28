@@ -1,7 +1,7 @@
 package com.paymybuddy.paymybuddy.controller;
 
 import com.paymybuddy.paymybuddy.dto.TransactionForAppUserHistory;
-import com.paymybuddy.paymybuddy.implementation.AppPmbServiceImpl;
+import com.paymybuddy.paymybuddy.dto.TransferConfirmation;
 import com.paymybuddy.paymybuddy.implementation.AppUserServiceImpl;
 import com.paymybuddy.paymybuddy.implementation.BankAccountServiceImpl;
 import com.paymybuddy.paymybuddy.implementation.TransactionServiceImpl;
@@ -17,7 +17,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.ui.ExtendedModelMap;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.math.BigDecimal;
 import java.security.Principal;
@@ -92,14 +92,52 @@ class TransactionControllerTest {
         // Arrange
         Principal principal = mock(Principal.class);
         when(principal.getName()).thenReturn("username");
+
+        TransferConfirmation mockTransferConfirmation = mock(TransferConfirmation.class);
+        when(transactionService.creatTransferConfirmation(any(String.class), anyInt(), any(BigDecimal.class), any(Optional.class)))
+                .thenReturn(mockTransferConfirmation);
+
+        RedirectAttributes redirectAttributes = mock(RedirectAttributes.class);
+
+        // Act
+        String viewName = transactionController.transferFunds(principal, 1, BigDecimal.TEN, "description", redirectAttributes);
+
+        // Assert
+        assertThat(viewName).isEqualTo("redirect:/confirm_transfer");
+        verify(transactionService, times(1)).creatTransferConfirmation(any(String.class), anyInt(), any(BigDecimal.class), any(Optional.class));
+        verify(redirectAttributes, times(1)).addFlashAttribute("transferConfirmationInfo", mockTransferConfirmation);
+    }
+
+    @Test
+    void testGoToConfirmTransferPage() {
+        // Arrange
+        when(principal.getName()).thenReturn("username");
+        when(appUserService.getAppUserByUsername("username")).thenReturn(Optional.of(appUser));
+        Model model = mock(Model.class);
+
+        // Act
+        String viewName = transactionController.goToConfirmTransferPage(model, principal);
+
+        // Assert
+        assertThat(viewName).isEqualTo("confirm_transfer");
+        verify(appUserService, times(1)).getAppUserByUsername("username");
+        verify(model, times(1)).addAttribute(any(), any());
+    }
+
+    @Test
+    void testConfirmTransfer() {
+        // Arrange
+        when(principal.getName()).thenReturn("username");
         doNothing().when(transactionService).transferFunds(any(String.class), anyInt(), any(BigDecimal.class), any(String.class));
 
         // Act
-        String viewName = transactionController.transferFunds(principal, 1, BigDecimal.TEN, "description");
+        String viewName = transactionController.confirmTransfer(principal, 1, BigDecimal.TEN, "description");
 
         // Assert
         assertThat(viewName).isEqualTo("redirect:/transfer?transferSuccess=true");
         verify(transactionService, times(1)).transferFunds(any(String.class), anyInt(), any(BigDecimal.class), any(String.class));
     }
+
+
 
 }

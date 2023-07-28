@@ -114,11 +114,6 @@ private static final String CURRENT_USER_NOT_FOUND = "current user not found";
         }
     }
 
-
-
-
-
-    //TODO: UT
     public TransferConfirmation creatTransferConfirmation(String appUserUsername,
                                                           Integer contactId,
                                                           BigDecimal amount,
@@ -158,14 +153,6 @@ private static final String CURRENT_USER_NOT_FOUND = "current user not found";
                 finalTransactionAmount, appUserWallet.getBalance().subtract(finalTransactionAmount)
         );
     }
-
-
-
-
-
-
-
-
 
     // get the paged transaction history of a specific user
     public Page<TransactionForAppUserHistory> getTransactionHistory(String username, Pageable pageable){
@@ -288,7 +275,7 @@ private static final String CURRENT_USER_NOT_FOUND = "current user not found";
 
     }
 
-    //TODO: remove in production
+    //------ remove in production-----------
     public void genarateTestDeposit(String username){
         log.info("generateTestDeposit method called with: {}", username);
         //get id
@@ -305,7 +292,7 @@ private static final String CURRENT_USER_NOT_FOUND = "current user not found";
                 Transaction.TransactionType.DEPOSIT, Optional.of("Bank account deposit"));
 
     }
-
+    //END------ remove in production-----------
 }
 
 

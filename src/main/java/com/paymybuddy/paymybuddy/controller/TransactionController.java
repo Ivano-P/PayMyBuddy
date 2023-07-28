@@ -78,7 +78,6 @@ public class TransactionController {
         return "redirect:/iban";
     }
 
-    //TODO: update UT since no longer call transferFunds
     @PostMapping("/transfer")
     public String transferFunds(Principal principal,
                                 @RequestParam("contactId") Integer contactId,
@@ -96,7 +95,6 @@ public class TransactionController {
         return "redirect:/confirm_transfer";
     }
 
-    //TODO: UT
     @GetMapping("/confirm_transfer")
     public String goToConfirmTransferPage(Model model, Principal principal){
         log.info("goToConfirmTransferPage method called for user {} ", principal.getName());
@@ -109,7 +107,6 @@ public class TransactionController {
         return "confirm_transfer";
     }
 
-    //TODO: UT
     @PostMapping("/confirmTransfer")
     public String confirmTransfer(Principal principal,
                                 @RequestParam("contactId") Integer contactId,

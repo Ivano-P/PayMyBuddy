@@ -1,6 +1,7 @@
 package com.paymybuddy.paymybuddy.service;
 
 import com.paymybuddy.paymybuddy.dto.TransactionForAppUserHistory;
+import com.paymybuddy.paymybuddy.dto.TransferConfirmation;
 import com.paymybuddy.paymybuddy.exceptions.InsufficientFundsException;
 import com.paymybuddy.paymybuddy.exceptions.WalletNotFoundException;
 import com.paymybuddy.paymybuddy.implementation.AppPmbServiceImpl;
@@ -164,6 +165,43 @@ class TransactionServiceImplTest {
     }
 
     @Test
+    void testCreatTransferConfirmation() {
+        // Arrange
+        AppUser appUser = new AppUser();
+        appUser.setId(1);
+        AppUser contactAppUser = new AppUser();
+        contactAppUser.setId(2);
+        Wallet wallet = new Wallet();
+        wallet.setBalance(BigDecimal.valueOf(500));
+        AccountPayMyBuddy pmbAccount = new AccountPayMyBuddy();
+        pmbAccount.setTransactionFee(0.005);
+        when(appUserService.getAppUserByUsername("username")).thenReturn(Optional.of(appUser));
+        when(appUserService.getAppUserById(2)).thenReturn(Optional.of(contactAppUser));
+        when(walletService.getWalletById(1)).thenReturn(Optional.of(wallet));
+        when(appPmbService.getAccountPmb()).thenReturn(pmbAccount);
+
+        // Act
+        TransferConfirmation confirmation = transactionService.creatTransferConfirmation("username", 2,
+                BigDecimal.valueOf(100), Optional.of("description"));
+
+        // Assert
+        assertThat(confirmation.getSender()).isEqualTo("username");
+        assertThat(confirmation.getType()).isEqualTo(Transaction.TransactionType.SEND);
+        assertThat(confirmation.getRecipient()).isEqualTo(contactAppUser);
+        assertThat(confirmation.getDescription()).isEqualTo("description");
+        assertThat(confirmation.getTransferAmount()).isEqualTo(BigDecimal.valueOf(100));
+        assertThat(confirmation.getTransferFee().compareTo(BigDecimal.valueOf(0.50))).isZero();
+        assertThat(confirmation.getAmountPlusFee().compareTo(BigDecimal.valueOf(100.50))).isZero();
+        assertThat(confirmation.getBalanceAfterTransfer().compareTo(BigDecimal.valueOf(399.50))).isZero();
+
+        verify(appUserService, times(1)).getAppUserByUsername("username");
+        verify(appUserService, times(1)).getAppUserById(2);
+        verify(walletService, times(1)).getWalletById(1);
+        verify(appPmbService, times(1)).getAccountPmb();
+    }
+
+
+    @Test
     void testGetTransactionHistory() {
         // Arrange
         String username = "TestUsername";
@@ -287,6 +325,7 @@ class TransactionServiceImplTest {
         // Act and Assert
         assertThrows(WalletNotFoundException.class, () -> transactionService.genarateTestDeposit(username));
     }
+
 
 
 }
