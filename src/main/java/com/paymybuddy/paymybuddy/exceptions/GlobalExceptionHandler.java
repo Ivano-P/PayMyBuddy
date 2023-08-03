@@ -122,7 +122,6 @@ public class GlobalExceptionHandler {
         return "redirect:/registrationFailure";
     }
 
-    //TODO UT
     @ExceptionHandler(InvalidPasswordException.class)
     public String handleInvalidAmountException(InvalidPasswordException ipe,
                                                RedirectAttributes redirectAttributes) {
