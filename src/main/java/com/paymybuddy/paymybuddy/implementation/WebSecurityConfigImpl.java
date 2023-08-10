@@ -28,7 +28,7 @@ public class WebSecurityConfigImpl implements WebSecurityConfig {
 
         //set pages that are accessible without being logged in
         httpSecurity.authorizeHttpRequests()
-                .requestMatchers("/register", "/logIn", "/registrationSuccessful", "registrationFailure")
+                .requestMatchers("/register", "/logIn", "/registrationSuccessful", "registrationFailure", "/")
                 .permitAll();
 
         //set my customized login page for spring security and makes it accessible without being logged-in

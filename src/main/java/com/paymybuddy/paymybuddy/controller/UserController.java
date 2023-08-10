@@ -45,6 +45,12 @@ public class UserController {
         return "logIn";
     }
 
+    @GetMapping("/")
+    public String showRegistrationForm() {
+        log.info("showRegistrationForm method called");
+        return "/";
+    }
+
     @GetMapping("/register")
     public String showRegistrationForm(Model model) {
         log.info("showRegistrationForm method called");
