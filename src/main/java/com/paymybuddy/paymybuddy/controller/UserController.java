@@ -38,6 +38,12 @@ public class UserController {
         return currentUserOptional.orElseThrow(() -> new UsernameNotFoundException("User not found"));
     }
 
+    @GetMapping("/")
+    public String goToIndexPage() {
+        log.info("goToIndexPage() method called");
+        return "index";
+    }
+
     //go to log in page
     @GetMapping("/logIn")
     public String goToLogIn() {
@@ -45,11 +51,6 @@ public class UserController {
         return "logIn";
     }
 
-    @GetMapping("/")
-    public String showRegistrationForm() {
-        log.info("showRegistrationForm method called");
-        return "/";
-    }
 
     @GetMapping("/register")
     public String showRegistrationForm(Model model) {
